@@ -1,0 +1,222 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\Aucma_Heater.rc2""  // 非 Microsoft Visual C++ 编辑的资源\r\n"
+    "#include ""l.CHS\\afxres.rc""      // 标准组件\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\Aucma_Heater.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_AUCMA_HEATER_DIALOG DIALOG  0, 0, 246, 175
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW | 0x80000000L
+CAPTION "Aucma_Heater"
+FONT 9, "MS Sans Serif"
+BEGIN
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080403a8"
+        BEGIN
+            VALUE "CompanyName", "TODO: <公司名>"
+            VALUE "FileDescription", "TODO: <文件说明>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "Aucma_Heater.exe"
+            VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
+            VALUE "OriginalFilename", "Aucma_Heater.exe"
+            VALUE "ProductName", "TODO: <产品名>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 936
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_HEATFAST_OFF        BITMAP                  "res\\速热引擎_1.bmp"
+IDB_HEATFAST_ON         BITMAP                  "res\\速热引擎_2.bmp"
+IDB_WINTER_OFF          BITMAP                  "res\\冬天_1.bmp"
+IDB_WINTER_ON           BITMAP                  "res\\冬天_2.bmp"
+IDB_HELPER_OFF          BITMAP                  "res\\智能助手_1.bmp"
+IDB_HELPER_ON           BITMAP                  "res\\智能助手_2.bmp"
+IDB_WASHHAND_OFF        BITMAP                  "res\\洗手加热_1.bmp"
+IDB_WASHHAND_ON         BITMAP                  "res\\洗手加热_2.bmp"
+IDB_NIGHT_OFF           BITMAP                  "res\\夜电模式_1.bmp"
+IDB_NIGHT_ON            BITMAP                  "res\\夜电模式_2.bmp"
+IDB_TEMP_OFF            BITMAP                  "res\\保温_加热.bmp"
+IDB_TEMP_INSULATION     BITMAP                  "res\\保温.bmp"
+IDB_TEMP_HEAT_1         BITMAP                  "res\\加热_1.bmp"
+IDB_TEMP_HEAT_2         BITMAP                  "res\\加热_2.bmp"
+IDB_TEMP_HEAT_3         BITMAP                  "res\\加热_3.bmp"
+IDB_POWER_OFF           BITMAP                  "res\\电源_1.bmp"
+IDB_POWER_ON            BITMAP                  "res\\电源_2.bmp"
+IDB_ADD                 BITMAP                  "res\\增加.bmp"
+IDB_REDUCE              BITMAP                  "res\\减小.bmp"
+IDB_TEMP_1              BITMAP                  "C:\\Users\\Administrator\\Desktop\\郭鑫wince\\Aucma_Heater_20121015_2\\Aucma_Heater\\res\\温度1_1.bmp"
+IDB_TEMP_2              BITMAP                  "res\\温度1_2.bmp"
+IDB_TEMP_3              BITMAP                  "res\\温度1_3.bmp"
+IDB_TEMP_4              BITMAP                  "res\\温度1_4.bmp"
+IDB_TEMP_5              BITMAP                  "res\\温度1_5.bmp"
+IDB_TEMP_6              BITMAP                  "res\\温度1_6.bmp"
+IDB_TEMP_7              BITMAP                  "res\\温度1_7.bmp"
+IDB_TEMP_8              BITMAP                  "res\\温度1_8.bmp"
+IDB_TEMP_9              BITMAP                  "res\\温度1_9.bmp"
+IDB_TEMP_0              BITMAP                  "C:\\Users\\Administrator\\Desktop\\郭鑫wince\\Aucma_Heater_20121015_2\\Aucma_Heater\\res\\温度1_0.bmp"
+IDB_TEMP_LIGHT_0        BITMAP                  "C:\\Users\\Administrator\\Desktop\\郭鑫wince\\Aucma_Heater_20121015_2\\Aucma_Heater\\res\\温度2_0.bmp"
+IDB_TEMP_LIGHT_1        BITMAP                  "C:\\Users\\Administrator\\Desktop\\郭鑫wince\\Aucma_Heater_20121015_2\\Aucma_Heater\\res\\温度2_1.bmp"
+IDB_TEMP_LIGHT_2        BITMAP                  "C:\\Users\\Administrator\\Desktop\\郭鑫wince\\Aucma_Heater_20121015_2\\Aucma_Heater\\res\\温度2_2.bmp"
+IDB_TEMP_LIGHT_3        BITMAP                  "C:\\Users\\Administrator\\Desktop\\郭鑫wince\\Aucma_Heater_20121015_2\\Aucma_Heater\\res\\温度2_3.bmp"
+IDB_TEMP_LIGHT_4        BITMAP                  "C:\\Users\\Administrator\\Desktop\\郭鑫wince\\Aucma_Heater_20121015_2\\Aucma_Heater\\res\\温度2_4.bmp"
+IDB_TEMP_LIGHT_5        BITMAP                  "C:\\Users\\Administrator\\Desktop\\郭鑫wince\\Aucma_Heater_20121015_2\\Aucma_Heater\\res\\温度2_5.bmp"
+IDB_TEMP_LIGHT_6        BITMAP                  "C:\\Users\\Administrator\\Desktop\\郭鑫wince\\Aucma_Heater_20121015_2\\Aucma_Heater\\res\\温度2_6.bmp"
+IDB_TEMP_LIGHT_7        BITMAP                  "C:\\Users\\Administrator\\Desktop\\郭鑫wince\\Aucma_Heater_20121015_2\\Aucma_Heater\\res\\温度2_7.bmp"
+IDB_TEMP_LIGHT_8        BITMAP                  "C:\\Users\\Administrator\\Desktop\\郭鑫wince\\Aucma_Heater_20121015_2\\Aucma_Heater\\res\\温度2_8.bmp"
+IDB_TEMP_LIGHT_9        BITMAP                  "C:\\Users\\Administrator\\Desktop\\郭鑫wince\\Aucma_Heater_20121015_2\\Aucma_Heater\\res\\温度2_9.bmp"
+IDB_TIME_0              BITMAP                  "res\\时间1_0.bmp"
+IDB_TIME_1              BITMAP                  "res\\时间1_1.bmp"
+IDB_TIME_2              BITMAP                  "res\\时间1_2.bmp"
+IDB_TIME_3              BITMAP                  "res\\时间1_3.bmp"
+IDB_TIME_4              BITMAP                  "res\\时间1_4.bmp"
+IDB_TIME_5              BITMAP                  "res\\时间1_5.bmp"
+IDB_TIME_6              BITMAP                  "res\\时间1_6.bmp"
+IDB_TIME_7              BITMAP                  "res\\时间1_7.bmp"
+IDB_TIME_8              BITMAP                  "res\\时间1_8.bmp"
+IDB_TIME_9              BITMAP                  "res\\时间1_9.bmp"
+IDB_TIME_LIGHT_0        BITMAP                  "res\\时间2_0.bmp"
+IDB_TIME_LIGHT_1        BITMAP                  "res\\时间2_1.bmp"
+IDB_TIME_LIGHT_2        BITMAP                  "res\\时间2_2.bmp"
+IDB_TIME_LIGHT_3        BITMAP                  "res\\时间2_3.bmp"
+IDB_TIME_LIGHT_4        BITMAP                  "res\\时间2_4.bmp"
+IDB_TIME_LIGHT_5        BITMAP                  "res\\时间2_5.bmp"
+IDB_TIME_LIGHT_6        BITMAP                  "res\\时间2_6.bmp"
+IDB_TIME_LIGHT_7        BITMAP                  "res\\时间2_7.bmp"
+IDB_TIME_LIGHT_8        BITMAP                  "res\\时间2_8.bmp"
+IDB_TIME_LIGHT_9        BITMAP                  "res\\时间2_9.bmp"
+IDB_TIME_LABEL          BITMAP                  "res\\时间标志.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDP_SOCKETS_INIT_FAILED "Windows 套接字初始化失败。"
+END
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\Aucma_Heater.rc2"  // 非 Microsoft Visual C++ 编辑的资源
+#include "l.CHS\afxres.rc"      // 标准组件
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
