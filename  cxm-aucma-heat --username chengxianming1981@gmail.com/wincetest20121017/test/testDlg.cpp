@@ -4,12 +4,14 @@
 #include "stdafx.h"
 #include "test.h"
 #include "testDlg.h"
-
+#include <initguid.h>
+#include <imgguids.h>
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 // CtestDlg 对话框
+
 
 CtestDlg::CtestDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CtestDlg::IDD, pParent)
@@ -72,6 +74,21 @@ BOOL CtestDlg::OnInitDialog()
 	VERIFY(m_FontWinter.CreateFontIndirect(&logFont));
 	logFont.lfHeight = logFont.lfHeight / 3;
 	VERIFY(m_FontSummer.CreateFontIndirect(&logFont));
+
+
+	CoInitializeEx(NULL ,COINIT_MULTITHREADED);
+
+	if(FAILED(CoCreateInstance(CLSID_ImagingFactory,NULL,CLSCTX_INPROC_SERVER,IID_IImagingFactory ,(void **) &m_pImageFactory)))
+	{
+		MessageBox(_T("CoCreateInstance Error"));
+
+	}
+
+	if(!SUCCEEDED(m_pImageFactory->CreateImageFromFile(_T("\\Storage Card\\电源_1.png"),&pImage)))
+	{
+		MessageBox(_T("CreateImageFromFile Error"));
+	}
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -94,12 +111,13 @@ void CtestDlg::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/)
 
 HBRUSH CtestDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-//	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	// TODO:  在此更改 DC 的任何属性
 
 	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
-	return m_brush;
+//	return m_brush;
+	return hbr;
 }
 
 void CtestDlg::OnPaint()
@@ -141,6 +159,12 @@ void CtestDlg::OnPaint()
 	dc.SelectObject(&m_FontSummer);
 	dc.SetTextColor(0xff00);
 	dc.ExtTextOut(120, 120, ETO_OPAQUE, NULL, _T("TEXT"), NULL);
+
+	if(pImage!=NULL)
+	{
+		pImage->Draw(this->GetDC()->m_hDC ,CRect(180,120,228,168) ,NULL);
+	}
+ 
 }
 
 void CtestDlg::OnLButtonDown(UINT nFlags, CPoint point)
@@ -158,4 +182,5 @@ void CtestDlg::OnDestroy()
 	m_brush.DeleteObject();
 	m_FontSummer.DeleteObject();
 	m_FontWinter.DeleteObject();
+	CoUninitialize();
 }

@@ -125,7 +125,13 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	logFont.lfHeight = lfHeight * 3 / 2;
 	VERIFY(m_FontTemp.CreateFontIndirect(&logFont));
 	// 对话框最大化显示
-	ShowWindow(SW_SHOWMAXIMIZED);
+//	ShowWindow(SW_SHOWMAXIMIZED);
+	int iFullWidth = GetSystemMetrics(SM_CXSCREEN);
+	int iFullHeight = GetSystemMetrics(SM_CYSCREEN);
+	::SetWindowPos(this->m_hWnd, HWND_TOPMOST, 0, 0, iFullWidth, iFullHeight, SWP_NOOWNERZORDER|SWP_SHOWWINDOW);
+	
+	CRect rect;
+	GetClientRect(rect);
 	m_rectHeatFastPic = OnSetRect(40, 10, 48, 48);
 	m_rectHeatFastText = OnSetRect(40, 58, 48, 14);
 	m_rectWinterPic = OnSetRect(92, 34, 24, 24);

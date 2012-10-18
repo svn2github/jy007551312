@@ -4,6 +4,8 @@
 #include "TSS.h"
 #pragma once
 #include "afxwin.h"
+#include <imaging.h>
+
 
 
 // CtestDlg ¶Ô»°¿ò
@@ -36,6 +38,9 @@ public:
 	CBrush   m_brush;
 	CFont m_FontWinter;
 	CFont m_FontSummer;
+public:
+	IImage *pImage;
+	IImagingFactory *m_pImageFactory;
 public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnPaint();
