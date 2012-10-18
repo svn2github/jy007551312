@@ -11,7 +11,6 @@
 #define IDB_BITMAP2                     132
 #define IDB_BITMAP3                     134
 #define IDI_ICON3                       135
-#define IDB_PNG1                        136
 #define IDC_STATIC_3                    1007
 
 // Next default values for new objects

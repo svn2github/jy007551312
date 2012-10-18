@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TT", "TT\TT.vcproj", "{EA513863-7349-4D93-90B3-F0F3B0F92D1D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|CHSINT SDK For WinCE 6.0 (ARMV4I) = Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)
+		Debug|gzsd6410_SDK (ARMV4I) = Debug|gzsd6410_SDK (ARMV4I)
+		Release|CHSINT SDK For WinCE 6.0 (ARMV4I) = Release|CHSINT SDK For WinCE 6.0 (ARMV4I)
+		Release|gzsd6410_SDK (ARMV4I) = Release|gzsd6410_SDK (ARMV4I)
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA513863-7349-4D93-90B3-F0F3B0F92D1D}.Debug|CHSINT SDK For WinCE 6.0 (ARMV4I).ActiveCfg = Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)
+		{EA513863-7349-4D93-90B3-F0F3B0F92D1D}.Debug|CHSINT SDK For WinCE 6.0 (ARMV4I).Build.0 = Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)
+		{EA513863-7349-4D93-90B3-F0F3B0F92D1D}.Debug|CHSINT SDK For WinCE 6.0 (ARMV4I).Deploy.0 = Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)
+		{EA513863-7349-4D93-90B3-F0F3B0F92D1D}.Debug|gzsd6410_SDK (ARMV4I).ActiveCfg = Debug|gzsd6410_SDK (ARMV4I)
+		{EA513863-7349-4D93-90B3-F0F3B0F92D1D}.Debug|gzsd6410_SDK (ARMV4I).Build.0 = Debug|gzsd6410_SDK (ARMV4I)
+		{EA513863-7349-4D93-90B3-F0F3B0F92D1D}.Debug|gzsd6410_SDK (ARMV4I).Deploy.0 = Debug|gzsd6410_SDK (ARMV4I)
+		{EA513863-7349-4D93-90B3-F0F3B0F92D1D}.Release|CHSINT SDK For WinCE 6.0 (ARMV4I).ActiveCfg = Release|CHSINT SDK For WinCE 6.0 (ARMV4I)
+		{EA513863-7349-4D93-90B3-F0F3B0F92D1D}.Release|CHSINT SDK For WinCE 6.0 (ARMV4I).Build.0 = Release|CHSINT SDK For WinCE 6.0 (ARMV4I)
+		{EA513863-7349-4D93-90B3-F0F3B0F92D1D}.Release|CHSINT SDK For WinCE 6.0 (ARMV4I).Deploy.0 = Release|CHSINT SDK For WinCE 6.0 (ARMV4I)
+		{EA513863-7349-4D93-90B3-F0F3B0F92D1D}.Release|gzsd6410_SDK (ARMV4I).ActiveCfg = Release|gzsd6410_SDK (ARMV4I)
+		{EA513863-7349-4D93-90B3-F0F3B0F92D1D}.Release|gzsd6410_SDK (ARMV4I).Build.0 = Release|gzsd6410_SDK (ARMV4I)
+		{EA513863-7349-4D93-90B3-F0F3B0F92D1D}.Release|gzsd6410_SDK (ARMV4I).Deploy.0 = Release|gzsd6410_SDK (ARMV4I)
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

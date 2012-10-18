@@ -3,9 +3,13 @@
 
 #include "stdafx.h"
 #include "test.h"
-#include "testDlg.h"
+#include "testDlg.h" 
 #include <initguid.h>
 #include <imgguids.h>
+
+// #include <wingdi.h>
+// #pragma   comment(lib, "msimg32.lib") 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -15,6 +19,7 @@
 
 CtestDlg::CtestDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CtestDlg::IDD, pParent)
+	, m_bImage(false)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -64,7 +69,7 @@ BOOL CtestDlg::OnInitDialog()
 	HICON hic = AfxGetApp()->LoadIcon(IDI_ICON2);
 	GetDlgItem(IDC_STATIC_3)->SetIcon(hic, FALSE);
 	GetDlgItem(IDC_STATIC_3)->Invalidate();
-	m_brush.CreateSolidBrush(RGB(255,   255,   255));   //   生成一绿色刷子
+	m_brush.CreateSolidBrush(RGB(255,   0,   0));   //   生成一绿色刷子
 	CFont* pfont;
 	LOGFONT   logFont;
 	pfont = GetDC()->GetCurrentFont();
@@ -84,11 +89,13 @@ BOOL CtestDlg::OnInitDialog()
 
 	}
 
-	if(!SUCCEEDED(m_pImageFactory->CreateImageFromFile(_T("\\Storage Card\\电源_1.png"),&pImage)))
+	if(!SUCCEEDED(m_pImageFactory->CreateImageFromFile(_T("\\Storage Card\\power.png"),&pImage)))
 	{
 		MessageBox(_T("CreateImageFromFile Error"));
 	}
 
+	memdc.CreateCompatibleDC(GetDC());
+	pImage->Draw(memdc.m_hDC ,CRect(180,120,210,150) ,NULL);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -116,8 +123,8 @@ HBRUSH CtestDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	// TODO:  在此更改 DC 的任何属性
 
 	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
-//	return m_brush;
-	return hbr;
+	return m_brush;
+//	return hbr;
 }
 
 void CtestDlg::OnPaint()
@@ -159,18 +166,34 @@ void CtestDlg::OnPaint()
 	dc.SelectObject(&m_FontSummer);
 	dc.SetTextColor(0xff00);
 	dc.ExtTextOut(120, 120, ETO_OPAQUE, NULL, _T("TEXT"), NULL);
+	
+	BLENDFUNCTION bindfun;    
+	//设置AlphaBind的最后一个参数  
+	bindfun.BlendOp=AC_SRC_OVER;  
+	bindfun.BlendFlags=0;  
+	bindfun.SourceConstantAlpha=255;  
+	bindfun.AlphaFormat=AC_SRC_ALPHA;    
+	//以下三行为虚代码,具体实现请参考相关代码  
+	//HDC hmemdc=CreateMemDC(); //创建内存绘图设备句柄  
+	//CPng png;  
+	//png.Load("1.png");//加载png图片  
+  
+	//在将ColorBits转换为DC前，先将每个像素进行下面的运算  
 
-	if(pImage!=NULL)
-	{
-		pImage->Draw(this->GetDC()->m_hDC ,CRect(180,120,228,168) ,NULL);
-	}
+	//R=BYTE(MulDiv(R,A,255));  
+	//G=BYTE(MulDiv(G,A,255));  
+	//B=BYTE(MulDiv(B,A,255));  
  
+//	AlphaBlend(hmemdc.m_hDC,0,0,260,60,memDC1.m_hDC,0,0,260,60,bindfun);
+
+	
 }
 
 void CtestDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
+	m_bImage = !m_bImage;
+	InvalidateRect(CRect(180,120,228,168), false);
 	CDialog::OnLButtonDown(nFlags, point);
 }
 

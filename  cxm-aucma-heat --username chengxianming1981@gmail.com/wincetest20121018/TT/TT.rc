@@ -48,7 +48,7 @@ BEGIN
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
     "LANGUAGE 4, 2\r\n"
     "#pragma code_page(936)\r\n"
-    "#include ""res\\test.rc2""  // 非 Microsoft Visual C++ 编辑的资源\r\n"
+    "#include ""res\\TT.rc2""  // 非 Microsoft Visual C++ 编辑的资源\r\n"
     "#include ""l.CHS\\afxres.rc""      // 标准组件\r\n"
     "#endif\r\n"
     "\0"
@@ -64,24 +64,20 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\test.ico"
-IDI_ICON1               ICON                    "res\\速热引擎.ico"
-IDI_ICON2               ICON                    "res\\icon2.ico"
-IDI_ICON3               ICON                    "res\\icon3.ico"
+IDR_MAINFRAME           ICON                    "res\\TT.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
 //
 
-IDD_TEST_DIALOG DIALOG  0, 0, 195, 157
+IDD_TT_DIALOG DIALOG  0, 0, 156, 129
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW | 0x80000000L
-CAPTION "test"
+CAPTION "TT"
 FONT 9, "MS Sans Serif"
 BEGIN
-    LTEXT           "℃",IDC_STATIC,21,85,40,21
-    ICON            "",IDC_STATIC_3,101,30,20,20
+    LTEXT           "TODO: 在此放置对话框控件。",IDC_STATIC,24,48,112,23
 END
 
 
@@ -110,9 +106,9 @@ BEGIN
             VALUE "CompanyName", "TODO: <公司名>"
             VALUE "FileDescription", "TODO: <文件说明>"
             VALUE "FileVersion", "1.0.0.1"
-            VALUE "InternalName", "test.exe"
+            VALUE "InternalName", "TT.exe"
             VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
-            VALUE "OriginalFilename", "test.exe"
+            VALUE "OriginalFilename", "TT.exe"
             VALUE "ProductName", "TODO: <产品名>"
             VALUE "ProductVersion", "1.0.0.1"
         END
@@ -132,36 +128,15 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO 
 BEGIN
-    IDD_TEST_DIALOG, DIALOG
+    IDD_TT_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 188
+        RIGHTMARGIN, 149
         TOPMARGIN, 7
-        BOTTOMMARGIN, 150
+        BOTTOMMARGIN, 122
     END
 END
 #endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDB_BITMAP1             BITMAP                  "res\\bitmap1.bmp"
-IDB_BITMAP2             BITMAP                  "res\\bitmap2.bmp"
-IDB_BITMAP3             BITMAP                  "res\\速热引擎.bmp"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// String Table
-//
-
-STRINGTABLE 
-BEGIN
-    IDP_SOCKETS_INIT_FAILED "Windows 套接字初始化失败。"
-END
 
 #endif    // 中文(中华人民共和国) resources
 /////////////////////////////////////////////////////////////////////////////
@@ -181,7 +156,7 @@ END
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE 4, 2
 #pragma code_page(936)
-#include "res\test.rc2"  // 非 Microsoft Visual C++ 编辑的资源
+#include "res\TT.rc2"  // 非 Microsoft Visual C++ 编辑的资源
 #include "l.CHS\afxres.rc"      // 标准组件
 #endif
 

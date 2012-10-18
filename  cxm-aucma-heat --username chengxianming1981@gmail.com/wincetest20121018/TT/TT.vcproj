@@ -2,9 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="test"
-	ProjectGUID="{58B28E1D-82BC-40DA-BF24-1E1D36F67EF5}"
-	RootNamespace="test"
+	Name="TT"
+	ProjectGUID="{EA513863-7349-4D93-90B3-F0F3B0F92D1D}"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="196613"
 	>
@@ -48,7 +47,6 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;WINCE;DEBUG;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODEL"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
@@ -108,10 +106,10 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|gzsd6410_SDK (ARMV4I)"
-			OutputDirectory="$(SolutionDir)gzsd6410_SDK (ARMV4I)\$(ConfigurationName)"
-			IntermediateDirectory="gzsd6410_SDK (ARMV4I)\$(ConfigurationName)"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
-			UseOfMFC="1"
+			UseOfMFC="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -128,16 +126,18 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODEL;_DEBUG;DEBUG"
+				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE"
+				MkTypLibCompatible="false"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODEL;_DEBUG;DEBUG"
+				AdditionalIncludeDirectories="msimg32.lib"
+				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;WINCE;DEBUG;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODEL"
 				MinimalRebuild="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -146,7 +146,9 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODEL;_DEBUG;DEBUG"
+				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE"
+				Culture="2052"
+				AdditionalIncludeDirectories="$(IntDir)"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -158,6 +160,9 @@
 				GenerateDebugInformation="true"
 				StackReserveSize="65536"
 				StackCommitSize="4096"
+				EntryPointSymbol="WinMainCRTStartup"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -181,7 +186,7 @@
 				ForceDirty="-1"
 				RemoteDirectory=""
 				RegisterOutput="0"
-				AdditionalFiles=""
+				AdditionalFiles="msvcr90.dll|$(BINDIR)\$(INSTRUCTIONSET)\|%CSIDL_PROGRAM_FILES%\$(ProjectName)|0;atl90.dll|$(BINDIR)\$(INSTRUCTIONSET)\|%CSIDL_PROGRAM_FILES%\$(ProjectName)|0;msvcr90d.dll|$(BINDIR)\$(INSTRUCTIONSET)\|%CSIDL_PROGRAM_FILES%\$(ProjectName)|0;MFC90UD.dll|$(BINDIR)\$(INSTRUCTIONSET)\|%CSIDL_PROGRAM_FILES%\$(ProjectName)|0;"
 			/>
 			<DebuggerTool
 			/>
@@ -277,8 +282,10 @@
 		</Configuration>
 		<Configuration
 			Name="Release|gzsd6410_SDK (ARMV4I)"
-			IntermediateDirectory="gzsd6410_SDK (ARMV4I)\$(ConfigurationName)"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
+			UseOfMFC="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -295,15 +302,18 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODELNDEBUG"
+				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE"
+				MkTypLibCompatible="false"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="2"
 				FavorSizeOrSpeed="2"
-				PreprocessorDefinitions="_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODELNDEBUG"
+				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;WINCE;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODEL"
 				MinimalRebuild="false"
+				RuntimeLibrary="2"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -312,20 +322,25 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODELNDEBUG"
+				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE"
+				Culture="2052"
+				AdditionalIncludeDirectories="$(IntDir)"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/subsystem:windowsce,$(CEVER) /machine:$(ARCHFAM)"
+				AdditionalOptions=" /subsystem:windowsce,6.00"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				StackReserveSize="65536"
 				StackCommitSize="4096"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				EntryPointSymbol="WinMainCRTStartup"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -349,7 +364,7 @@
 				ForceDirty="-1"
 				RemoteDirectory=""
 				RegisterOutput="0"
-				AdditionalFiles=""
+				AdditionalFiles="msvcr90.dll|$(BINDIR)\$(INSTRUCTIONSET)\|%CSIDL_PROGRAM_FILES%\$(ProjectName)|0;atl90.dll|$(BINDIR)\$(INSTRUCTIONSET)\|%CSIDL_PROGRAM_FILES%\$(ProjectName)|0;MFC90U.dll|$(BINDIR)\$(INSTRUCTIONSET)\|%CSIDL_PROGRAM_FILES%\$(ProjectName)|0;"
 			/>
 			<DebuggerTool
 			/>
@@ -375,7 +390,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|gzsd6410_SDK (ARMV4I)"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|CHSINT SDK For WinCE 6.0 (ARMV4I)"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|gzsd6410_SDK (ARMV4I)"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -384,19 +415,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\test.cpp"
+				RelativePath=".\TT.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\TestButton.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\testDlg.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TSS.cpp"
+				RelativePath=".\TTDlg.cpp"
 				>
 			</File>
 		</Filter>
@@ -414,19 +437,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\test.h"
+				RelativePath=".\TT.h"
 				>
 			</File>
 			<File
-				RelativePath=".\TestButton.h"
-				>
-			</File>
-			<File
-				RelativePath=".\testDlg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\TSS.h"
+				RelativePath=".\TTDlg.h"
 				>
 			</File>
 		</Filter>
@@ -436,47 +451,43 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\res\bitmap1.bmp"
+				RelativePath=".\res\TT.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\res\bitmap2.bmp"
+				RelativePath=".\TT.rc"
 				>
+				<FileConfiguration
+					Name="Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|gzsd6410_SDK (ARMV4I)"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|CHSINT SDK For WinCE 6.0 (ARMV4I)"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|gzsd6410_SDK (ARMV4I)"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\res\bitmap3.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\icon2.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\res\icon3.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\res\test.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\test.rc"
-				>
-			</File>
-			<File
-				RelativePath=".\res\test.rc2"
-				>
-			</File>
-			<File
-				RelativePath=".\res\时间0.png"
-				>
-			</File>
-			<File
-				RelativePath=".\res\速热引擎.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\速热引擎.ico"
+				RelativePath=".\res\TT.rc2"
 				>
 			</File>
 		</Filter>
@@ -486,9 +497,5 @@
 		</File>
 	</Files>
 	<Globals>
-		<Global
-			Name="RESOURCE_FILE"
-			Value="test.rc"
-		/>
 	</Globals>
 </VisualStudioProject>

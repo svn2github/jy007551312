@@ -40,6 +40,9 @@ public:
 	CFont m_FontSummer;
 public:
 	IImage *pImage;
+	bool m_bImage;
+	CDC memdc;
+	CDC hmemdc;
 	IImagingFactory *m_pImageFactory;
 public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
