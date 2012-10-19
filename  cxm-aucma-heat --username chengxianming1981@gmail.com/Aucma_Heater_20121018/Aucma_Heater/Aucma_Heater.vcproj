@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="Aucma_Heater"
 	ProjectGUID="{20895E82-E98D-4667-98AE-471E521AD8C5}"
+	RootNamespace="Aucma_Heater"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="196613"
 	>
@@ -47,6 +48,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
+				AdditionalIncludeDirectories="msimg32.lib"
 				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;WINCE;DEBUG;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODEL"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
@@ -220,6 +222,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				FavorSizeOrSpeed="2"
+				AdditionalIncludeDirectories="msimg32.lib"
 				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;WINCE;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODEL"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
@@ -436,6 +439,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Parameter.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Resource.h"
 				>
 			</File>
@@ -456,34 +463,6 @@
 			<File
 				RelativePath=".\Aucma_Heater.rc"
 				>
-				<FileConfiguration
-					Name="Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|gzsd6410_SDK (ARMV4I)"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|CHSINT SDK For WinCE 6.0 (ARMV4I)"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|gzsd6410_SDK (ARMV4I)"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\res\Aucma_Heater.rc2"
@@ -496,5 +475,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="Aucma_Heater.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

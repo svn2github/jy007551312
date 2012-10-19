@@ -39,11 +39,13 @@ public:
 	CFont m_FontWinter;
 	CFont m_FontSummer;
 public:
-	IImage *pImage;
+	IImage *m_pImage;
 	bool m_bImage;
 	CDC memdc;
 	CDC hmemdc;
 	IImagingFactory *m_pImageFactory;
+	CBitmap bmp;
+	CBitmap bmp2;
 public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnPaint();

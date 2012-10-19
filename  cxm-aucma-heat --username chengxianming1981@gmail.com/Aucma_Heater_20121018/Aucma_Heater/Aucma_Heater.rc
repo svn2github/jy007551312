@@ -71,13 +71,11 @@ IDR_MAINFRAME           ICON                    "res\\Aucma_Heater.ico"
 // Dialog
 //
 
-IDD_AUCMA_HEATER_DIALOG DIALOG  0, 0, 156, 129
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+IDD_AUCMA_HEATER_DIALOG DIALOG  0, 0, 226, 189
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE
 EXSTYLE WS_EX_APPWINDOW | 0x80000000L
-CAPTION "Aucma_Heater"
 FONT 9, "MS Sans Serif"
 BEGIN
-    LTEXT           "TODO: 在此放置对话框控件。",IDC_STATIC,24,48,112,23
 END
 
 
@@ -118,25 +116,6 @@ BEGIN
         VALUE "Translation", 0x804, 936
     END
 END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
-BEGIN
-    IDD_AUCMA_HEATER_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 149
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 122
-    END
-END
-#endif    // APSTUDIO_INVOKED
 
 
 /////////////////////////////////////////////////////////////////////////////

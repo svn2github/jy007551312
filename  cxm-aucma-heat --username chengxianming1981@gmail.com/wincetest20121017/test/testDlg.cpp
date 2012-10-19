@@ -88,14 +88,31 @@ BOOL CtestDlg::OnInitDialog()
 		MessageBox(_T("CoCreateInstance Error"));
 
 	}
-
-	if(!SUCCEEDED(m_pImageFactory->CreateImageFromFile(_T("\\Storage Card\\power.png"),&pImage)))
+	ImageInfo oImageInfo;
+	if(!SUCCEEDED(m_pImageFactory->CreateImageFromFile(_T("\\Storage Card\\电源_1.png"),&m_pImage)))
 	{
 		MessageBox(_T("CreateImageFromFile Error"));
 	}
-
+	m_pImage->GetImageInfo(&oImageInfo);
+	//创建一个内存DC,用来存储图片数据
+	bmp.CreateCompatibleBitmap(GetDC(), oImageInfo.Width,oImageInfo.Height);
 	memdc.CreateCompatibleDC(GetDC());
-	pImage->Draw(memdc.m_hDC ,CRect(180,120,210,150) ,NULL);
+	memdc.SelectObject(&bmp);
+	//将图片数据存储到内存DC中
+	m_pImage->Draw(memdc.m_hDC ,CRect(0,0,oImageInfo.Width,oImageInfo.Height) ,NULL);
+
+	if(!SUCCEEDED(m_pImageFactory->CreateImageFromFile(_T("\\Storage Card\\电源_2.png"),&m_pImage)))
+	{
+		MessageBox(_T("CreateImageFromFile Error"));
+	}
+	m_pImage->GetImageInfo(&oImageInfo);
+	//创建一个内存DC,用来存储图片数据
+	bmp2.CreateCompatibleBitmap(GetDC(), oImageInfo.Width,oImageInfo.Height);
+	hmemdc.CreateCompatibleDC(GetDC());
+	hmemdc.SelectObject(&bmp2);
+	//将图片数据存储到内存DC中
+	m_pImage->Draw(hmemdc.m_hDC ,CRect(0,0,oImageInfo.Width,oImageInfo.Height) ,NULL);
+	
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -185,8 +202,23 @@ void CtestDlg::OnPaint()
 	//B=BYTE(MulDiv(B,A,255));  
  
 //	AlphaBlend(hmemdc.m_hDC,0,0,260,60,memDC1.m_hDC,0,0,260,60,bindfun);
-
-	
+//	pImage->Draw(dc.m_hDC ,CRect(180,120,244,184) ,NULL);
+	dc.BitBlt(180,                 // 显示位图的X起始坐标
+		120,                // 显示位图的y起始坐标
+		64,               // 显示图像的X坐标
+		64,               // 显示图像的y坐标
+		&memdc, 
+		0,               // 从位图的X坐标开始显示图片
+		0,               // 从位图的y坐标开始显示图片
+		SRCCOPY);// 显示方式 
+	dc.BitBlt(244,                 // 显示位图的X起始坐标
+		120,                // 显示位图的y起始坐标
+		64,               // 显示图像的X坐标
+		64,               // 显示图像的y坐标
+		&hmemdc, 
+		0,               // 从位图的X坐标开始显示图片
+		0,               // 从位图的y坐标开始显示图片
+		SRCCOPY);// 显示方式 
 }
 
 void CtestDlg::OnLButtonDown(UINT nFlags, CPoint point)
