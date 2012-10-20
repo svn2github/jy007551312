@@ -26,5 +26,15 @@ enum {NormalHeat, FastHeat, WinterHeat};
 /** 温度显示状态*/
 enum {NoTempShow, InsulationState, HeatTempState};
 /** 图片所在的文件夹*/
-#define PicFolderName				_T("\\Storage Card\\")
+#define PicFolderName				_T("\\Storage Card\\Folder2\\")
+/** 定义文本输出坐标偏移量1*/
+#define TextOutMovePos1				8
+/** 定义文本输出坐标偏移量2*/
+#define TextOutMovePos2				4
+/** 默认设置温度*/
+#define DefaultSetTemp				88
+/** 默认png图片透明度设置*/
+#define DefaultPNGTransparent		255
+/** 设置温度上限值*/
+#define SetTempLimit				100
 #endif

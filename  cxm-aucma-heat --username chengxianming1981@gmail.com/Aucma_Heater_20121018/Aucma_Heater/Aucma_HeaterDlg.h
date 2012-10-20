@@ -241,6 +241,8 @@ public:
 	IImagingFactory* m_pImagingFactory;
 	// Image接口对象
 	IImage* m_pImage;
+	// 设置AlphaBlend参数
+	BLENDFUNCTION m_blendfun;
 public:
 	/** 运行IImage COM组件*/
 	void RunIImage();
@@ -249,9 +251,24 @@ public:
 	/** 从文件中载入图片*/
 	void LoadPicFromFile(CString strPicName);
 	/** 将图片复制到内存DC*/
-	void GetMemDcFromPic(CDC* pDC, CBitmap* pBitmap, bool bTransparent= false);
+	void GetMemDcFromPic(CDC* pDC, CBitmap* pBitmap);
 	/** 将位图选入内存设备*/
-	void OnDcBitBlt(CDC* pDC, CDC* pmemDC, CRect rect);
+	void OnDcBitBlt(CDC* pDC, CDC* pmemDC, CRect rect, bool bTransparent = false);
+	// 得到当前温度
+	int GetCurrTemp(void);
+	// 鼠标左键单击坐标在所选区域内
+	bool OnPointInRect(CRect rect, CPoint point);
+	// 设置温度
+	void OnSetTemp(void);
+	// 设置时间
+	void OnSetTime(void);
+	void OnClickedHeatfast();
+	void OnClickedHelper();
+	void OnClickedWashhand();
+	void OnClickedNight();
+	void OnClickedPower();
+	void OnClickedAdd();
+	void OnClickedReduce();
 public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnDestroy();
