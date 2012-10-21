@@ -251,9 +251,9 @@ public:
 	/** 从文件中载入图片*/
 	void LoadPicFromFile(CString strPicName);
 	/** 将图片复制到内存DC*/
-	void GetMemDcFromPic(CDC* pDC, CBitmap* pBitmap);
+	void GetDstDcFromPic(CDC* pDstDC, CBitmap* pBitmap);
 	/** 将位图选入内存设备*/
-	void OnDcBitBlt(CDC* pDC, CDC* pmemDC, CRect rect, bool bTransparent = false);
+	void OnDcBitBlt(CDC* pDstDC, CDC* pSrcDC, CRect rect, bool bTransparent = false);
 	// 得到当前温度
 	int GetCurrTemp(void);
 	// 鼠标左键单击坐标在所选区域内

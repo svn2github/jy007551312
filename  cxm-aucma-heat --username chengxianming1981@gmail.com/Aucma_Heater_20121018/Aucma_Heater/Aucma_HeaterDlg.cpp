@@ -192,60 +192,60 @@ void CAucma_HeaterDlg::RunIImage()
 	}
 	// 载入图标到图片句柄
 	LoadPicFromFile(_T("速热引擎_1.png"));
-	GetMemDcFromPic(&m_dcHeatFastOff, &m_bmpHeatFastOff);
+	GetDstDcFromPic(&m_dcHeatFastOff, &m_bmpHeatFastOff);
 	LoadPicFromFile(_T("速热引擎_2.png"));
-	GetMemDcFromPic(&m_dcHeatFastOn, &m_bmpHeatFastOn);
+	GetDstDcFromPic(&m_dcHeatFastOn, &m_bmpHeatFastOn);
 	LoadPicFromFile(_T("冬天_1.png"));
-	GetMemDcFromPic(&m_dcWinterOff, &m_bmpWinterOff);
+	GetDstDcFromPic(&m_dcWinterOff, &m_bmpWinterOff);
 	LoadPicFromFile(_T("冬天_2.png"));
-	GetMemDcFromPic(&m_dcWinterOn, &m_bmpWinterOn);
+	GetDstDcFromPic(&m_dcWinterOn, &m_bmpWinterOn);
 	LoadPicFromFile(_T("智能助手_1.png"));
-	GetMemDcFromPic(&m_dcHelperOff, &m_bmpHelperOff);
+	GetDstDcFromPic(&m_dcHelperOff, &m_bmpHelperOff);
 	LoadPicFromFile(_T("智能助手_2.png"));
-	GetMemDcFromPic(&m_dcHelperOn, &m_bmpHelperOn);
+	GetDstDcFromPic(&m_dcHelperOn, &m_bmpHelperOn);
 	LoadPicFromFile(_T("洗手加热_1.png"));
-	GetMemDcFromPic(&m_dcWashHandOff, &m_bmpWashHandOff);
+	GetDstDcFromPic(&m_dcWashHandOff, &m_bmpWashHandOff);
 	LoadPicFromFile(_T("洗手加热_2.png"));
-	GetMemDcFromPic(&m_dcWashHandOn, &m_bmpWashHandOn);
+	GetDstDcFromPic(&m_dcWashHandOn, &m_bmpWashHandOn);
 	LoadPicFromFile(_T("夜电模式_1.png"));
-	GetMemDcFromPic(&m_dcNightModeOff, &m_bmpNightModeOff);
+	GetDstDcFromPic(&m_dcNightModeOff, &m_bmpNightModeOff);
 	LoadPicFromFile(_T("夜电模式_2.png"));
-	GetMemDcFromPic(&m_dcNightModeOn, &m_bmpNightModeOn);
+	GetDstDcFromPic(&m_dcNightModeOn, &m_bmpNightModeOn);
 	LoadPicFromFile(_T("保温_加热.png"));
-	GetMemDcFromPic(&m_dcTempOff, &m_bmpTempOff);
+	GetDstDcFromPic(&m_dcTempOff, &m_bmpTempOff);
 	LoadPicFromFile(_T("保温.png"));
-	GetMemDcFromPic(&m_dcTempInsulation, &m_bmpTempInsulation);
+	GetDstDcFromPic(&m_dcTempInsulation, &m_bmpTempInsulation);
 	LoadPicFromFile(_T("加热_1.png"));
-	GetMemDcFromPic(&m_dcTempHeat1, &m_bmpTempHeat1);
+	GetDstDcFromPic(&m_dcTempHeat1, &m_bmpTempHeat1);
 	LoadPicFromFile(_T("加热_2.png"));
-	GetMemDcFromPic(&m_dcTempHeat2, &m_bmpTempHeat2);
+	GetDstDcFromPic(&m_dcTempHeat2, &m_bmpTempHeat2);
 	LoadPicFromFile(_T("加热_3.png"));
-	GetMemDcFromPic(&m_dcTempHeat3, &m_bmpTempHeat3);
+	GetDstDcFromPic(&m_dcTempHeat3, &m_bmpTempHeat3);
 	LoadPicFromFile(_T("电源_1.png"));
-	GetMemDcFromPic(&m_dcPowerOff, &m_bmpPowerOff);
+	GetDstDcFromPic(&m_dcPowerOff, &m_bmpPowerOff);
 	LoadPicFromFile(_T("电源_2.png"));
-	GetMemDcFromPic(&m_dcPowerOn, &m_bmpPowerOn);
+	GetDstDcFromPic(&m_dcPowerOn, &m_bmpPowerOn);
 	LoadPicFromFile(_T("增加.png"));
-	GetMemDcFromPic(&m_dcAdd, &m_bmpAdd);
+	GetDstDcFromPic(&m_dcAdd, &m_bmpAdd);
 	LoadPicFromFile(_T("减少.png"));
-	GetMemDcFromPic(&m_dcReduce, &m_bmpReduce);
+	GetDstDcFromPic(&m_dcReduce, &m_bmpReduce);
 	LoadPicFromFile(_T("时间标志.png"));
-	GetMemDcFromPic(&m_dcTimeLabel, &m_bmpTimeLabel);
+	GetDstDcFromPic(&m_dcTimeLabel, &m_bmpTimeLabel);
 	CString str = _T("");
 	for (int i=0; i<10; i++)
 	{
 		str.Format(_T("温度1_%d.png"), i);
 		LoadPicFromFile(str);
-		GetMemDcFromPic(&m_dcTempShow[i], &m_bmpTempShow[i]);
+		GetDstDcFromPic(&m_dcTempShow[i], &m_bmpTempShow[i]);
 		str.Format(_T("温度2_%d.png"), i);
 		LoadPicFromFile(str);
-		GetMemDcFromPic(&m_dcTempSet[i], &m_bmpTempSet[i]);
+		GetDstDcFromPic(&m_dcTempSet[i], &m_bmpTempSet[i]);
 		str.Format(_T("时间1_%d.png"), i);
 		LoadPicFromFile(str);
-		GetMemDcFromPic(&m_dcTimeShow[i], &m_bmpTimeShow[i]);
+		GetDstDcFromPic(&m_dcTimeShow[i], &m_bmpTimeShow[i]);
 		str.Format(_T("时间2_%d.png"), i);
 		LoadPicFromFile(str);
-		GetMemDcFromPic(&m_dcTimeSet[i], &m_bmpTimeSet[i]);
+		GetDstDcFromPic(&m_dcTimeSet[i], &m_bmpTimeSet[i]);
 	}
 	ReleaseIImage();
 }
@@ -276,16 +276,16 @@ void CAucma_HeaterDlg::LoadPicFromFile(CString strPicName)
 	}
 }
 // 将图片复制到内存DC
-void CAucma_HeaterDlg::GetMemDcFromPic(CDC* pDC, CBitmap* pBitmap)
+void CAucma_HeaterDlg::GetDstDcFromPic(CDC* pDstDC, CBitmap* pBitmap)
 {
 	ImageInfo oImageInfo;
 	m_pImage->GetImageInfo(&oImageInfo);
 	//创建一个内存DC,用来存储图片数据
 	pBitmap->CreateCompatibleBitmap(GetDC(), oImageInfo.Width,oImageInfo.Height);
-	pDC->CreateCompatibleDC(GetDC());
-	pDC->SelectObject(pBitmap);
+	pDstDC->CreateCompatibleDC(GetDC());
+	pDstDC->SelectObject(pBitmap);
 	//将图片数据存储到内存DC中
-	m_pImage->Draw(pDC->m_hDC ,CRect(0, 0, oImageInfo.Width, oImageInfo.Height), NULL);
+	m_pImage->Draw(pDstDC->m_hDC ,CRect(0, 0, oImageInfo.Width, oImageInfo.Height), NULL);
 	if (m_pImage)
 	{
 		m_pImage->Release();
@@ -622,16 +622,16 @@ void CAucma_HeaterDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	CDialog::OnLButtonUp(nFlags, point);
 }
 // 将位图选入内存设备
-void CAucma_HeaterDlg::OnDcBitBlt(CDC* pDC, CDC* pmemDC, CRect rect, bool bTransparent)
+void CAucma_HeaterDlg::OnDcBitBlt(CDC* pDstDC, CDC* pSrcDC, CRect rect, bool bTransparent)
 {
 	if (bTransparent)
 	{
-// 		::AlphaBlend(pDC->m_hDC,
+// 		::AlphaBlend(pDstDC->m_hDC,
 // 			rect.left, 
 // 			rect.top, 
 // 			rect.Width(), 
 // 			rect.Height(), 
-// 			pmemDC->m_hDC, 
+// 			pSrcDC->m_hDC, 
 // 			0, 
 // 			0, 
 // 			rect.Width(), 
@@ -640,11 +640,11 @@ void CAucma_HeaterDlg::OnDcBitBlt(CDC* pDC, CDC* pmemDC, CRect rect, bool bTrans
 	}
 	else
 	{
-		pDC->BitBlt(rect.left,	// 目标位图的X起始坐标
+		pDstDC->BitBlt(rect.left,	// 目标位图的X起始坐标
 			rect.top,			// 目标位图的y起始坐标
 			rect.Width(),			// 显示图像的宽度
 			rect.Height(),			// 显示图像的高度
-			pmemDC, 
+			pSrcDC, 
 			0,			// 从源位图的X坐标开始显示图片
 			0,			// 从源位图的y坐标开始显示图片
 			SRCCOPY);	// 显示方式
