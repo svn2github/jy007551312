@@ -74,7 +74,7 @@ void CUART_WINCEDlg::OnBnClickedButtonOpenport()
 		m_oCEUart.ClosePort();
 	}
 	m_oCEUart.m_OnUartRead = OnUartRead;
-	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, 1))
+	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
 	{
 		AfxMessageBox(_T("串口打开成功！"));
 	}

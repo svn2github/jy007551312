@@ -111,8 +111,8 @@ BOOL CCEUart::OpenPort(void* pFatherPtr, UINT uiPortNo, UINT uiBaud, UINT uiPari
 	{
 		return FALSE;
 	}
-	// 设置串口名
-	wsprintf(szPortName, _T("COM%d"), uiPortNo);
+	// 设置串口名，此处需注意一定要有“:”
+	wsprintf(szPortName, _T("COM%d:"), uiPortNo);
 	// 打开串口
 	m_hComm = CreateFile(
 		szPortName,

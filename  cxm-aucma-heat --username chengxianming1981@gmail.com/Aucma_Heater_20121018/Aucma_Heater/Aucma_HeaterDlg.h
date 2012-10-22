@@ -1,6 +1,7 @@
 // Aucma_HeaterDlg.h : 头文件
 //
 #include <imaging.h>
+#include "..\UART_WINCE\CEUart.h"
 #pragma once
 
 // CAucma_HeaterDlg 对话框
@@ -243,6 +244,8 @@ public:
 	IImage* m_pImage;
 	// 设置AlphaBlend参数
 	BLENDFUNCTION m_blendfun;
+	// 串口通讯类成员
+	CCEUart m_oCEUart;
 public:
 	/** 运行IImage COM组件*/
 	void RunIImage();
@@ -262,13 +265,22 @@ public:
 	void OnSetTemp(void);
 	// 设置时间
 	void OnSetTime(void);
+	// 点击速热引擎
 	void OnClickedHeatfast();
+	// 点击智能助手
 	void OnClickedHelper();
+	// 点击洗手加热
 	void OnClickedWashhand();
+	// 点击夜电模式
 	void OnClickedNight();
+	// 点击开关电源
 	void OnClickedPower();
+	// 点击增加按键
 	void OnClickedAdd();
+	// 点击减少按键
 	void OnClickedReduce();
+	// 串口接收数据回调函数
+	static void CALLBACK OnUartRead(void* pFatherPtr, BYTE* pbuf, DWORD dwbufLen);
 public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnDestroy();
@@ -276,4 +288,5 @@ public:
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnPaint();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg LRESULT OnRecvUartData(WPARAM wParam, LPARAM lParam);
 };

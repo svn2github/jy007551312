@@ -37,4 +37,6 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define DefaultPNGTransparent		255
 /** 设置温度上限值*/
 #define SetTempLimit				100
+/** 串口接收数据消息*/
+#define WM_RECV_UART_DATA	WM_USER + 100
 #endif

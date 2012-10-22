@@ -98,6 +98,7 @@ BEGIN_MESSAGE_MAP(CAucma_HeaterDlg, CDialog)
 	ON_WM_LBUTTONUP()
 	ON_WM_PAINT()
 	ON_WM_TIMER()
+	ON_MESSAGE(WM_RECV_UART_DATA, &CAucma_HeaterDlg::OnRecvUartData)
 END_MESSAGE_MAP()
 
 
@@ -362,6 +363,7 @@ void CAucma_HeaterDlg::OnDestroy()
 	m_dcReduce.DeleteDC();
 	m_bmpTimeLabel.DeleteObject();
 	m_dcTimeLabel.DeleteDC();
+	m_oCEUart.ClosePort();
 }
 void CAucma_HeaterDlg::OnClickedHeatfast()
 {
@@ -428,6 +430,11 @@ void CAucma_HeaterDlg::OnClickedNight()
 void CAucma_HeaterDlg::OnClickedPower()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	BYTE buf[10];
+	for (int i= 0;i<10; i++)
+	{
+		buf[i] = 0x33;
+	}
 	if (m_bPower == true)
 	{
 		KillTimer(ShowTempStateTimerEvent);
@@ -443,6 +450,7 @@ void CAucma_HeaterDlg::OnClickedPower()
 		m_iSetTemp = DefaultSetTemp;
 		m_iCurrTemp = 0;
 		m_bTempHeat = false;
+		m_oCEUart.ClosePort();
 		Invalidate(FALSE);
 	}
 	else
@@ -450,6 +458,28 @@ void CAucma_HeaterDlg::OnClickedPower()
 		KillTimer(ShowTempStateTimerEvent);
 		SetTimer(ShowTempStateTimerEvent, ShowTempStateTimeSet, NULL);
 		m_bPower = true;
+		if (m_oCEUart.GetComOpened())
+		{
+			m_oCEUart.ClosePort();
+		}
+		m_oCEUart.m_OnUartRead = OnUartRead;
+		if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
+		{
+			TRACE(_T("串口打开成功！"));
+		}
+		else
+		{
+			TRACE(_T("串口打开失败！"));
+		}
+		// @@@@@发送数据
+// 		if (m_oCEUart.WriteSyncPort(buf, 10))
+// 		{
+// 			TRACE(_T("串口发送数据成功！"));
+// 		}
+// 		else
+// 		{
+// 			TRACE(_T("串口发送数据失败！"));
+// 		}
 		InvalidateRect(m_rectPowerPic, FALSE);
 	}
 }
@@ -912,4 +942,27 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 	}
 	CDialog::OnTimer(nIDEvent);
+}
+// 串口接收数据回调函数
+void CALLBACK CAucma_HeaterDlg::OnUartRead(void* pFatherPtr, BYTE* pbuf, DWORD dwbufLen)
+{
+	BYTE* pRecBuf = NULL;
+	// 得到父对象指针
+	CAucma_HeaterDlg* pThis = (CAucma_HeaterDlg*)pFatherPtr;
+	pRecBuf = new BYTE[dwbufLen];
+	CopyMemory(pRecBuf, pbuf, dwbufLen);
+	pThis->PostMessage(WM_RECV_UART_DATA, WPARAM(pRecBuf), dwbufLen);
+}
+// 串口接收数据处理
+LRESULT CAucma_HeaterDlg::OnRecvUartData(WPARAM wParam, LPARAM lParam)
+{
+	// 串口接收到的BUF
+	CHAR* pBuf = (CHAR*)wParam;
+	// 串口接收到的Buf长度
+	DWORD dwBufLen = lParam;
+	//@@@@ 数据处理
+
+	delete[] pBuf;
+	pBuf = NULL;
+	return 0;
 }

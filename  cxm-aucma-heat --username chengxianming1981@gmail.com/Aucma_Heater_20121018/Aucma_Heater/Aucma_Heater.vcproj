@@ -389,6 +389,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\UART_WINCE\CEUart.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -436,6 +440,10 @@
 			</File>
 			<File
 				RelativePath=".\Aucma_HeaterDlg.h"
+				>
+			</File>
+			<File
+				RelativePath="..\UART_WINCE\CEUart.h"
 				>
 			</File>
 			<File
