@@ -37,7 +37,6 @@ private:
 	CFont m_FontWinter;
 	// 温度字体
 	CFont m_FontTemp;
-public:
 	// 速热引擎图片绘图区域
 	CRect m_rectHeatFastPic;
 	// 速热引擎文本绘图区域
@@ -246,6 +245,16 @@ public:
 	BLENDFUNCTION m_blendfun;
 	// 串口通讯类成员
 	CCEUart m_oCEUart;
+	// 实际的环境温度
+	int m_iEnvTempActual;
+	// 实际的箱内温度
+	int m_iInTempActual;
+	// 设置箱内温度
+	int m_iInTempSet;
+	// 设置高温报警温度
+	int m_iHighWarnTemp;
+	// 设置低温报警温度
+	int m_iLowWarnTemp;
 public:
 	/** 运行IImage COM组件*/
 	void RunIImage();

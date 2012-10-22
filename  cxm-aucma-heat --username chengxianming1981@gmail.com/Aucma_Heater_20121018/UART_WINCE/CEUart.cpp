@@ -163,6 +163,7 @@ BOOL CCEUart::OpenPort(void* pFatherPtr, UINT uiPortNo, UINT uiBaud, UINT uiPari
 		m_hComm = INVALID_HANDLE_VALUE;
 		return FALSE;
 	}
+
 	// 设置串口读写时间
 	COMMTIMEOUTS CommTimeOuts;
 	GetCommTimeouts(m_hComm, &CommTimeOuts);

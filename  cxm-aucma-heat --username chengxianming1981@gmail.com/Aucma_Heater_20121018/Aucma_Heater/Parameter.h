@@ -39,4 +39,46 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define SetTempLimit				100
 /** 串口接收数据消息*/
 #define WM_RECV_UART_DATA	WM_USER + 100
+/************************************************************************/
+/*                串口通讯命令字                                        */
+/************************************************************************/
+/** 帧长度*/
+#define UartFrameLength				7
+/** 帧头1*/
+#define UartFrameHead1				0x51
+/** 帧头2*/
+#define UartFrameHead2				0x85
+/** 触摸屏终端代码*/
+#define ClientNo					0x00
+/** 控制 LCD背光*/
+#define CMD_IHMT_CTRL				0x60
+/** 复位触摸屏*/
+#define CMD_IHMT_RST				0x61
+/** 实际环境温度*/
+#define	CMD_DOWN_ET					0x70
+/** 实际箱内温度*/
+#define	CMD_DOWN_IT					0x71
+/** 温度报警*/
+#define	CMD_DOWN_AM					0x72
+/** 箱内设置温度*/
+#define CMD_UP_IT					0x83
+/** 高温报警温度设置*/
+#define CMD_UP_HAM					0x84
+/** 低温报警温度设置*/
+#define CMD_UP_LAM					0x85
+/** 帧尾*/
+#define UartFrameTail				0xED
+
+/** 关闭 LCD背光*/
+#define CMD_IHMT_OFF				0x00
+/** 打开 LCD背光*/
+#define CMD_IHMT_ON					0x01
+/** 高温报警*/
+#define CMD_DOWN_HAM				0x00
+/** 低温报警*/
+#define CMD_DOWN_LAM				0x01
+/** 高温报警消除*/
+#define CMD_DOWN_HAMC				0x05
+/** 低温报警消除*/
+#define CMD_DOWN_LAMC				0x06
 #endif

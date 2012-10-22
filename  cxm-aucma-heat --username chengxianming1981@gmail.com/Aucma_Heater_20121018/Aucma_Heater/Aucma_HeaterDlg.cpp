@@ -51,6 +51,11 @@ CAucma_HeaterDlg::CAucma_HeaterDlg(CWnd* pParent /*=NULL*/)
 	, m_bAddOpt(false)
 	, m_pImagingFactory(NULL)
 	, m_pImage(NULL)
+	, m_iEnvTempActual(0)
+	, m_iInTempActual(0)
+	, m_iInTempSet(0)
+	, m_iHighWarnTemp(0)
+	, m_iLowWarnTemp(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
@@ -114,6 +119,15 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	m_oCEUart.m_OnUartRead = OnUartRead;
+	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
+	{
+		TRACE(_T("串口打开成功！"));
+	}
+	else
+	{
+		TRACE(_T("串口打开失败！"));
+	}
 	// BlendOp字段指明了源混合操作，但只支持AC_SRC_OVER，即根据源alpha值把源图像叠加到目标图像上  
 	m_blendfun.BlendOp = AC_SRC_OVER;
 	// BlendFlags必须是0，也是为以后的应用保留的
@@ -450,7 +464,6 @@ void CAucma_HeaterDlg::OnClickedPower()
 		m_iSetTemp = DefaultSetTemp;
 		m_iCurrTemp = 0;
 		m_bTempHeat = false;
-		m_oCEUart.ClosePort();
 		Invalidate(FALSE);
 	}
 	else
@@ -458,28 +471,6 @@ void CAucma_HeaterDlg::OnClickedPower()
 		KillTimer(ShowTempStateTimerEvent);
 		SetTimer(ShowTempStateTimerEvent, ShowTempStateTimeSet, NULL);
 		m_bPower = true;
-		if (m_oCEUart.GetComOpened())
-		{
-			m_oCEUart.ClosePort();
-		}
-		m_oCEUart.m_OnUartRead = OnUartRead;
-		if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
-		{
-			TRACE(_T("串口打开成功！"));
-		}
-		else
-		{
-			TRACE(_T("串口打开失败！"));
-		}
-		// @@@@@发送数据
-// 		if (m_oCEUart.WriteSyncPort(buf, 10))
-// 		{
-// 			TRACE(_T("串口发送数据成功！"));
-// 		}
-// 		else
-// 		{
-// 			TRACE(_T("串口发送数据失败！"));
-// 		}
 		InvalidateRect(m_rectPowerPic, FALSE);
 	}
 }
@@ -957,11 +948,11 @@ void CALLBACK CAucma_HeaterDlg::OnUartRead(void* pFatherPtr, BYTE* pbuf, DWORD d
 LRESULT CAucma_HeaterDlg::OnRecvUartData(WPARAM wParam, LPARAM lParam)
 {
 	// 串口接收到的BUF
-	CHAR* pBuf = (CHAR*)wParam;
+	BYTE* pBuf = (BYTE*)wParam;
 	// 串口接收到的Buf长度
 	DWORD dwBufLen = lParam;
 	//@@@@ 数据处理
-
+//	m_oCEUart.WriteSyncPort((BYTE*)pBuf, dwBufLen);
 	delete[] pBuf;
 	pBuf = NULL;
 	return 0;
