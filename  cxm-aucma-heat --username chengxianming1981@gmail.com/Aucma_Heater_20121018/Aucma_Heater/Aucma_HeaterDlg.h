@@ -265,6 +265,8 @@ public:
 	void ReleaseIImage();
 	/** 从文件中载入图片*/
 	void LoadPicFromFile(CString strPicName);
+	/** 从资源中载入图片*/
+	BOOL LoadFromResource(LPCWSTR lpName, LPCWSTR lpType);
 	/** 将图片复制到内存DC*/
 	void GetDstDcFromPic(CDC* pDstDC, CBitmap* pBitmap);
 	/** 将位图选入内存设备*/

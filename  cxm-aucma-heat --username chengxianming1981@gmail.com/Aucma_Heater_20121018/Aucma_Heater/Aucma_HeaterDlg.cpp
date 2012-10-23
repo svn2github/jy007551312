@@ -154,6 +154,7 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	m_blendfun.BlendOp = AC_SRC_OVER;
 	// BlendFlags必须是0，也是为以后的应用保留的
 	m_blendfun.BlendFlags = 0;
+	// 0到255间的值，这里0表示完全透明，255表示完全不透明
 	m_blendfun.SourceConstantAlpha = DefaultPNGTransparent;
 	// AlphaFormat有两个选择：0表示常量alpha值，AC_SRC_ALPHA表示每个像素有各自的alpha通道。
 	/** 如果AlphaFormat字段为0,源位图中的所有像素使用同样的常量alpha值，即SourceConstantAlpha
@@ -172,6 +173,7 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	Dst.Green = Tmp.Green + Round((Beta * Dst.Green)/255);
 	Dst.Blue = Tmp.Blue + Round((Beta * Dst.Blue )/255);
 	Dst.Alpha = Tmp.Alpha + Round((Beta * Dst.Alpha)/255);*/
+	// 有两个值 0表示常量alpha值，AC_SRC_ALPHA表示每个像素有各自的alpha通道
 	m_blendfun.AlphaFormat = AC_SRC_ALPHA;
 	// 对话框最大化显示
 //	ShowWindow(SW_SHOWMAXIMIZED);
@@ -227,61 +229,85 @@ void CAucma_HeaterDlg::RunIImage()
 		ReleaseIImage();
 		return;
 	}
-	// 载入图标到图片句柄
-	LoadPicFromFile(_T("速热引擎_1.png"));
+	// 从文件中载入图标到图片句柄
+//	LoadPicFromFile(_T("速热引擎_1.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_HEATFAST_OFF), _T("PNG"));
 	GetDstDcFromPic(&m_dcHeatFastOff, &m_bmpHeatFastOff);
-	LoadPicFromFile(_T("速热引擎_2.png"));
+//	LoadPicFromFile(_T("速热引擎_2.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_HEATFAST_ON), _T("PNG"));
 	GetDstDcFromPic(&m_dcHeatFastOn, &m_bmpHeatFastOn);
-	LoadPicFromFile(_T("冬天_1.png"));
+//	LoadPicFromFile(_T("冬天_1.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_WINTER_OFF), _T("PNG"));
 	GetDstDcFromPic(&m_dcWinterOff, &m_bmpWinterOff);
-	LoadPicFromFile(_T("冬天_2.png"));
+//	LoadPicFromFile(_T("冬天_2.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_WINTER_OFF), _T("PNG"));
 	GetDstDcFromPic(&m_dcWinterOn, &m_bmpWinterOn);
-	LoadPicFromFile(_T("智能助手_1.png"));
+//	LoadPicFromFile(_T("智能助手_1.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_HELPER_OFF), _T("PNG"));
 	GetDstDcFromPic(&m_dcHelperOff, &m_bmpHelperOff);
-	LoadPicFromFile(_T("智能助手_2.png"));
+//	LoadPicFromFile(_T("智能助手_2.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_HELPER_ON), _T("PNG"));
 	GetDstDcFromPic(&m_dcHelperOn, &m_bmpHelperOn);
-	LoadPicFromFile(_T("洗手加热_1.png"));
+//	LoadPicFromFile(_T("洗手加热_1.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_WASHHAND_OFF), _T("PNG"));
 	GetDstDcFromPic(&m_dcWashHandOff, &m_bmpWashHandOff);
-	LoadPicFromFile(_T("洗手加热_2.png"));
+//	LoadPicFromFile(_T("洗手加热_2.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_WASHHAND_ON), _T("PNG"));
 	GetDstDcFromPic(&m_dcWashHandOn, &m_bmpWashHandOn);
-	LoadPicFromFile(_T("夜电模式_1.png"));
+//	LoadPicFromFile(_T("夜电模式_1.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_NIGHTMODE_OFF), _T("PNG"));
 	GetDstDcFromPic(&m_dcNightModeOff, &m_bmpNightModeOff);
-	LoadPicFromFile(_T("夜电模式_2.png"));
+//	LoadPicFromFile(_T("夜电模式_2.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_NIGHTMODE_ON), _T("PNG"));
 	GetDstDcFromPic(&m_dcNightModeOn, &m_bmpNightModeOn);
-	LoadPicFromFile(_T("保温_加热.png"));
+//	LoadPicFromFile(_T("保温_加热.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_OFF), _T("PNG"));
 	GetDstDcFromPic(&m_dcTempOff, &m_bmpTempOff);
-	LoadPicFromFile(_T("保温.png"));
+//	LoadPicFromFile(_T("保温.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_ON), _T("PNG"));
 	GetDstDcFromPic(&m_dcTempInsulation, &m_bmpTempInsulation);
-	LoadPicFromFile(_T("加热_1.png"));
+//	LoadPicFromFile(_T("加热_1.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_HEAT1), _T("PNG"));
 	GetDstDcFromPic(&m_dcTempHeat1, &m_bmpTempHeat1);
-	LoadPicFromFile(_T("加热_2.png"));
+//	LoadPicFromFile(_T("加热_2.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_HEAT2), _T("PNG"));
 	GetDstDcFromPic(&m_dcTempHeat2, &m_bmpTempHeat2);
-	LoadPicFromFile(_T("加热_3.png"));
+//	LoadPicFromFile(_T("加热_3.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_HEAT3), _T("PNG"));
 	GetDstDcFromPic(&m_dcTempHeat3, &m_bmpTempHeat3);
-	LoadPicFromFile(_T("电源_1.png"));
+//	LoadPicFromFile(_T("电源_1.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_POWER_OFF), _T("PNG"));
 	GetDstDcFromPic(&m_dcPowerOff, &m_bmpPowerOff);
-	LoadPicFromFile(_T("电源_2.png"));
+//	LoadPicFromFile(_T("电源_2.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_POWER_ON), _T("PNG"));
 	GetDstDcFromPic(&m_dcPowerOn, &m_bmpPowerOn);
-	LoadPicFromFile(_T("增加.png"));
+//	LoadPicFromFile(_T("增加.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_ADD), _T("PNG"));
 	GetDstDcFromPic(&m_dcAdd, &m_bmpAdd);
-	LoadPicFromFile(_T("减少.png"));
+//	LoadPicFromFile(_T("减少.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_REDUCE), _T("PNG"));
 	GetDstDcFromPic(&m_dcReduce, &m_bmpReduce);
-	LoadPicFromFile(_T("时间标志.png"));
+//	LoadPicFromFile(_T("时间标志.png"));
+	LoadFromResource(MAKEINTRESOURCE(IDB_TIMELABEL), _T("PNG"));
 	GetDstDcFromPic(&m_dcTimeLabel, &m_bmpTimeLabel);
 	CString str = _T("");
 	for (int i=0; i<10; i++)
 	{
-		str.Format(_T("温度1_%d.png"), i);
-		LoadPicFromFile(str);
+//		str.Format(_T("温度1_%d.png"), i);
+//		LoadPicFromFile(str);
+		LoadFromResource(MAKEINTRESOURCE(IDB_TEMP0 + i), _T("PNG"));
 		GetDstDcFromPic(&m_dcTempShow[i], &m_bmpTempShow[i]);
-		str.Format(_T("温度2_%d.png"), i);
-		LoadPicFromFile(str);
+// 		str.Format(_T("温度2_%d.png"), i);
+// 		LoadPicFromFile(str);
+		LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_LIGHT0 + i), _T("PNG"));
 		GetDstDcFromPic(&m_dcTempSet[i], &m_bmpTempSet[i]);
-		str.Format(_T("时间1_%d.png"), i);
-		LoadPicFromFile(str);
+// 		str.Format(_T("时间1_%d.png"), i);
+// 		LoadPicFromFile(str);
+		LoadFromResource(MAKEINTRESOURCE(IDB_TIME0 + i), _T("PNG"));
 		GetDstDcFromPic(&m_dcTimeShow[i], &m_bmpTimeShow[i]);
-		str.Format(_T("时间2_%d.png"), i);
-		LoadPicFromFile(str);
+// 		str.Format(_T("时间2_%d.png"), i);
+// 		LoadPicFromFile(str);
+		LoadFromResource(MAKEINTRESOURCE(IDB_TIME_LIGHT0 + i), _T("PNG"));
 		GetDstDcFromPic(&m_dcTimeSet[i], &m_bmpTimeSet[i]);
 	}
 	ReleaseIImage();
@@ -312,6 +338,30 @@ void CAucma_HeaterDlg::LoadPicFromFile(CString strPicName)
 		PostMessage(WM_DESTROY);
 	}
 }
+/** 从资源中载入图片*/
+BOOL CAucma_HeaterDlg::LoadFromResource(LPCWSTR lpName, LPCWSTR lpType)  
+{  
+	// 在资源中寻找
+	HRSRC	hr;
+	DWORD	dwsize;
+	HGLOBAL	hg;
+	LPSTR	lp;
+	HMODULE hModule_Current = GetModuleHandle(NULL);
+	hr = FindResource(hModule_Current, lpName, lpType);
+	dwsize = SizeofResource(GetModuleHandle(NULL), hr);
+	hg = ::LoadResource(GetModuleHandle(NULL), hr);
+	lp = (LPSTR)::LockResource(hg);
+	// 从缓冲区创建图片
+	HRESULT hrt = NULL;
+	if(FAILED(hrt = m_pImagingFactory->CreateImageFromBuffer(lp, dwsize, DISPOSAL_NONE, &m_pImage)))
+	{
+		::DeleteObject(hr);
+		return FALSE;
+	}
+	::DeleteObject(hr);
+	return TRUE;
+}  
+
 // 将图片复制到内存DC
 void CAucma_HeaterDlg::GetDstDcFromPic(CDC* pDstDC, CBitmap* pBitmap)
 {
