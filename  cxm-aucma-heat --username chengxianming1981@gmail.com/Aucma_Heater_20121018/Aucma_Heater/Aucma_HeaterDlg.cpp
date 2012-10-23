@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "Aucma_Heater.h"
 #include "Aucma_HeaterDlg.h"
-#include "Parameter.h"
 #include <initguid.h>
 #include <imgguids.h>
 #include <wingdi.h>
@@ -30,9 +29,9 @@ CAucma_HeaterDlg::CAucma_HeaterDlg(CWnd* pParent /*=NULL*/)
 	, m_bPower(false)
 	, m_bPowerOld(true)
 	, m_uiHeatCount(0)
-	, m_iSetTemp(DefaultSetTemp)
-	, m_iSetTempOld(0)
-	, m_iCurrTemp(0)
+	, m_iInTempSet(DefaultSetTemp)
+	, m_iInTempSetOld(0)
+	, m_iInTempActual(0)
 	, m_bSetTemp(false)
 	, m_bSetTempOld(true)
 	, m_bSetTime(false)
@@ -52,10 +51,10 @@ CAucma_HeaterDlg::CAucma_HeaterDlg(CWnd* pParent /*=NULL*/)
 	, m_pImagingFactory(NULL)
 	, m_pImage(NULL)
 	, m_iEnvTempActual(0)
-	, m_iInTempActual(0)
-	, m_iInTempSet(0)
 	, m_iHighWarnTemp(0)
 	, m_iLowWarnTemp(0)
+	, m_uiUartRcvCount(0)
+	, m_byCheck(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
@@ -123,6 +122,29 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
 	{
 		TRACE(_T("串口打开成功！"));
+		// @@@@测试数据发送
+// 		OnWriteUartData(CMD_IHMT_CTRL, CMD_IHMT_OFF);
+// 		OnWriteUartData(CMD_IHMT_CTRL, CMD_IHMT_ON);
+// 		OnWriteUartData(CMD_IHMT_RST, 0);
+// 		OnWriteUartData(CMD_DOWN_ET, -99 + 127);
+// 		OnWriteUartData(CMD_DOWN_ET, 0 + 127);
+// 		OnWriteUartData(CMD_DOWN_ET, 99 + 127);
+// 		OnWriteUartData(CMD_DOWN_IT, -99 + 127);
+// 		OnWriteUartData(CMD_DOWN_IT, 0 + 127);
+// 		OnWriteUartData(CMD_DOWN_IT, 99 + 127);
+// 		OnWriteUartData(CMD_DOWN_AM, CMD_DOWN_HAM);
+// 		OnWriteUartData(CMD_DOWN_AM, CMD_DOWN_LAM);
+// 		OnWriteUartData(CMD_DOWN_AM, CMD_DOWN_HAMC);
+// 		OnWriteUartData(CMD_DOWN_AM, CMD_DOWN_LAMC);
+// 		OnWriteUartData(CMD_UP_IT, -99 + 127);
+// 		OnWriteUartData(CMD_UP_IT, 0 + 127);
+// 		OnWriteUartData(CMD_UP_IT, 99 + 127);
+// 		OnWriteUartData(CMD_UP_HAM, -99 + 127);
+// 		OnWriteUartData(CMD_UP_HAM, 0 + 127);
+// 		OnWriteUartData(CMD_UP_HAM, 99 + 127);
+// 		OnWriteUartData(CMD_UP_LAM, -99 + 127);
+// 		OnWriteUartData(CMD_UP_LAM, 0 + 127);
+// 		OnWriteUartData(CMD_UP_LAM, 99 + 127);
 	}
 	else
 	{
@@ -461,8 +483,8 @@ void CAucma_HeaterDlg::OnClickedPower()
 		m_bSetTime = false;
 		m_bPower = false;
 		m_uiHeatCount = 0;
-		m_iSetTemp = DefaultSetTemp;
-		m_iCurrTemp = 0;
+		m_iInTempSet = DefaultSetTemp;
+		m_iInTempActual = 0;
 		m_bTempHeat = false;
 		Invalidate(FALSE);
 	}
@@ -496,10 +518,10 @@ void CAucma_HeaterDlg::OnClickedAdd()
 	}
 	if (m_bSetTemp == true)
 	{
-		m_iSetTemp++;
-		if (m_iSetTemp == SetTempLimit)
+		m_iInTempSet++;
+		if (m_iInTempSet == SetTempLimit)
 		{
-			m_iSetTemp = 0;
+			m_iInTempSet = 0;
 		}
 		InvalidateRect(m_rectTemp, FALSE);
 	}
@@ -536,9 +558,9 @@ void CAucma_HeaterDlg::OnClickedReduce()
 	}
 	if (m_bSetTemp == true)
 	{
-		if (m_iSetTemp != 0)
+		if (m_iInTempSet != 0)
 		{
-			m_iSetTemp--;
+			m_iInTempSet--;
 		}
 		InvalidateRect(m_rectTemp, FALSE);
 	}
@@ -786,19 +808,19 @@ void CAucma_HeaterDlg::OnPaint()
 		dc.SelectObject(&m_FontDefault);
 		m_bTempLabelOld = m_bTempLabel;
 	}
-	if ((m_iSetTempOld != m_iSetTemp) || (m_bSetTempOld != m_bSetTemp))
+	if ((m_iInTempSetOld != m_iInTempSet) || (m_bSetTempOld != m_bSetTemp))
 	{
 		if (m_bSetTemp == true)
 		{
-			OnDcBitBlt(&dc, &m_dcTempSet[m_iSetTemp / 10], m_rectTempHighPic);
-			OnDcBitBlt(&dc, &m_dcTempSet[m_iSetTemp % 10], m_rectTempLowPic);
+			OnDcBitBlt(&dc, &m_dcTempSet[m_iInTempSet / 10], m_rectTempHighPic);
+			OnDcBitBlt(&dc, &m_dcTempSet[m_iInTempSet % 10], m_rectTempLowPic);
 		}
 		else
 		{
-			OnDcBitBlt(&dc, &m_dcTempShow[m_iSetTemp / 10], m_rectTempHighPic);
-			OnDcBitBlt(&dc, &m_dcTempShow[m_iSetTemp % 10], m_rectTempLowPic);
+			OnDcBitBlt(&dc, &m_dcTempShow[m_iInTempSet / 10], m_rectTempHighPic);
+			OnDcBitBlt(&dc, &m_dcTempShow[m_iInTempSet % 10], m_rectTempLowPic);
 		}
-		m_iSetTempOld = m_iSetTemp;
+		m_iInTempSetOld = m_iInTempSet;
 		m_bSetTempOld = m_bSetTemp;
 	}
 	if ((m_CurrTimeOld != m_CurrTime) || (m_bSetTimeOld != m_bSetTime))
@@ -870,8 +892,8 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if (nIDEvent == ShowTempStateTimerEvent)
 	{
-		m_iCurrTemp = GetCurrTemp();
-		if (m_iCurrTemp >= m_iSetTemp)
+		m_iInTempActual = GetCurrTemp();
+		if (m_iInTempActual >= m_iInTempSet)
 		{
 			// 保温
 			if (m_iTempState != InsulationState)
@@ -951,9 +973,141 @@ LRESULT CAucma_HeaterDlg::OnRecvUartData(WPARAM wParam, LPARAM lParam)
 	BYTE* pBuf = (BYTE*)wParam;
 	// 串口接收到的Buf长度
 	DWORD dwBufLen = lParam;
-	//@@@@ 数据处理
-//	m_oCEUart.WriteSyncPort((BYTE*)pBuf, dwBufLen);
+	//数据处理
+	for (unsigned int i=0; i<dwBufLen; i++)
+	{
+		switch(m_uiUartRcvCount)
+		{
+		case 0:
+			if (pBuf[i] == UartFrameHead1)
+			{
+				m_ucRcvBuf[0] = pBuf[i];
+				m_uiUartRcvCount++;
+			}
+			else
+			{
+				m_uiUartRcvCount = 0;
+			}
+			break;
+		case 1:
+			if (pBuf[i] == UartFrameHead2)
+			{
+				m_ucRcvBuf[1] = pBuf[i];
+				m_uiUartRcvCount++;
+			}
+			else
+			{
+				m_uiUartRcvCount = 0;
+			}
+			break;
+		case 2:
+			m_ucRcvBuf[2] = pBuf[i];
+			m_byCheck = pBuf[i];
+			m_uiUartRcvCount++;
+			break;
+		case 3:
+			m_ucRcvBuf[3] = pBuf[i];
+			m_byCheck ^= pBuf[i];
+			m_uiUartRcvCount++;
+			break;
+		case 4:
+			m_ucRcvBuf[4] = pBuf[i];
+			m_byCheck ^= pBuf[i];
+			m_uiUartRcvCount++;
+			break;
+		case 5:
+			if (pBuf[i] == m_byCheck)
+			{
+				m_ucRcvBuf[5] = pBuf[i];
+				m_uiUartRcvCount++;
+			}
+			else
+			{
+				m_uiUartRcvCount = 0;
+			}
+			break;
+		case 6:
+			if (pBuf[i] == UartFrameTail)
+			{
+				m_ucRcvBuf[6] = pBuf[i];
+				// 解析帧
+				PhraseUartFrame();
+				memset(m_ucRcvBuf, 0, sizeof(m_ucRcvBuf));
+			}
+			m_uiUartRcvCount = 0;
+			break;
+		default:
+			m_uiUartRcvCount = 0;
+			break;
+		}
+	}
 	delete[] pBuf;
 	pBuf = NULL;
 	return 0;
+}
+// 向串口发送数据
+void CAucma_HeaterDlg::OnWriteUartData(BYTE ucCmd, BYTE ucData)
+{
+	BYTE buf[UartFrameLength];
+	buf[0] = UartFrameHead1;
+	buf[1] = UartFrameHead2;
+	buf[2] = ClientNo;
+	buf[3] = ucCmd;
+	buf[4] = ucData;
+	buf[5] = buf[2] ^ buf[3] ^ buf[4];
+	buf[6] = UartFrameTail;
+	m_oCEUart.WriteSyncPort(buf, UartFrameLength);
+}
+
+// 解析串口接收数据帧
+void CAucma_HeaterDlg::PhraseUartFrame()
+{
+	BYTE byCmd = m_ucRcvBuf[3];
+	BYTE byData = m_ucRcvBuf[4];
+	switch(byCmd)
+	{
+	case CMD_IHMT_CTRL:
+		if (byData == CMD_IHMT_OFF)
+		{
+			TRACE(_T("关闭 LCD背光\n"));
+		}
+		else if (byData == CMD_IHMT_ON)
+		{
+			TRACE(_T("打开 LCD背光\n"));
+		}
+		break;
+	case CMD_IHMT_RST:
+		TRACE(_T("复位触摸屏\n"));
+		break;
+	case CMD_DOWN_ET:
+		m_iEnvTempActual = (unsigned int)byData - 127;
+		TRACE(_T("实际环境温度 %d \n"), m_iEnvTempActual);
+		break;
+	case CMD_DOWN_IT:
+		m_iInTempActual = (unsigned int)byData - 127;
+		TRACE(_T("实际箱内温度 %d \n"), m_iInTempActual);
+		break;
+	case CMD_DOWN_AM:
+		if (byData == CMD_DOWN_HAM)
+		{
+			TRACE(_T("高温报警\n"));
+		}
+		else if (byData == CMD_DOWN_LAM)
+		{
+			TRACE(_T("低温报警\n"));
+		}
+		else if (byData == CMD_DOWN_HAMC)
+		{
+			TRACE(_T("高温报警消除\n"));
+		}
+		else if (byData == CMD_DOWN_LAMC)
+		{
+			TRACE(_T("低温报警消除\n"));
+		}
+		break;
+	default:
+		break;
+	}
+	// @@@调试用
+//	m_oCEUart.WriteSyncPort(m_ucRcvBuf, UartFrameLength);
 }

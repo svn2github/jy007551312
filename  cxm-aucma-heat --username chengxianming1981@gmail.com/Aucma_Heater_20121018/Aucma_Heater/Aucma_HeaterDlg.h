@@ -2,6 +2,7 @@
 //
 #include <imaging.h>
 #include "..\UART_WINCE\CEUart.h"
+#include "Parameter.h"
 #pragma once
 
 // CAucma_HeaterDlg 对话框
@@ -210,11 +211,6 @@ private:
 	bool m_bTempLabelOld;
 	// 加热显示状态计数
 	unsigned int m_uiHeatCount;
-	// 设置温度
-	int m_iSetTemp;
-	int m_iSetTempOld;
-	// 当前温度
-	int m_iCurrTemp;
 	// 温度设置标志位
 	bool m_bSetTemp;
 	bool m_bSetTempOld;
@@ -245,16 +241,23 @@ private:
 	BLENDFUNCTION m_blendfun;
 	// 串口通讯类成员
 	CCEUart m_oCEUart;
-	// 实际的环境温度
-	int m_iEnvTempActual;
-	// 实际的箱内温度
-	int m_iInTempActual;
 	// 设置箱内温度
 	int m_iInTempSet;
+	int m_iInTempSetOld;
+	// 实际的箱内温度
+	int m_iInTempActual;
+	// 实际的环境温度
+	int m_iEnvTempActual;
 	// 设置高温报警温度
 	int m_iHighWarnTemp;
 	// 设置低温报警温度
 	int m_iLowWarnTemp;
+	// 串口接收数据处理记数
+	unsigned int m_uiUartRcvCount;
+	// 校验位
+	BYTE m_byCheck;
+	// 串口接收数据处理缓冲区
+	BYTE m_ucRcvBuf[UartFrameLength];
 public:
 	/** 运行IImage COM组件*/
 	void RunIImage();
@@ -290,6 +293,10 @@ public:
 	void OnClickedReduce();
 	// 串口接收数据回调函数
 	static void CALLBACK OnUartRead(void* pFatherPtr, BYTE* pbuf, DWORD dwbufLen);
+	// 向串口发送数据
+	void OnWriteUartData(BYTE ucCmd, BYTE ucData);
+	// 解析串口接收数据帧
+	void PhraseUartFrame();
 public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnDestroy();
