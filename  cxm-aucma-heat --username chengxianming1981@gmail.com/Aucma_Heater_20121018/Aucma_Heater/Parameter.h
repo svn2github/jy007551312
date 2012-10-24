@@ -19,6 +19,12 @@
 #define ContinuousOptTimerEvent		3
 /** 连续增加和减少定时间隔*/
 #define ContinuousOptTimeSet		100
+/** 设置闪烁定时器序号*/
+#define TwinkleTimerEvent			4
+/** 设置闪烁定时间隔*/
+#define TwinkleTimeSet				500
+/** 闪烁次数上限*/
+#define TwinkleMaxTimes				20
 /** 点击增加和减少达到时间次数，用于判定连续操作*/
 #define ContinuousOptTimes			10
 /** 速热引擎状态枚举*/
@@ -32,11 +38,13 @@ enum {NoTempShow, InsulationState, HeatTempState};
 /** 定义文本输出坐标偏移量2*/
 #define TextOutMovePos2				4
 /** 默认设置温度*/
-#define DefaultSetTemp				88
+#define DefaultSetTemp				30
 /** 默认png图片透明度设置*/
-#define DefaultPNGTransparent		255
+#define DefaultPNGTransparent		128
 /** 设置温度上限值*/
-#define SetTempLimit				100
+#define SetTempMaxLimit				80
+/** 设置温度上限值*/
+#define SetTempMinLimit				30
 /** 串口接收数据消息*/
 #define WM_RECV_UART_DATA	WM_USER + 100
 /************************************************************************/

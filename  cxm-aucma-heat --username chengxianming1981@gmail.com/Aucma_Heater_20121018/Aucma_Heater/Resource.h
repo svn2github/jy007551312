@@ -65,12 +65,13 @@
 #define IDB_TEMP_LIGHT7                 186
 #define IDB_TEMP_LIGHT8                 187
 #define IDB_TEMP_LIGHT9                 188
+#define IDB_BK                          189
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        189
+#define _APS_NEXT_RESOURCE_VALUE        190
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           101

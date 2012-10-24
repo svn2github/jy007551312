@@ -15,49 +15,8 @@
 
 CAucma_HeaterDlg::CAucma_HeaterDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CAucma_HeaterDlg::IDD, pParent)
-	, m_bHelper(false)
-	, m_bHelperOld(true)
-	, m_bWashHand(false)
-	, m_bWashHandOld(true)
-	, m_iFastHeatState(NormalHeat)
-	, m_iFastHeatStateOld(WinterHeat)
-	, m_bNight(false)
-	, m_bNightOld(true)
-	, m_iTempState(NoTempShow)
-	, m_iTempStateOld(HeatTempState)
-	, m_bTempHeat(false)
-	, m_bPower(false)
-	, m_bPowerOld(true)
-	, m_uiHeatCount(0)
-	, m_iInTempSet(DefaultSetTemp)
-	, m_iInTempSetOld(0)
-	, m_iInTempActual(0)
-	, m_bSetTemp(false)
-	, m_bSetTempOld(true)
-	, m_bSetTime(false)
-	, m_bSetTimeOld(true)
-	, m_CurrTime(0)
-	, m_CurrTimeOld(1)
-	, m_bAdd(false)
-	, m_bAddOld(true)
-	, m_bReduce(false)
-	, m_bReduceOld(true)
-	, m_bTempLabel(false)
-	, m_bTempLabelOld(true)
-	, m_bTimeLabel(false)
-	, m_bTimeLabelOld(true)
-	, m_uiContinuousCount(0)
-	, m_bAddOpt(false)
-	, m_pImagingFactory(NULL)
-	, m_pImage(NULL)
-	, m_iEnvTempActual(0)
-	, m_iHighWarnTemp(0)
-	, m_iLowWarnTemp(0)
-	, m_uiUartRcvCount(0)
-	, m_byCheck(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-
 	m_rectHeatFastPic = CRect(20, 8, 84, 72);
 	m_rectHeatFastText = CRect(20, 72, 84, 86);
 	m_rectWinterPic = CRect(88, 40, 120, 72);
@@ -84,6 +43,7 @@ CAucma_HeaterDlg::CAucma_HeaterDlg(CWnd* pParent /*=NULL*/)
 	m_rectMinHighPic = CRect(247, 197, 279, 261);
 	m_rectMinLowPic = CRect(280, 197, 312, 261);
 	m_rectTime = CRect(162, 197, 312, 261);
+	m_rectBK = CRect(0, 0, 474, 266);
 }
 
 void CAucma_HeaterDlg::DoDataExchange(CDataExchange* pDX)
@@ -96,7 +56,7 @@ BEGIN_MESSAGE_MAP(CAucma_HeaterDlg, CDialog)
 	ON_WM_SIZE()
 #endif
 	//}}AFX_MSG_MAP
-	ON_WM_CTLCOLOR()
+//	ON_WM_CTLCOLOR()
 	ON_WM_DESTROY()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
@@ -118,6 +78,7 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	OnInit();
 	m_oCEUart.m_OnUartRead = OnUartRead;
 	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
 	{
@@ -174,15 +135,14 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	Dst.Blue = Tmp.Blue + Round((Beta * Dst.Blue )/255);
 	Dst.Alpha = Tmp.Alpha + Round((Beta * Dst.Alpha)/255);*/
 	// 有两个值 0表示常量alpha值，AC_SRC_ALPHA表示每个像素有各自的alpha通道
-	m_blendfun.AlphaFormat = AC_SRC_ALPHA;
+	m_blendfun.AlphaFormat = 0;
 	// 对话框最大化显示
 //	ShowWindow(SW_SHOWMAXIMIZED);
 	int iFullWidth = GetSystemMetrics(SM_CXSCREEN);
 	int iFullHeight = GetSystemMetrics(SM_CYSCREEN);
 	::SetWindowPos(this->m_hWnd, HWND_TOPMOST, 0, 0, iFullWidth, iFullHeight, SWP_NOOWNERZORDER|SWP_SHOWWINDOW);
-	m_CurrTime = CTime::GetCurrentTime();
-	// 创建背景刷子
-	m_brushBk.CreateSolidBrush(DialogBkColor);
+//	// 创建背景刷子
+//	m_brushBk.CreateSolidBrush(DialogBkColor);
 	CFont* pfont = NULL;
 	LOGFONT logFont;
 	LONG lfHeight = 0;
@@ -195,7 +155,6 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	VERIFY(m_FontWinter.CreateFontIndirect(&logFont));
 	logFont.lfHeight = lfHeight * 3 / 2;
 	VERIFY(m_FontTemp.CreateFontIndirect(&logFont));
-	SetTimer(ShowTimeTimerEvent, ShowTimeTimeSet, NULL);
 	RunIImage();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -310,7 +269,8 @@ void CAucma_HeaterDlg::RunIImage()
 		LoadFromResource(MAKEINTRESOURCE(IDB_TIME_LIGHT0 + i), _T("PNG"));
 		GetDstDcFromPic(&m_dcTimeSet[i], &m_bmpTimeSet[i]);
 	}
-	ReleaseIImage();
+	LoadFromResource(MAKEINTRESOURCE(IDB_BK), _T("PNG"));
+	GetDstDcFromPic(&m_dcBK, &m_bmpBK);
 }
 // 释放IImage COM组件
 void CAucma_HeaterDlg::ReleaseIImage()
@@ -366,10 +326,11 @@ BOOL CAucma_HeaterDlg::LoadFromResource(LPCWSTR lpName, LPCWSTR lpType)
 void CAucma_HeaterDlg::GetDstDcFromPic(CDC* pDstDC, CBitmap* pBitmap)
 {
 	ImageInfo oImageInfo;
+	CDC* pDC = this->GetDC();
 	m_pImage->GetImageInfo(&oImageInfo);
 	//创建一个内存DC,用来存储图片数据
-	pBitmap->CreateCompatibleBitmap(GetDC(), oImageInfo.Width,oImageInfo.Height);
-	pDstDC->CreateCompatibleDC(GetDC());
+	pBitmap->CreateCompatibleBitmap(pDC, oImageInfo.Width,oImageInfo.Height);
+	pDstDC->CreateCompatibleDC(pDC);
 	pDstDC->SelectObject(pBitmap);
 	//将图片数据存储到内存DC中
 	m_pImage->Draw(pDstDC->m_hDC ,CRect(0, 0, oImageInfo.Width, oImageInfo.Height), NULL);
@@ -378,22 +339,23 @@ void CAucma_HeaterDlg::GetDstDcFromPic(CDC* pDstDC, CBitmap* pBitmap)
 		m_pImage->Release();
 		m_pImage = NULL;
 	}
+	pDC->DeleteDC();
 }
-HBRUSH CAucma_HeaterDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
-{
-//	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
-
-	// TODO:  在此更改 DC 的任何属性
-
-	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
-	return m_brushBk;
-}
+// HBRUSH CAucma_HeaterDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+// {
+// //	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+// 
+// 	// TODO:  在此更改 DC 的任何属性
+// 
+// 	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
+// 	return m_brushBk;
+// }
 
 void CAucma_HeaterDlg::OnDestroy()
 {
 	CDialog::OnDestroy();
 	// TODO: 在此处添加消息处理程序代码
-	m_brushBk.DeleteObject();
+//	m_brushBk.DeleteObject();
 	m_FontDefault.DeleteObject();
 	m_FontWinter.DeleteObject();
 	m_FontTemp.DeleteObject();
@@ -449,7 +411,10 @@ void CAucma_HeaterDlg::OnDestroy()
 	m_dcReduce.DeleteDC();
 	m_bmpTimeLabel.DeleteObject();
 	m_dcTimeLabel.DeleteDC();
+	m_bmpBK.DeleteObject();
+	m_dcBK.DeleteDC();
 	m_oCEUart.ClosePort();
+	ReleaseIImage();
 }
 void CAucma_HeaterDlg::OnClickedHeatfast()
 {
@@ -516,31 +481,13 @@ void CAucma_HeaterDlg::OnClickedNight()
 void CAucma_HeaterDlg::OnClickedPower()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	BYTE buf[10];
-	for (int i= 0;i<10; i++)
-	{
-		buf[i] = 0x33;
-	}
 	if (m_bPower == true)
 	{
-		KillTimer(ShowTempStateTimerEvent);
-		m_iFastHeatState = NormalHeat;
-		m_bHelper = false;
-		m_bWashHand = false;
-		m_bNight = false;
-		m_iTempState = NoTempShow;
-		m_bSetTemp = false;
-		m_bSetTime = false;
-		m_bPower = false;
-		m_uiHeatCount = 0;
-		m_iInTempSet = DefaultSetTemp;
-		m_iInTempActual = 0;
-		m_bTempHeat = false;
+		OnInit();
 		Invalidate(FALSE);
 	}
 	else
 	{
-		KillTimer(ShowTempStateTimerEvent);
 		SetTimer(ShowTempStateTimerEvent, ShowTempStateTimeSet, NULL);
 		m_bPower = true;
 		InvalidateRect(m_rectPowerPic, FALSE);
@@ -549,7 +496,7 @@ void CAucma_HeaterDlg::OnClickedPower()
 // 得到当前温度
 int CAucma_HeaterDlg::GetCurrTemp(void)
 {
-	return 87;
+	return 55;
 }
 void CAucma_HeaterDlg::OnClickedAdd()
 {
@@ -560,6 +507,7 @@ void CAucma_HeaterDlg::OnClickedAdd()
 	}
 	SYSTEMTIME sysTime;
 	CTimeSpan time(60);
+	m_uiTwinkleCount = 0;
 	if (m_uiContinuousCount == 0)
 	{
 		KillTimer(ContinuousOptTimerEvent);
@@ -568,12 +516,11 @@ void CAucma_HeaterDlg::OnClickedAdd()
 	}
 	if (m_bSetTemp == true)
 	{
-		m_iInTempSet++;
-		if (m_iInTempSet == SetTempLimit)
+		if (m_iInTempSet < SetTempMaxLimit)
 		{
-			m_iInTempSet = 0;
+			m_iInTempSet++;
+			InvalidateRect(m_rectTemp, FALSE);
 		}
-		InvalidateRect(m_rectTemp, FALSE);
 	}
 	else if (m_bSetTime == true)
 	{
@@ -587,7 +534,10 @@ void CAucma_HeaterDlg::OnClickedAdd()
 		sysTime.wMinute = (WORD)m_CurrTime.GetMinute();
 		sysTime.wSecond = (WORD)m_CurrTime.GetSecond();
 		::SetLocalTime(&sysTime);
-		InvalidateRect(m_rectTime, FALSE);
+		InvalidateRect(m_rectHourHighPic, FALSE);
+		InvalidateRect(m_rectHourLowPic, FALSE);
+		InvalidateRect(m_rectMinHighPic, FALSE);
+		InvalidateRect(m_rectMinLowPic, FALSE);
 	}
 }
 
@@ -600,6 +550,7 @@ void CAucma_HeaterDlg::OnClickedReduce()
 	}
 	SYSTEMTIME sysTime;
 	CTimeSpan time(-60);
+	m_uiTwinkleCount = 0;
 	if (m_uiContinuousCount == 0)
 	{
 		KillTimer(ContinuousOptTimerEvent);
@@ -608,11 +559,11 @@ void CAucma_HeaterDlg::OnClickedReduce()
 	}
 	if (m_bSetTemp == true)
 	{
-		if (m_iInTempSet != 0)
+		if (m_iInTempSet > SetTempMinLimit)
 		{
 			m_iInTempSet--;
+			InvalidateRect(m_rectTemp, FALSE);
 		}
-		InvalidateRect(m_rectTemp, FALSE);
 	}
 	else if (m_bSetTime == true)
 	{
@@ -626,7 +577,10 @@ void CAucma_HeaterDlg::OnClickedReduce()
 		sysTime.wMinute = (WORD)m_CurrTime.GetMinute();
 		sysTime.wSecond = (WORD)m_CurrTime.GetSecond();
 		::SetLocalTime(&sysTime);
-		InvalidateRect(m_rectTime, FALSE);
+		InvalidateRect(m_rectHourHighPic, FALSE);
+		InvalidateRect(m_rectHourLowPic, FALSE);
+		InvalidateRect(m_rectMinHighPic, FALSE);
+		InvalidateRect(m_rectMinLowPic, FALSE);
 	}
 }
 // 设置温度
@@ -637,6 +591,15 @@ void CAucma_HeaterDlg::OnSetTemp(void)
 		return;
 	}
 	m_bSetTemp = !m_bSetTemp;
+	if (m_bSetTemp == true)
+	{
+		m_uiTwinkleCount = 0;
+		SetTimer(TwinkleTimerEvent, TwinkleTimeSet, NULL);
+	}
+	else
+	{
+		KillTimer(TwinkleTimerEvent);
+	}
 	InvalidateRect(m_rectTemp, FALSE);
 }
 
@@ -648,7 +611,19 @@ void CAucma_HeaterDlg::OnSetTime(void)
 		return;
 	}
 	m_bSetTime = !m_bSetTime;
-	InvalidateRect(m_rectTime, FALSE);
+	if (m_bSetTime == true)
+	{
+		m_uiTwinkleCount = 0;
+		SetTimer(TwinkleTimerEvent, TwinkleTimeSet, NULL);
+	}
+	else
+	{
+		KillTimer(TwinkleTimerEvent);
+	}
+	InvalidateRect(m_rectHourHighPic, FALSE);
+	InvalidateRect(m_rectHourLowPic, FALSE);
+	InvalidateRect(m_rectMinHighPic, FALSE);
+	InvalidateRect(m_rectMinLowPic, FALSE);
 }
 // 鼠标左键单击坐标在所选区域内
 bool CAucma_HeaterDlg::OnPointInRect(CRect rect, CPoint point)
@@ -748,6 +723,8 @@ void CAucma_HeaterDlg::OnPaint()
 	CPaintDC dc(this); // device context for painting
 	// TODO: 在此处添加消息处理程序代码
 	// 不为绘图消息调用 CDialog::OnPaint()
+	OnDcBitBlt(&dc, &m_dcBK, m_rectBK, false);
+	dc.SetBkMode(TRANSPARENT);
 	if (m_iFastHeatStateOld != m_iFastHeatState)
 	{
 		if (m_iFastHeatState == NormalHeat)
@@ -858,7 +835,7 @@ void CAucma_HeaterDlg::OnPaint()
 		dc.SelectObject(&m_FontDefault);
 		m_bTempLabelOld = m_bTempLabel;
 	}
-	if ((m_iInTempSetOld != m_iInTempSet) || (m_bSetTempOld != m_bSetTemp))
+	if ((m_iInTempSetOld != m_iInTempSet) || (m_bSetTempOld != m_bSetTemp) || ((m_bTwinkle == true) && (m_bSetTemp == true)))
 	{
 		if (m_bSetTemp == true)
 		{
@@ -873,7 +850,7 @@ void CAucma_HeaterDlg::OnPaint()
 		m_iInTempSetOld = m_iInTempSet;
 		m_bSetTempOld = m_bSetTemp;
 	}
-	if ((m_CurrTimeOld != m_CurrTime) || (m_bSetTimeOld != m_bSetTime))
+	if ((m_CurrTimeOld != m_CurrTime) || (m_bSetTimeOld != m_bSetTime) || ((m_bTwinkle == true) && (m_bSetTime == true)))
 	{
 		if (m_bSetTime == true)
 		{
@@ -987,7 +964,10 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 	else if (nIDEvent == ShowTimeTimerEvent)
 	{
 		m_CurrTime = CTime::GetCurrentTime();
-		InvalidateRect(m_rectTime, FALSE);
+		InvalidateRect(m_rectHourHighPic, FALSE);
+		InvalidateRect(m_rectHourLowPic, FALSE);
+		InvalidateRect(m_rectMinHighPic, FALSE);
+		InvalidateRect(m_rectMinLowPic, FALSE);
 	}
 	else if (nIDEvent == ContinuousOptTimerEvent)
 	{
@@ -1001,6 +981,43 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 			else
 			{
 				OnClickedReduce();
+			}
+		}
+	}
+	else if (nIDEvent == TwinkleTimerEvent)
+	{
+		m_uiTwinkleCount++;
+		if (m_uiTwinkleCount >= TwinkleMaxTimes)
+		{
+			if (m_bSetTemp == true)
+			{
+				OnSetTemp();
+			}
+			else if (m_bSetTime == true)
+			{
+				OnSetTime();
+			}
+		}
+		else
+		{
+			if (m_uiTwinkleCount % 2 == 0)
+			{
+				m_bTwinkle = true;
+			}
+			else
+			{
+				m_bTwinkle = false;
+			}
+			if (m_bSetTemp == true)
+			{
+				InvalidateRect(m_rectTemp, FALSE);
+			}
+			else if (m_bSetTime == true)
+			{
+				InvalidateRect(m_rectHourHighPic, FALSE);
+				InvalidateRect(m_rectHourLowPic, FALSE);
+				InvalidateRect(m_rectMinHighPic, FALSE);
+				InvalidateRect(m_rectMinLowPic, FALSE);
 			}
 		}
 	}
@@ -1160,4 +1177,55 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 	}
 	// @@@调试用
 //	m_oCEUart.WriteSyncPort(m_ucRcvBuf, UartFrameLength);
+}
+// 初始化界面参数
+void CAucma_HeaterDlg::OnInit(void)
+{
+	m_iFastHeatState = NormalHeat;
+	m_iFastHeatStateOld = WinterHeat;
+	m_bHelper = false;
+	m_bHelperOld = true;
+	m_bWashHand = false;
+	m_bWashHandOld = true;
+	m_bNight = false;
+	m_bNightOld = true;
+	m_iTempState = NoTempShow;
+	m_iTempStateOld = HeatTempState;
+	m_bSetTemp = false;
+	m_bSetTempOld = true;
+	m_bSetTime = false;
+	m_bSetTimeOld = true;
+	m_bPower = false;
+	m_bPowerOld = true;
+	m_uiHeatCount = 0;
+	m_iInTempSet = DefaultSetTemp;
+	m_iInTempSetOld = 0;
+	m_iInTempActual = 0;
+	m_bTempHeat = false;
+	m_CurrTime = CTime::GetCurrentTime();
+	m_CurrTimeOld = 1;
+	m_bAdd = false;
+	m_bAddOld = true;
+	m_bReduce = false;
+	m_bReduceOld = true;
+	m_bTempLabel = false;
+	m_bTempLabelOld = true;
+	m_bTimeLabel = false;
+	m_bTimeLabelOld = true;
+	m_uiContinuousCount = 0;
+	m_bAddOpt = false;
+	m_iEnvTempActual = 0;
+	m_iHighWarnTemp = 0;
+	m_iLowWarnTemp = 0;
+	m_uiUartRcvCount = 0;
+	m_byCheck = 0;
+	m_uiTwinkleCount = 0;
+	m_pImagingFactory = NULL;
+	m_pImage = NULL;
+	m_bTwinkle = false;
+	KillTimer(ShowTempStateTimerEvent);
+	KillTimer(ShowTimeTimerEvent);
+	KillTimer(ContinuousOptTimerEvent);
+	KillTimer(TwinkleTimerEvent);
+	SetTimer(ShowTimeTimerEvent, ShowTimeTimeSet, NULL);
 }

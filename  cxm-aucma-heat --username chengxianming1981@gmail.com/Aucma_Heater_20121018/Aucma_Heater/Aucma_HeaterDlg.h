@@ -30,8 +30,8 @@ protected:
 #endif
 	DECLARE_MESSAGE_MAP()
 private:
-	// 背景刷子
-	CBrush m_brushBk;
+// 	// 背景刷子
+// 	CBrush m_brushBk;
 	// 系统默认字体
 	CFont m_FontDefault;
 	// 冬天字体
@@ -90,6 +90,8 @@ private:
 	CRect m_rectTemp;
 	// 时间区范围
 	CRect m_rectTime;
+	// 背景范围
+	CRect m_rectBK;
 	// 速热引擎打开图标句柄
 	CDC m_dcHeatFastOn;
 	// 速热引擎关闭图标句柄
@@ -138,6 +140,8 @@ private:
 	CDC m_dcReduce;
 	// 时间标志图标句柄
 	CDC m_dcTimeLabel;
+	// 背景图标句柄
+	CDC m_dcBK;
 	// 速热引擎打开图标句柄
 	CBitmap m_bmpHeatFastOn;
 	// 速热引擎关闭图标句柄
@@ -186,6 +190,8 @@ private:
 	CBitmap m_bmpReduce;
 	// 时间标志图标句柄
 	CBitmap m_bmpTimeLabel;
+	// 背景
+	CBitmap m_bmpBK;
 	// 智能助手标志位
 	bool m_bHelper;
 	bool m_bHelperOld;
@@ -258,6 +264,10 @@ private:
 	BYTE m_byCheck;
 	// 串口接收数据处理缓冲区
 	BYTE m_ucRcvBuf[UartFrameLength];
+	// 闪烁次数计数
+	unsigned int m_uiTwinkleCount;
+	// 闪烁标志位
+	bool m_bTwinkle;
 public:
 	/** 运行IImage COM组件*/
 	void RunIImage();
@@ -300,11 +310,14 @@ public:
 	// 解析串口接收数据帧
 	void PhraseUartFrame();
 public:
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+//	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnDestroy();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnPaint();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg LRESULT OnRecvUartData(WPARAM wParam, LPARAM lParam);
+private:
+	// 初始化界面参数
+	void OnInit(void);
 };
