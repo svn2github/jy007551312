@@ -281,8 +281,6 @@ public:
 	void GetDstDcFromPic(CDC* pDstDC, CBitmap* pBitmap);
 	/** 将位图选入内存设备*/
 	void OnDcBitBlt(CDC* pDstDC, CDC* pSrcDC, CRect rect, bool bTransparent = false);
-	// 得到当前温度
-	int GetCurrTemp(void);
 	// 鼠标左键单击坐标在所选区域内
 	bool OnPointInRect(CRect rect, CPoint point);
 	// 设置温度

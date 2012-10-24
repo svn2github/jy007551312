@@ -493,11 +493,6 @@ void CAucma_HeaterDlg::OnClickedPower()
 		InvalidateRect(m_rectPowerPic, FALSE);
 	}
 }
-// 得到当前温度
-int CAucma_HeaterDlg::GetCurrTemp(void)
-{
-	return 55;
-}
 void CAucma_HeaterDlg::OnClickedAdd()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -844,8 +839,8 @@ void CAucma_HeaterDlg::OnPaint()
 		}
 		else
 		{
-			OnDcBitBlt(&dc, &m_dcTempShow[m_iInTempSet / 10], m_rectTempHighPic);
-			OnDcBitBlt(&dc, &m_dcTempShow[m_iInTempSet % 10], m_rectTempLowPic);
+			OnDcBitBlt(&dc, &m_dcTempShow[m_iInTempActual / 10], m_rectTempHighPic);
+			OnDcBitBlt(&dc, &m_dcTempShow[m_iInTempActual % 10], m_rectTempLowPic);
 		}
 		m_iInTempSetOld = m_iInTempSet;
 		m_bSetTempOld = m_bSetTemp;
@@ -919,7 +914,6 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if (nIDEvent == ShowTempStateTimerEvent)
 	{
-		m_iInTempActual = GetCurrTemp();
 		if (m_iInTempActual >= m_iInTempSet)
 		{
 			// 保温
@@ -1200,7 +1194,7 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_uiHeatCount = 0;
 	m_iInTempSet = DefaultSetTemp;
 	m_iInTempSetOld = 0;
-	m_iInTempActual = 0;
+	m_iInTempActual = 55;
 	m_bTempHeat = false;
 	m_CurrTime = CTime::GetCurrentTime();
 	m_CurrTimeOld = 1;
