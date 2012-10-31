@@ -393,6 +393,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PngImage.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -448,6 +452,10 @@
 			</File>
 			<File
 				RelativePath=".\Parameter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PngImage.h"
 				>
 			</File>
 			<File

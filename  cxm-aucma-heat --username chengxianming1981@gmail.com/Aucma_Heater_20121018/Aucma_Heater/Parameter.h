@@ -23,10 +23,12 @@
 #define TwinkleTimerEvent			4
 /** 设置闪烁定时间隔*/
 #define TwinkleTimeSet				500
+/** 增加或减少操作时暂时关闭闪烁定时器时间间隔*/
+#define TwinkleTimerSleepTimes		3
 /** 闪烁次数上限*/
 #define TwinkleMaxTimes				20
 /** 点击增加和减少达到时间次数，用于判定连续操作*/
-#define ContinuousOptTimes			10
+#define ContinuousOptTimes			6
 /** 速热引擎状态枚举*/
 enum {NormalHeat, FastHeat, WinterHeat};
 /** 温度显示状态*/

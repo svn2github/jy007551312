@@ -4,9 +4,6 @@
 #include "stdafx.h"
 #include "Aucma_Heater.h"
 #include "Aucma_HeaterDlg.h"
-#include <initguid.h>
-#include <imgguids.h>
-#include <wingdi.h>
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -155,7 +152,136 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	VERIFY(m_FontWinter.CreateFontIndirect(&logFont));
 	logFont.lfHeight = lfHeight * 3 / 2;
 	VERIFY(m_FontTemp.CreateFontIndirect(&logFont));
-	RunIImage();
+	// 初始化IImage
+	m_oPngImage.InitIImage();
+	// 从文件中载入图标到图片句柄
+	CDC* pDC = this->GetDC();
+	m_oPngImage.LoadPicFromFile(_T("背景.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_BK), _T("PNG"));
+	m_oPngImage.GetDstDcFromPic(pDC, &m_dcBK, &m_bmpBK);
+	m_oPngImage.LoadPicFromFile(_T("速热引擎_1.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_HEATFAST_OFF), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcHeatFastOff, &m_bmpHeatFastOff);
+	m_oPngImage.DrawAlpha(&m_dcHeatFastOff, &m_dcBK, m_rectHeatFastPic);
+	m_oPngImage.LoadPicFromFile(_T("速热引擎_2.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_HEATFAST_ON), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcHeatFastOn, &m_bmpHeatFastOn);
+	m_oPngImage.DrawAlpha(&m_dcHeatFastOn, &m_dcBK, m_rectHeatFastPic);
+	m_oPngImage.LoadPicFromFile(_T("冬天_1.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_WINTER_OFF), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcWinterOff, &m_bmpWinterOff);
+	m_oPngImage.DrawAlpha(&m_dcWinterOff, &m_dcBK, m_rectWinterPic);
+	m_oPngImage.LoadPicFromFile(_T("冬天_2.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_WINTER_OFF), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcWinterOn, &m_bmpWinterOn);
+	m_oPngImage.DrawAlpha(&m_dcWinterOn, &m_dcBK, m_rectWinterPic);
+	m_oPngImage.LoadPicFromFile(_T("智能助手_1.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_HELPER_OFF), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcHelperOff, &m_bmpHelperOff);
+	m_oPngImage.DrawAlpha(&m_dcHelperOff, &m_dcBK, m_rectHelperPic);
+	m_oPngImage.LoadPicFromFile(_T("智能助手_2.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_HELPER_ON), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcHelperOn, &m_bmpHelperOn);
+	m_oPngImage.DrawAlpha(&m_dcHelperOn, &m_dcBK, m_rectHelperPic);
+	m_oPngImage.LoadPicFromFile(_T("洗手加热_1.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_WASHHAND_OFF), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcWashHandOff, &m_bmpWashHandOff);
+	m_oPngImage.DrawAlpha(&m_dcWashHandOff, &m_dcBK, m_rectWashHandPic);
+	m_oPngImage.LoadPicFromFile(_T("洗手加热_2.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_WASHHAND_ON), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcWashHandOn, &m_bmpWashHandOn);
+	m_oPngImage.DrawAlpha(&m_dcWashHandOn, &m_dcBK, m_rectWashHandPic);
+	m_oPngImage.LoadPicFromFile(_T("夜电模式_1.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_NIGHTMODE_OFF), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcNightModeOff, &m_bmpNightModeOff);
+	m_oPngImage.DrawAlpha(&m_dcNightModeOff, &m_dcBK, m_rectNightModePic);
+	m_oPngImage.LoadPicFromFile(_T("夜电模式_2.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_NIGHTMODE_ON), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcNightModeOn, &m_bmpNightModeOn);
+	m_oPngImage.DrawAlpha(&m_dcNightModeOn, &m_dcBK, m_rectNightModePic);
+	m_oPngImage.LoadPicFromFile(_T("保温_加热.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_OFF), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcTempOff, &m_bmpTempOff);
+	m_oPngImage.DrawAlpha(&m_dcTempOff, &m_dcBK, m_rectTempPic);
+	m_oPngImage.LoadPicFromFile(_T("保温.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_ON), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcTempInsulation, &m_bmpTempInsulation);
+	m_oPngImage.DrawAlpha(&m_dcTempInsulation, &m_dcBK, m_rectTempPic);
+	m_oPngImage.LoadPicFromFile(_T("加热_1.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_HEAT1), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcTempHeat1, &m_bmpTempHeat1);
+	m_oPngImage.DrawAlpha(&m_dcTempHeat1, &m_dcBK, m_rectTempPic);
+	m_oPngImage.LoadPicFromFile(_T("加热_2.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_HEAT2), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcTempHeat2, &m_bmpTempHeat2);
+	m_oPngImage.DrawAlpha(&m_dcTempHeat2, &m_dcBK, m_rectTempPic);
+	m_oPngImage.LoadPicFromFile(_T("加热_3.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_HEAT3), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcTempHeat3, &m_bmpTempHeat3);
+	m_oPngImage.DrawAlpha(&m_dcTempHeat3, &m_dcBK, m_rectTempPic);
+	m_oPngImage.LoadPicFromFile(_T("电源_1.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_POWER_OFF), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcPowerOff, &m_bmpPowerOff);
+	m_oPngImage.DrawAlpha(&m_dcPowerOff, &m_dcBK, m_rectPowerPic);
+	m_oPngImage.LoadPicFromFile(_T("电源_2.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_POWER_ON), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcPowerOn, &m_bmpPowerOn);
+	m_oPngImage.DrawAlpha(&m_dcPowerOn, &m_dcBK, m_rectPowerPic);
+	m_oPngImage.LoadPicFromFile(_T("增加.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_ADD), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcAdd, &m_bmpAdd);
+	m_oPngImage.DrawAlpha(&m_dcAdd, &m_dcBK, m_rectAdd);
+	m_oPngImage.LoadPicFromFile(_T("减少.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_REDUCE), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcReduce, &m_bmpReduce);
+	m_oPngImage.DrawAlpha(&m_dcReduce, &m_dcBK, m_rectReduce);
+	m_oPngImage.LoadPicFromFile(_T("时间标志.png"));
+//	m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_TIMELABEL), _T("PNG"));
+//	m_oPngImage.GetDstDcFromPic(pDC, &m_dcTimeLabel, &m_bmpTimeLabel);
+	m_oPngImage.DrawAlpha(&m_dcTimeLabel, &m_dcBK, m_rectTimeLabelPic);
+	CString str = _T("");
+	for (int i=0; i<10; i++)
+	{
+		str.Format(_T("温度1_%d.png"), i);
+		m_oPngImage.LoadPicFromFile(str);
+//		m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_TEMP0 + i), _T("PNG"));
+//		m_oPngImage.GetDstDcFromPic(pDC, &m_dcTempShow[i], &m_bmpTempShow[i]);
+		m_oPngImage.DrawAlpha(&m_dcTempHighShow[i], &m_dcBK, m_rectTempHighPic);
+		m_oPngImage.LoadPicFromFile(str);
+//		m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_TEMP0 + i), _T("PNG"));
+		m_oPngImage.DrawAlpha(&m_dcTempLowShow[i], &m_dcBK, m_rectTempLowPic);
+		str.Format(_T("温度2_%d.png"), i);
+		m_oPngImage.LoadPicFromFile(str);
+//		m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_LIGHT0 + i), _T("PNG"));
+//		m_oPngImage.GetDstDcFromPic(pDC, &m_dcTempSet[i], &m_bmpTempSet[i]);
+		m_oPngImage.DrawAlpha(&m_dcTempHighSet[i], &m_dcBK, m_rectTempHighPic);
+		m_oPngImage.LoadPicFromFile(str);
+//		m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_LIGHT0 + i), _T("PNG"));
+		m_oPngImage.DrawAlpha(&m_dcTempLowSet[i], &m_dcBK, m_rectTempLowPic);
+		str.Format(_T("时间1_%d.png"), i);
+		m_oPngImage.LoadPicFromFile(str);
+//		m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_TIME0 + i), _T("PNG"));
+//		m_oPngImage.GetDstDcFromPic(pDC, &m_dcTimeShow[i], &m_bmpTimeShow[i]);
+		m_oPngImage.DrawAlpha(&m_dcHourHighShow[i], &m_dcBK, m_rectHourHighPic);
+		m_oPngImage.LoadPicFromFile(str);
+		m_oPngImage.DrawAlpha(&m_dcHourLowShow[i], &m_dcBK, m_rectHourLowPic);
+		m_oPngImage.LoadPicFromFile(str);
+		m_oPngImage.DrawAlpha(&m_dcMinHighShow[i], &m_dcBK, m_rectMinHighPic);
+		m_oPngImage.LoadPicFromFile(str);
+		m_oPngImage.DrawAlpha(&m_dcMinLowShow[i], &m_dcBK, m_rectMinLowPic);
+		str.Format(_T("时间2_%d.png"), i);
+		m_oPngImage.LoadPicFromFile(str);
+//		m_oPngImage.LoadFromResource(MAKEINTRESOURCE(IDB_TIME_LIGHT0 + i), _T("PNG"));
+//		m_oPngImage.GetDstDcFromPic(pDC, &m_dcTimeSet[i], &m_bmpTimeSet[i]);
+		m_oPngImage.DrawAlpha(&m_dcHourHighSet[i], &m_dcBK, m_rectHourHighPic);
+		m_oPngImage.LoadPicFromFile(str);
+		m_oPngImage.DrawAlpha(&m_dcHourLowSet[i], &m_dcBK, m_rectHourLowPic);
+		m_oPngImage.LoadPicFromFile(str);
+		m_oPngImage.DrawAlpha(&m_dcMinHighSet[i], &m_dcBK, m_rectMinHighPic);
+		m_oPngImage.LoadPicFromFile(str);
+		m_oPngImage.DrawAlpha(&m_dcMinLowSet[i], &m_dcBK, m_rectMinLowPic);
+	}
+	pDC->DeleteDC();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -173,174 +299,6 @@ void CAucma_HeaterDlg::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/)
 	}
 }
 #endif
-// 运行IImage COM组件
-void CAucma_HeaterDlg::RunIImage()
-{
-	// 初始化COM环境
-	if (FAILED(CoInitializeEx(NULL, COINIT_MULTITHREADED)))
-	{
-		AfxMessageBox(_T("CoInitializeEx Error!"));
-		return;
-	}
-	if (FAILED(CoCreateInstance(CLSID_ImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_IImagingFactory, (void **)&m_pImagingFactory)))
-	{
-		AfxMessageBox(_T("CoCreateInstance Error!"));
-		ReleaseIImage();
-		return;
-	}
-	// 从文件中载入图标到图片句柄
-//	LoadPicFromFile(_T("速热引擎_1.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_HEATFAST_OFF), _T("PNG"));
-	GetDstDcFromPic(&m_dcHeatFastOff, &m_bmpHeatFastOff);
-//	LoadPicFromFile(_T("速热引擎_2.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_HEATFAST_ON), _T("PNG"));
-	GetDstDcFromPic(&m_dcHeatFastOn, &m_bmpHeatFastOn);
-//	LoadPicFromFile(_T("冬天_1.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_WINTER_OFF), _T("PNG"));
-	GetDstDcFromPic(&m_dcWinterOff, &m_bmpWinterOff);
-//	LoadPicFromFile(_T("冬天_2.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_WINTER_OFF), _T("PNG"));
-	GetDstDcFromPic(&m_dcWinterOn, &m_bmpWinterOn);
-//	LoadPicFromFile(_T("智能助手_1.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_HELPER_OFF), _T("PNG"));
-	GetDstDcFromPic(&m_dcHelperOff, &m_bmpHelperOff);
-//	LoadPicFromFile(_T("智能助手_2.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_HELPER_ON), _T("PNG"));
-	GetDstDcFromPic(&m_dcHelperOn, &m_bmpHelperOn);
-//	LoadPicFromFile(_T("洗手加热_1.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_WASHHAND_OFF), _T("PNG"));
-	GetDstDcFromPic(&m_dcWashHandOff, &m_bmpWashHandOff);
-//	LoadPicFromFile(_T("洗手加热_2.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_WASHHAND_ON), _T("PNG"));
-	GetDstDcFromPic(&m_dcWashHandOn, &m_bmpWashHandOn);
-//	LoadPicFromFile(_T("夜电模式_1.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_NIGHTMODE_OFF), _T("PNG"));
-	GetDstDcFromPic(&m_dcNightModeOff, &m_bmpNightModeOff);
-//	LoadPicFromFile(_T("夜电模式_2.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_NIGHTMODE_ON), _T("PNG"));
-	GetDstDcFromPic(&m_dcNightModeOn, &m_bmpNightModeOn);
-//	LoadPicFromFile(_T("保温_加热.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_OFF), _T("PNG"));
-	GetDstDcFromPic(&m_dcTempOff, &m_bmpTempOff);
-//	LoadPicFromFile(_T("保温.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_ON), _T("PNG"));
-	GetDstDcFromPic(&m_dcTempInsulation, &m_bmpTempInsulation);
-//	LoadPicFromFile(_T("加热_1.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_HEAT1), _T("PNG"));
-	GetDstDcFromPic(&m_dcTempHeat1, &m_bmpTempHeat1);
-//	LoadPicFromFile(_T("加热_2.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_HEAT2), _T("PNG"));
-	GetDstDcFromPic(&m_dcTempHeat2, &m_bmpTempHeat2);
-//	LoadPicFromFile(_T("加热_3.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_HEAT3), _T("PNG"));
-	GetDstDcFromPic(&m_dcTempHeat3, &m_bmpTempHeat3);
-//	LoadPicFromFile(_T("电源_1.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_POWER_OFF), _T("PNG"));
-	GetDstDcFromPic(&m_dcPowerOff, &m_bmpPowerOff);
-//	LoadPicFromFile(_T("电源_2.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_POWER_ON), _T("PNG"));
-	GetDstDcFromPic(&m_dcPowerOn, &m_bmpPowerOn);
-//	LoadPicFromFile(_T("增加.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_ADD), _T("PNG"));
-	GetDstDcFromPic(&m_dcAdd, &m_bmpAdd);
-//	LoadPicFromFile(_T("减少.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_REDUCE), _T("PNG"));
-	GetDstDcFromPic(&m_dcReduce, &m_bmpReduce);
-//	LoadPicFromFile(_T("时间标志.png"));
-	LoadFromResource(MAKEINTRESOURCE(IDB_TIMELABEL), _T("PNG"));
-	GetDstDcFromPic(&m_dcTimeLabel, &m_bmpTimeLabel);
-	CString str = _T("");
-	for (int i=0; i<10; i++)
-	{
-//		str.Format(_T("温度1_%d.png"), i);
-//		LoadPicFromFile(str);
-		LoadFromResource(MAKEINTRESOURCE(IDB_TEMP0 + i), _T("PNG"));
-		GetDstDcFromPic(&m_dcTempShow[i], &m_bmpTempShow[i]);
-// 		str.Format(_T("温度2_%d.png"), i);
-// 		LoadPicFromFile(str);
-		LoadFromResource(MAKEINTRESOURCE(IDB_TEMP_LIGHT0 + i), _T("PNG"));
-		GetDstDcFromPic(&m_dcTempSet[i], &m_bmpTempSet[i]);
-// 		str.Format(_T("时间1_%d.png"), i);
-// 		LoadPicFromFile(str);
-		LoadFromResource(MAKEINTRESOURCE(IDB_TIME0 + i), _T("PNG"));
-		GetDstDcFromPic(&m_dcTimeShow[i], &m_bmpTimeShow[i]);
-// 		str.Format(_T("时间2_%d.png"), i);
-// 		LoadPicFromFile(str);
-		LoadFromResource(MAKEINTRESOURCE(IDB_TIME_LIGHT0 + i), _T("PNG"));
-		GetDstDcFromPic(&m_dcTimeSet[i], &m_bmpTimeSet[i]);
-	}
-	LoadFromResource(MAKEINTRESOURCE(IDB_BK), _T("PNG"));
-	GetDstDcFromPic(&m_dcBK, &m_bmpBK);
-}
-// 释放IImage COM组件
-void CAucma_HeaterDlg::ReleaseIImage()
-{
-	// 释放IImage接口对象
-	if (m_pImage)
-	{
-		m_pImage->Release();
-	}
-	// 释放IImagingFactory接口对象
-	if (m_pImagingFactory)
-	{
-		m_pImage->Release();
-	}
-	// 释放程序占用的COM资源
-	CoUninitialize();
-}
-// 从文件中载入图片
-void CAucma_HeaterDlg::LoadPicFromFile(CString strPicName)
-{
-	CString strPicPath = PicFolderName + strPicName; // 图像文件的路径
-	if (FAILED(m_pImagingFactory->CreateImageFromFile(strPicPath, &m_pImage)))
-	{
-		AfxMessageBox(strPicPath + _T(" Load Error!"));
-		PostMessage(WM_DESTROY);
-	}
-}
-/** 从资源中载入图片*/
-BOOL CAucma_HeaterDlg::LoadFromResource(LPCWSTR lpName, LPCWSTR lpType)  
-{  
-	// 在资源中寻找
-	HRSRC	hr;
-	DWORD	dwsize;
-	HGLOBAL	hg;
-	LPSTR	lp;
-	HMODULE hModule_Current = GetModuleHandle(NULL);
-	hr = FindResource(hModule_Current, lpName, lpType);
-	dwsize = SizeofResource(GetModuleHandle(NULL), hr);
-	hg = ::LoadResource(GetModuleHandle(NULL), hr);
-	lp = (LPSTR)::LockResource(hg);
-	// 从缓冲区创建图片
-	HRESULT hrt = NULL;
-	if(FAILED(hrt = m_pImagingFactory->CreateImageFromBuffer(lp, dwsize, DISPOSAL_NONE, &m_pImage)))
-	{
-		::DeleteObject(hr);
-		return FALSE;
-	}
-	::DeleteObject(hr);
-	return TRUE;
-}  
-
-// 将图片复制到内存DC
-void CAucma_HeaterDlg::GetDstDcFromPic(CDC* pDstDC, CBitmap* pBitmap)
-{
-	ImageInfo oImageInfo;
-	CDC* pDC = this->GetDC();
-	m_pImage->GetImageInfo(&oImageInfo);
-	//创建一个内存DC,用来存储图片数据
-	pBitmap->CreateCompatibleBitmap(pDC, oImageInfo.Width,oImageInfo.Height);
-	pDstDC->CreateCompatibleDC(pDC);
-	pDstDC->SelectObject(pBitmap);
-	//将图片数据存储到内存DC中
-	m_pImage->Draw(pDstDC->m_hDC ,CRect(0, 0, oImageInfo.Width, oImageInfo.Height), NULL);
-	if (m_pImage)
-	{
-		m_pImage->Release();
-		m_pImage = NULL;
-	}
-	pDC->DeleteDC();
-}
 // HBRUSH CAucma_HeaterDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 // {
 // //	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
@@ -361,60 +319,68 @@ void CAucma_HeaterDlg::OnDestroy()
 	m_FontTemp.DeleteObject();
 
 	m_dcHeatFastOn.DeleteDC();
-	m_bmpHeatFastOn.DeleteObject();
+//	m_bmpHeatFastOn.DeleteObject();
 	m_dcHeatFastOff.DeleteDC();
-	m_bmpHeatFastOff.DeleteObject();
+//	m_bmpHeatFastOff.DeleteObject();
 	m_dcWinterOn.DeleteDC();
-	m_bmpWinterOn.DeleteObject();
+//	m_bmpWinterOn.DeleteObject();
 	m_dcWinterOff.DeleteDC();
-	m_bmpWinterOff.DeleteObject();
+//	m_bmpWinterOff.DeleteObject();
 	m_dcHelperOn.DeleteDC();
-	m_bmpHelperOn.DeleteObject();
+//	m_bmpHelperOn.DeleteObject();
 	m_dcHelperOff.DeleteDC();
-	m_bmpHelperOff.DeleteObject();
+//	m_bmpHelperOff.DeleteObject();
 	m_dcWashHandOn.DeleteDC();
-	m_bmpWashHandOn.DeleteObject();
+//	m_bmpWashHandOn.DeleteObject();
 	m_dcWashHandOff.DeleteDC();
-	m_bmpWashHandOff.DeleteObject();
+//	m_bmpWashHandOff.DeleteObject();
 	m_dcNightModeOn.DeleteDC();
-	m_bmpNightModeOn.DeleteObject();
+//	m_bmpNightModeOn.DeleteObject();
 	m_dcNightModeOff.DeleteDC();
-	m_bmpNightModeOff.DeleteObject();
+//	m_bmpNightModeOff.DeleteObject();
 	m_dcTempOff.DeleteDC();
-	m_bmpTempOff.DeleteObject();
+//	m_bmpTempOff.DeleteObject();
 	m_dcTempInsulation.DeleteDC();
-	m_bmpTempInsulation.DeleteObject();
+//	m_bmpTempInsulation.DeleteObject();
 	m_dcTempHeat1.DeleteDC();
-	m_bmpTempHeat1.DeleteObject();
+//	m_bmpTempHeat1.DeleteObject();
 	m_dcTempHeat2.DeleteDC();
-	m_bmpTempHeat2.DeleteObject();
+//	m_bmpTempHeat2.DeleteObject();
 	m_dcTempHeat3.DeleteDC();
-	m_bmpTempHeat3.DeleteObject();
+//	m_bmpTempHeat3.DeleteObject();
 	m_dcPowerOn.DeleteDC();
-	m_bmpPowerOn.DeleteObject();
+//	m_bmpPowerOn.DeleteObject();
 	m_dcPowerOff.DeleteDC();
-	m_bmpPowerOff.DeleteObject();
+//	m_bmpPowerOff.DeleteObject();
 	for (int i=0; i<10; i++)
 	{
-		m_bmpTempShow[i].DeleteObject();
-		m_dcTempShow[i].DeleteDC();
-		m_bmpTimeSet[i].DeleteObject();
-		m_dcTempSet[i].DeleteDC();
-		m_bmpTimeShow[i].DeleteObject();
-		m_dcTimeShow[i].DeleteDC();
-		m_bmpTimeSet[i].DeleteObject();
-		m_dcTimeSet[i].DeleteDC();
+//		m_bmpTempShow[i].DeleteObject();
+		m_dcTempHighShow[i].DeleteDC();
+		m_dcTempLowShow[i].DeleteDC();
+//		m_bmpTimeSet[i].DeleteObject();
+		m_dcTempHighSet[i].DeleteDC();
+		m_dcTempLowSet[i].DeleteDC();
+//		m_bmpTimeShow[i].DeleteObject();
+		m_dcHourHighShow[i].DeleteDC();
+		m_dcHourLowShow[i].DeleteDC();
+		m_dcMinHighShow[i].DeleteDC();
+		m_dcMinLowShow[i].DeleteDC();
+//		m_bmpTimeSet[i].DeleteObject();
+		m_dcHourHighSet[i].DeleteDC();
+		m_dcHourLowSet[i].DeleteDC();
+		m_dcMinHighSet[i].DeleteDC();
+		m_dcMinLowSet[i].DeleteDC();
 	}
-	m_bmpAdd.DeleteObject();
+//	m_bmpAdd.DeleteObject();
 	m_dcAdd.DeleteDC();
-	m_bmpReduce.DeleteObject();
+//	m_bmpReduce.DeleteObject();
 	m_dcReduce.DeleteDC();
-	m_bmpTimeLabel.DeleteObject();
+//	m_bmpTimeLabel.DeleteObject();
 	m_dcTimeLabel.DeleteDC();
 	m_bmpBK.DeleteObject();
 	m_dcBK.DeleteDC();
 	m_oCEUart.ClosePort();
-	ReleaseIImage();
+	m_oPngImage.ReleaseIImage();
 }
 void CAucma_HeaterDlg::OnClickedHeatfast()
 {
@@ -484,7 +450,22 @@ void CAucma_HeaterDlg::OnClickedPower()
 	if (m_bPower == true)
 	{
 		OnInit();
-		Invalidate(FALSE);
+		InvalidateRect(m_rectHeatFastPic, FALSE);
+		InvalidateRect(m_rectHeatFastText, FALSE);
+		InvalidateRect(m_rectWinterPic, FALSE);
+		InvalidateRect(m_rectWinterText, FALSE);
+		InvalidateRect(m_rectHelperPic, FALSE);
+		InvalidateRect(m_rectHelperText, FALSE);
+		InvalidateRect(m_rectWashHandPic, FALSE);
+		InvalidateRect(m_rectWashHandText, FALSE);
+		InvalidateRect(m_rectNightModePic, FALSE);
+		InvalidateRect(m_rectNightModeText, FALSE);
+		InvalidateRect(m_rectTempPic, FALSE);
+		InvalidateRect(m_rectTempInsulationText, FALSE);
+		InvalidateRect(m_rectTempHeatText, FALSE);
+		InvalidateRect(m_rectPowerPic, FALSE);
+		InvalidateRect(m_rectTemp, FALSE);
+		InvalidateRect(m_rectTime, FALSE);
 	}
 	else
 	{
@@ -503,6 +484,7 @@ void CAucma_HeaterDlg::OnClickedAdd()
 	SYSTEMTIME sysTime;
 	CTimeSpan time(60);
 	m_uiTwinkleCount = 0;
+	m_uiTwinkleSleepTimes = TwinkleTimerSleepTimes;
 	if (m_uiContinuousCount == 0)
 	{
 		KillTimer(ContinuousOptTimerEvent);
@@ -546,6 +528,7 @@ void CAucma_HeaterDlg::OnClickedReduce()
 	SYSTEMTIME sysTime;
 	CTimeSpan time(-60);
 	m_uiTwinkleCount = 0;
+	m_uiTwinkleSleepTimes = TwinkleTimerSleepTimes;
 	if (m_uiContinuousCount == 0)
 	{
 		KillTimer(ContinuousOptTimerEvent);
@@ -557,8 +540,8 @@ void CAucma_HeaterDlg::OnClickedReduce()
 		if (m_iInTempSet > SetTempMinLimit)
 		{
 			m_iInTempSet--;
-			InvalidateRect(m_rectTemp, FALSE);
 		}
+		InvalidateRect(m_rectTemp, FALSE);
 	}
 	else if (m_bSetTime == true)
 	{
@@ -684,48 +667,19 @@ void CAucma_HeaterDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	m_uiContinuousCount = 0;
 	CDialog::OnLButtonUp(nFlags, point);
 }
-// 将位图选入内存设备
-void CAucma_HeaterDlg::OnDcBitBlt(CDC* pDstDC, CDC* pSrcDC, CRect rect, bool bTransparent)
-{
-	if (bTransparent)
-	{
-// 		::AlphaBlend(pDstDC->m_hDC,
-// 			rect.left, 
-// 			rect.top, 
-// 			rect.Width(), 
-// 			rect.Height(), 
-// 			pSrcDC->m_hDC, 
-// 			0, 
-// 			0, 
-// 			rect.Width(), 
-// 			rect.Height(), 
-// 			m_blendfun);
-	}
-	else
-	{
-		pDstDC->BitBlt(rect.left,	// 目标位图的X起始坐标
-			rect.top,			// 目标位图的y起始坐标
-			rect.Width(),			// 显示图像的宽度
-			rect.Height(),			// 显示图像的高度
-			pSrcDC, 
-			0,			// 从源位图的X坐标开始显示图片
-			0,			// 从源位图的y坐标开始显示图片
-			SRCCOPY);	// 显示方式
-	}
-}
 void CAucma_HeaterDlg::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 	// TODO: 在此处添加消息处理程序代码
 	// 不为绘图消息调用 CDialog::OnPaint()
-	OnDcBitBlt(&dc, &m_dcBK, m_rectBK, false);
+	m_oPngImage.OnDcBitBlt(&dc, &m_dcBK, m_rectBK, false);
 	dc.SetBkMode(TRANSPARENT);
 	if (m_iFastHeatStateOld != m_iFastHeatState)
 	{
 		if (m_iFastHeatState == NormalHeat)
 		{
-			OnDcBitBlt(&dc, &m_dcHeatFastOff, m_rectHeatFastPic);
-			OnDcBitBlt(&dc, &m_dcWinterOff, m_rectWinterPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcHeatFastOff, m_rectHeatFastPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcWinterOff, m_rectWinterPic);
 			dc.SetTextColor(DefaultTextColor);
 			dc.ExtTextOut(m_rectHeatFastText.left + TextOutMovePos1, m_rectHeatFastText.top, ETO_OPAQUE, NULL, _T("速热引擎"), NULL);
 			dc.SelectObject(&m_FontWinter);
@@ -734,8 +688,8 @@ void CAucma_HeaterDlg::OnPaint()
 		}
 		else if (m_iFastHeatState == FastHeat)
 		{
-			OnDcBitBlt(&dc, &m_dcHeatFastOn, m_rectHeatFastPic);
-			OnDcBitBlt(&dc, &m_dcWinterOff, m_rectWinterPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcHeatFastOn, m_rectHeatFastPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcWinterOff, m_rectWinterPic);
 			dc.SetTextColor(SelectTextColor);
 			dc.ExtTextOut(m_rectHeatFastText.left + TextOutMovePos1, m_rectHeatFastText.top, ETO_OPAQUE, NULL, _T("速热引擎"), NULL);
 			dc.SetTextColor(DefaultTextColor);
@@ -745,8 +699,8 @@ void CAucma_HeaterDlg::OnPaint()
 		}
 		else if (m_iFastHeatState == WinterHeat)
 		{
-			OnDcBitBlt(&dc, &m_dcHeatFastOn, m_rectHeatFastPic);
-			OnDcBitBlt(&dc, &m_dcWinterOn, m_rectWinterPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcHeatFastOn, m_rectHeatFastPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcWinterOn, m_rectWinterPic);
 			dc.SetTextColor(SelectTextColor);
 			dc.ExtTextOut(m_rectHeatFastText.left + TextOutMovePos1, m_rectHeatFastText.top, ETO_OPAQUE, NULL, _T("速热引擎"), NULL);
 			dc.SelectObject(&m_FontWinter);
@@ -759,12 +713,12 @@ void CAucma_HeaterDlg::OnPaint()
 	{
 		if (m_bHelper == true)
 		{
-			OnDcBitBlt(&dc, &m_dcHelperOn, m_rectHelperPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcHelperOn, m_rectHelperPic);
 			dc.SetTextColor(SelectTextColor);
 		}
 		else
 		{
-			OnDcBitBlt(&dc, &m_dcHelperOff, m_rectHelperPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcHelperOff, m_rectHelperPic);
 			dc.SetTextColor(DefaultTextColor);
 		}
 		dc.ExtTextOut(m_rectHelperText.left + TextOutMovePos1, m_rectHelperText.top, ETO_OPAQUE, NULL, _T("智能助手"), NULL);
@@ -774,12 +728,12 @@ void CAucma_HeaterDlg::OnPaint()
 	{
 		if (m_bWashHand == true)
 		{
-			OnDcBitBlt(&dc, &m_dcWashHandOn, m_rectWashHandPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcWashHandOn, m_rectWashHandPic);
 			dc.SetTextColor(SelectTextColor);
 		}
 		else
 		{
-			OnDcBitBlt(&dc, &m_dcWashHandOff, m_rectWashHandPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcWashHandOff, m_rectWashHandPic);
 			dc.SetTextColor(DefaultTextColor);
 		}
 		dc.ExtTextOut(m_rectWashHandText.left + TextOutMovePos1, m_rectWashHandText.top, ETO_OPAQUE, NULL, _T("洗手加热"), NULL);
@@ -789,12 +743,12 @@ void CAucma_HeaterDlg::OnPaint()
 	{
 		if (m_bNight == true)
 		{
-			OnDcBitBlt(&dc, &m_dcNightModeOn, m_rectNightModePic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcNightModeOn, m_rectNightModePic);
 			dc.SetTextColor(SelectTextColor);
 		}
 		else
 		{
-			OnDcBitBlt(&dc, &m_dcNightModeOff, m_rectNightModePic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcNightModeOff, m_rectNightModePic);
 			dc.SetTextColor(DefaultTextColor);
 		}
 		dc.ExtTextOut(m_rectNightModeText.left + TextOutMovePos1, m_rectNightModeText.top, ETO_OPAQUE, NULL, _T("夜电模式"), NULL);
@@ -804,22 +758,22 @@ void CAucma_HeaterDlg::OnPaint()
 	{
 		if (m_bPower == true)
 		{
-			OnDcBitBlt(&dc, &m_dcPowerOn, m_rectPowerPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcPowerOn, m_rectPowerPic);
 		}
 		else
 		{
-			OnDcBitBlt(&dc, &m_dcPowerOff, m_rectPowerPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcPowerOff, m_rectPowerPic);
 		}
 		m_bPowerOld = m_bPower;
 	}
 	if (m_bAddOld != m_bAdd)
 	{
-		OnDcBitBlt(&dc, &m_dcAdd, m_rectAdd);
+		m_oPngImage.OnDcBitBlt(&dc, &m_dcAdd, m_rectAdd);
 		m_bAddOld = m_bAdd;
 	}
 	if (m_bReduceOld != m_bReduce)
 	{
-		OnDcBitBlt(&dc, &m_dcReduce, m_rectReduce);
+		m_oPngImage.OnDcBitBlt(&dc, &m_dcReduce, m_rectReduce);
 		m_bReduceOld = m_bReduce;
 	}
 	if (m_bTempLabelOld != m_bTempLabel)
@@ -834,13 +788,13 @@ void CAucma_HeaterDlg::OnPaint()
 	{
 		if (m_bSetTemp == true)
 		{
-			OnDcBitBlt(&dc, &m_dcTempSet[m_iInTempSet / 10], m_rectTempHighPic);
-			OnDcBitBlt(&dc, &m_dcTempSet[m_iInTempSet % 10], m_rectTempLowPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempHighSet[m_iInTempSet / 10], m_rectTempHighPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempLowSet[m_iInTempSet % 10], m_rectTempLowPic);
 		}
 		else
 		{
-			OnDcBitBlt(&dc, &m_dcTempShow[m_iInTempActual / 10], m_rectTempHighPic);
-			OnDcBitBlt(&dc, &m_dcTempShow[m_iInTempActual % 10], m_rectTempLowPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempHighShow[m_iInTempActual / 10], m_rectTempHighPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempLowShow[m_iInTempActual % 10], m_rectTempLowPic);
 		}
 		m_iInTempSetOld = m_iInTempSet;
 		m_bSetTempOld = m_bSetTemp;
@@ -849,38 +803,38 @@ void CAucma_HeaterDlg::OnPaint()
 	{
 		if (m_bSetTime == true)
 		{
-			OnDcBitBlt(&dc, &m_dcTimeSet[m_CurrTime.GetHour() / 10], m_rectHourHighPic);
-			OnDcBitBlt(&dc, &m_dcTimeSet[m_CurrTime.GetHour() % 10], m_rectHourLowPic);
-			OnDcBitBlt(&dc, &m_dcTimeSet[m_CurrTime.GetMinute() / 10], m_rectMinHighPic);
-			OnDcBitBlt(&dc, &m_dcTimeSet[m_CurrTime.GetMinute() % 10], m_rectMinLowPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcHourHighSet[m_CurrTime.GetHour() / 10], m_rectHourHighPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcHourLowSet[m_CurrTime.GetHour() % 10], m_rectHourLowPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcMinHighSet[m_CurrTime.GetMinute() / 10], m_rectMinHighPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcMinLowSet[m_CurrTime.GetMinute() % 10], m_rectMinLowPic);
 		}
 		else
 		{
-			OnDcBitBlt(&dc, &m_dcTimeShow[m_CurrTime.GetHour() / 10], m_rectHourHighPic);
-			OnDcBitBlt(&dc, &m_dcTimeShow[m_CurrTime.GetHour() % 10], m_rectHourLowPic);
-			OnDcBitBlt(&dc, &m_dcTimeShow[m_CurrTime.GetMinute() / 10], m_rectMinHighPic);
-			OnDcBitBlt(&dc, &m_dcTimeShow[m_CurrTime.GetMinute() % 10], m_rectMinLowPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcHourHighShow[m_CurrTime.GetHour() / 10], m_rectHourHighPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcHourLowShow[m_CurrTime.GetHour() % 10], m_rectHourLowPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcMinHighShow[m_CurrTime.GetMinute() / 10], m_rectMinHighPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcMinLowShow[m_CurrTime.GetMinute() % 10], m_rectMinLowPic);
 		}
 		m_CurrTimeOld = m_CurrTime;
 		m_bSetTimeOld = m_bSetTime;
 	}
 	if (m_bTimeLabelOld != m_bTimeLabel)
 	{
-		OnDcBitBlt(&dc, &m_dcTimeLabel, m_rectTimeLabelPic);
+		m_oPngImage.OnDcBitBlt(&dc, &m_dcTimeLabel, m_rectTimeLabelPic);
 		m_bTimeLabelOld = m_bTimeLabel;
 	}
 	if ((m_iTempStateOld != m_iTempState) || (m_bTempHeat == true))
 	{
 		if (m_iTempState == NoTempShow)
 		{
-			OnDcBitBlt(&dc, &m_dcTempOff, m_rectTempPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempOff, m_rectTempPic);
 			dc.SetTextColor(DefaultTextColor);
 			dc.ExtTextOut(m_rectTempInsulationText.left, m_rectTempInsulationText.top, ETO_OPAQUE, NULL, _T("保温"), NULL);
 			dc.ExtTextOut(m_rectTempHeatText.left, m_rectTempHeatText.top, ETO_OPAQUE, NULL, _T("加热"), NULL);
 		}
 		else if (m_iTempState == InsulationState)
 		{
-			OnDcBitBlt(&dc, &m_dcTempInsulation, m_rectTempPic);
+			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempInsulation, m_rectTempPic);
 			dc.SetTextColor(SelectTextColor);
 			dc.ExtTextOut(m_rectTempInsulationText.left, m_rectTempInsulationText.top, ETO_OPAQUE, NULL, _T("保温"), NULL);
 			dc.SetTextColor(DefaultTextColor);
@@ -890,15 +844,15 @@ void CAucma_HeaterDlg::OnPaint()
 		{
 			if (m_uiHeatCount == 0)
 			{
-				OnDcBitBlt(&dc, &m_dcTempHeat1, m_rectTempPic);
+				m_oPngImage.OnDcBitBlt(&dc, &m_dcTempHeat1, m_rectTempPic);
 			}
 			else if (m_uiHeatCount == 1)
 			{
-				OnDcBitBlt(&dc, &m_dcTempHeat2, m_rectTempPic);
+				m_oPngImage.OnDcBitBlt(&dc, &m_dcTempHeat2, m_rectTempPic);
 			}
 			else if (m_uiHeatCount == 2)
 			{
-				OnDcBitBlt(&dc, &m_dcTempHeat3, m_rectTempPic);
+				m_oPngImage.OnDcBitBlt(&dc, &m_dcTempHeat3, m_rectTempPic);
 			}
 			dc.SetTextColor(DefaultTextColor);
 			dc.ExtTextOut(m_rectTempInsulationText.left, m_rectTempInsulationText.top, ETO_OPAQUE, NULL, _T("保温"), NULL);
@@ -980,7 +934,14 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 	else if (nIDEvent == TwinkleTimerEvent)
 	{
-		m_uiTwinkleCount++;
+		if (m_uiTwinkleSleepTimes > 0)
+		{
+			m_uiTwinkleSleepTimes--;
+		}
+		else
+		{
+			m_uiTwinkleCount++;
+		}
 		if (m_uiTwinkleCount >= TwinkleMaxTimes)
 		{
 			if (m_bSetTemp == true)
@@ -991,6 +952,9 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 			{
 				OnSetTime();
 			}
+		}
+		else if (m_uiTwinkleSleepTimes != 0)
+		{
 		}
 		else
 		{
@@ -1194,7 +1158,7 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_uiHeatCount = 0;
 	m_iInTempSet = DefaultSetTemp;
 	m_iInTempSetOld = 0;
-	m_iInTempActual = 55;
+	m_iInTempActual = 48;
 	m_bTempHeat = false;
 	m_CurrTime = CTime::GetCurrentTime();
 	m_CurrTimeOld = 1;
@@ -1214,9 +1178,8 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_uiUartRcvCount = 0;
 	m_byCheck = 0;
 	m_uiTwinkleCount = 0;
-	m_pImagingFactory = NULL;
-	m_pImage = NULL;
 	m_bTwinkle = false;
+	m_uiTwinkleSleepTimes = 0;
 	KillTimer(ShowTempStateTimerEvent);
 	KillTimer(ShowTimeTimerEvent);
 	KillTimer(ContinuousOptTimerEvent);

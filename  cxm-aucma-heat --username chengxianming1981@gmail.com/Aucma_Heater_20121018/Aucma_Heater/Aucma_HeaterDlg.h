@@ -1,10 +1,9 @@
 // Aucma_HeaterDlg.h : 头文件
 //
-#include <imaging.h>
+#pragma once
 #include "..\UART_WINCE\CEUart.h"
 #include "Parameter.h"
-#pragma once
-
+#include "PngImage.h"
 // CAucma_HeaterDlg 对话框
 class CAucma_HeaterDlg : public CDialog
 {
@@ -127,13 +126,29 @@ private:
 	// 电源关闭图标句柄
 	CDC m_dcPowerOff;
 	// 温度显示图标句柄
-	CDC m_dcTempShow[10];
+	CDC m_dcTempHighShow[10];
+	// 温度显示图标句柄
+	CDC m_dcTempLowShow[10];
 	// 温度设置图标句柄
-	CDC m_dcTempSet[10];
+	CDC m_dcTempHighSet[10];
+	// 温度显示图标句柄
+	CDC m_dcTempLowSet[10];
 	// 时间显示图标句柄
-	CDC m_dcTimeShow[10];
+	CDC m_dcHourHighShow[10];
+	// 时间显示图标句柄
+	CDC m_dcHourLowShow[10];
+	// 时间显示图标句柄
+	CDC m_dcMinHighShow[10];
+	// 时间显示图标句柄
+	CDC m_dcMinLowShow[10];
 	// 时间设置图标句柄
-	CDC m_dcTimeSet[10];
+	CDC m_dcHourHighSet[10];
+	// 时间设置图标句柄
+	CDC m_dcHourLowSet[10];
+	// 时间设置图标句柄
+	CDC m_dcMinHighSet[10];
+	// 时间设置图标句柄
+	CDC m_dcMinLowSet[10];
 	// 按钮"增加"图标按键
 	CDC m_dcAdd;
 	// 按钮"减少"图标按键
@@ -142,54 +157,54 @@ private:
 	CDC m_dcTimeLabel;
 	// 背景图标句柄
 	CDC m_dcBK;
-	// 速热引擎打开图标句柄
-	CBitmap m_bmpHeatFastOn;
-	// 速热引擎关闭图标句柄
-	CBitmap m_bmpHeatFastOff;
-	// 冬天打开图标句柄
-	CBitmap m_bmpWinterOn;
-	// 冬天关闭图标句柄
-	CBitmap m_bmpWinterOff;
-	// 智能助手打开图标句柄
-	CBitmap m_bmpHelperOn;
-	// 智能助手关闭图标句柄
-	CBitmap m_bmpHelperOff;
-	// 洗手加热打开图标句柄
-	CBitmap m_bmpWashHandOn;
-	// 洗手加热关闭图标句柄
-	CBitmap m_bmpWashHandOff;
-	// 夜间模式打开图标句柄
-	CBitmap m_bmpNightModeOn;
-	// 夜间模式关闭图标句柄
-	CBitmap m_bmpNightModeOff;
-	// 温度显示关闭图标句柄
-	CBitmap m_bmpTempOff;
-	// 温度保温图标句柄
-	CBitmap m_bmpTempInsulation;
-	// 温度加热图标句柄1
-	CBitmap m_bmpTempHeat1;
-	// 温度加热图标句柄2
-	CBitmap m_bmpTempHeat2;
-	// 温度加热图标句柄3
-	CBitmap m_bmpTempHeat3;
-	// 电源打开图标句柄
-	CBitmap m_bmpPowerOn;
-	// 电源关闭图标句柄
-	CBitmap m_bmpPowerOff;
-	// 温度显示图标句柄
-	CBitmap m_bmpTempShow[10];
-	// 温度设置图标句柄
-	CBitmap m_bmpTempSet[10];
-	// 时间显示图标句柄
-	CBitmap m_bmpTimeShow[10];
-	// 时间设置图标句柄
-	CBitmap m_bmpTimeSet[10];
-	// 按钮"增加"图标按键
-	CBitmap m_bmpAdd;
-	// 按钮"减少"图标按键
-	CBitmap m_bmpReduce;
-	// 时间标志图标句柄
-	CBitmap m_bmpTimeLabel;
+// 	// 速热引擎打开图标句柄
+// 	CBitmap m_bmpHeatFastOn;
+// 	// 速热引擎关闭图标句柄
+// 	CBitmap m_bmpHeatFastOff;
+// 	// 冬天打开图标句柄
+// 	CBitmap m_bmpWinterOn;
+// 	// 冬天关闭图标句柄
+// 	CBitmap m_bmpWinterOff;
+// 	// 智能助手打开图标句柄
+// 	CBitmap m_bmpHelperOn;
+// 	// 智能助手关闭图标句柄
+// 	CBitmap m_bmpHelperOff;
+// 	// 洗手加热打开图标句柄
+// 	CBitmap m_bmpWashHandOn;
+// 	// 洗手加热关闭图标句柄
+// 	CBitmap m_bmpWashHandOff;
+// 	// 夜间模式打开图标句柄
+// 	CBitmap m_bmpNightModeOn;
+// 	// 夜间模式关闭图标句柄
+// 	CBitmap m_bmpNightModeOff;
+// 	// 温度显示关闭图标句柄
+// 	CBitmap m_bmpTempOff;
+// 	// 温度保温图标句柄
+// 	CBitmap m_bmpTempInsulation;
+// 	// 温度加热图标句柄1
+// 	CBitmap m_bmpTempHeat1;
+// 	// 温度加热图标句柄2
+// 	CBitmap m_bmpTempHeat2;
+// 	// 温度加热图标句柄3
+// 	CBitmap m_bmpTempHeat3;
+// 	// 电源打开图标句柄
+// 	CBitmap m_bmpPowerOn;
+// 	// 电源关闭图标句柄
+// 	CBitmap m_bmpPowerOff;
+// 	// 温度显示图标句柄
+// 	CBitmap m_bmpTempShow[10];
+// 	// 温度设置图标句柄
+// 	CBitmap m_bmpTempSet[10];
+// 	// 时间显示图标句柄
+// 	CBitmap m_bmpTimeShow[10];
+// 	// 时间设置图标句柄
+// 	CBitmap m_bmpTimeSet[10];
+// 	// 按钮"增加"图标按键
+// 	CBitmap m_bmpAdd;
+// 	// 按钮"减少"图标按键
+// 	CBitmap m_bmpReduce;
+// 	// 时间标志图标句柄
+// 	CBitmap m_bmpTimeLabel;
 	// 背景
 	CBitmap m_bmpBK;
 	// 智能助手标志位
@@ -239,10 +254,6 @@ private:
 	unsigned int m_uiContinuousCount;
 	/** 增加操作标志位*/
 	bool m_bAddOpt;
-	// Image工厂接口对象
-	IImagingFactory* m_pImagingFactory;
-	// Image接口对象
-	IImage* m_pImage;
 	// 设置AlphaBlend参数
 	BLENDFUNCTION m_blendfun;
 	// 串口通讯类成员
@@ -268,19 +279,11 @@ private:
 	unsigned int m_uiTwinkleCount;
 	// 闪烁标志位
 	bool m_bTwinkle;
+	// 闪烁休眠次数
+	unsigned int m_uiTwinkleSleepTimes;
+	// png绘制类成员
+	CPngImage m_oPngImage;
 public:
-	/** 运行IImage COM组件*/
-	void RunIImage();
-	/** 释放IImage COM组件*/
-	void ReleaseIImage();
-	/** 从文件中载入图片*/
-	void LoadPicFromFile(CString strPicName);
-	/** 从资源中载入图片*/
-	BOOL LoadFromResource(LPCWSTR lpName, LPCWSTR lpType);
-	/** 将图片复制到内存DC*/
-	void GetDstDcFromPic(CDC* pDstDC, CBitmap* pBitmap);
-	/** 将位图选入内存设备*/
-	void OnDcBitBlt(CDC* pDstDC, CDC* pSrcDC, CRect rect, bool bTransparent = false);
 	// 鼠标左键单击坐标在所选区域内
 	bool OnPointInRect(CRect rect, CPoint point);
 	// 设置温度
