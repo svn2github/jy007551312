@@ -254,8 +254,10 @@ private:
 	unsigned int m_uiContinuousCount;
 	/** 增加操作标志位*/
 	bool m_bAddOpt;
-	// 设置AlphaBlend参数
-	BLENDFUNCTION m_blendfun;
+	/** 减少操作标志位*/
+	bool m_bReduceOpt;
+// 	// 设置AlphaBlend参数
+// 	BLENDFUNCTION m_blendfun;
 	// 串口通讯类成员
 	CCEUart m_oCEUart;
 	// 设置箱内温度
@@ -279,8 +281,8 @@ private:
 	unsigned int m_uiTwinkleCount;
 	// 闪烁标志位
 	bool m_bTwinkle;
-	// 闪烁休眠次数
-	unsigned int m_uiTwinkleSleepTimes;
+//	// 闪烁休眠次数
+//	unsigned int m_uiTwinkleSleepTimes;
 	// png绘制类成员
 	CPngImage m_oPngImage;
 public:
@@ -321,4 +323,11 @@ public:
 private:
 	// 初始化界面参数
 	void OnInit(void);
+public:
+	// 载入图片
+	void LoadPicture(void);
+	// 载入字体
+	void LoadFont(void);
+	// 设置窗口满屏
+	void SetWindowFullScreen(void);
 };

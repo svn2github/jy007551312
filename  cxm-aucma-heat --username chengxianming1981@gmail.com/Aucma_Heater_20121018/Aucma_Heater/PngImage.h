@@ -27,7 +27,7 @@ public:
 	/** 将位图选入内存设备*/
 	void OnDcBitBlt(CDC* pDstDC, CDC* pSrcDC, CRect rect, bool bTransparent = false);
 	/** 绘制图像上一部分到指定的部分（支持alpha混合）*/
-	void DrawAlpha(CDC* pDstDC, CDC* pSrcDC, CRect dstRect);
+	void DrawAlpha(CDC* pDstDC, CDC* pSrcDC, CRect dstRect, bool bDeleteImage = true);
 	/** 取得图片原始数据*/
 	void GetImgDateBuf();
 };

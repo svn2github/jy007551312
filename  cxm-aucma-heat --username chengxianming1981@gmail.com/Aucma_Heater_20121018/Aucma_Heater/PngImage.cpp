@@ -126,7 +126,7 @@ void CPngImage::OnDcBitBlt(CDC* pDstDC, CDC* pSrcDC, CRect rect, bool bTranspare
 	}
 }
 
-void CPngImage::DrawAlpha(CDC* pDstDC, CDC* pSrcDC, CRect dstRect)
+void CPngImage::DrawAlpha(CDC* pDstDC, CDC* pSrcDC, CRect dstRect, bool bDeleteImage)
 {
 	// 获取图像信息失败,目标绘图区为NULL
 	if (m_pImage==NULL)
@@ -179,10 +179,13 @@ void CPngImage::DrawAlpha(CDC* pDstDC, CDC* pSrcDC, CRect dstRect)
 // 	SelectObject(hDIBDC, hOldBmp);
 // 	DeleteObject(hDIBDC);
  	DeleteObject(hDIBitmap);
-	if (m_pImage)
+	if (bDeleteImage == true)
 	{
-		m_pImage->Release();
-		m_pImage = NULL;
+		if (m_pImage)
+		{
+			m_pImage->Release();
+			m_pImage = NULL;
+		}
 	}
 }
 // 取得图片原始数据
