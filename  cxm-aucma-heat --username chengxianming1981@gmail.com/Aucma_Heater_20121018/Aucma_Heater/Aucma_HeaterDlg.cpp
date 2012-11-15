@@ -40,7 +40,7 @@ CAucma_HeaterDlg::CAucma_HeaterDlg(CWnd* pParent /*=NULL*/)
 	m_rectMinHighPic = CRect(247, 197, 279, 261);
 	m_rectMinLowPic = CRect(280, 197, 312, 261);
 	m_rectTime = CRect(162, 197, 312, 261);
-	m_rectBK = CRect(0, 0, 474, 266);
+	m_rectBK = CRect(0, 0, 480, 272);
 }
 
 void CAucma_HeaterDlg::DoDataExchange(CDataExchange* pDX)
