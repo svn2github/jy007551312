@@ -9,8 +9,10 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|CHSINT SDK For WinCE 6.0 (ARMV4I) = Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)
 		Debug|gzsd6410_SDK (ARMV4I) = Debug|gzsd6410_SDK (ARMV4I)
+		Debug|My Device Emulator (ARMV4I) = Debug|My Device Emulator (ARMV4I)
 		Release|CHSINT SDK For WinCE 6.0 (ARMV4I) = Release|CHSINT SDK For WinCE 6.0 (ARMV4I)
 		Release|gzsd6410_SDK (ARMV4I) = Release|gzsd6410_SDK (ARMV4I)
+		Release|My Device Emulator (ARMV4I) = Release|My Device Emulator (ARMV4I)
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{20895E82-E98D-4667-98AE-471E521AD8C5}.Debug|CHSINT SDK For WinCE 6.0 (ARMV4I).ActiveCfg = Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)
@@ -19,24 +21,32 @@ Global
 		{20895E82-E98D-4667-98AE-471E521AD8C5}.Debug|gzsd6410_SDK (ARMV4I).ActiveCfg = Debug|gzsd6410_SDK (ARMV4I)
 		{20895E82-E98D-4667-98AE-471E521AD8C5}.Debug|gzsd6410_SDK (ARMV4I).Build.0 = Debug|gzsd6410_SDK (ARMV4I)
 		{20895E82-E98D-4667-98AE-471E521AD8C5}.Debug|gzsd6410_SDK (ARMV4I).Deploy.0 = Debug|gzsd6410_SDK (ARMV4I)
+		{20895E82-E98D-4667-98AE-471E521AD8C5}.Debug|My Device Emulator (ARMV4I).ActiveCfg = Debug|My Device Emulator (ARMV4I)
+		{20895E82-E98D-4667-98AE-471E521AD8C5}.Debug|My Device Emulator (ARMV4I).Build.0 = Debug|My Device Emulator (ARMV4I)
+		{20895E82-E98D-4667-98AE-471E521AD8C5}.Debug|My Device Emulator (ARMV4I).Deploy.0 = Debug|My Device Emulator (ARMV4I)
 		{20895E82-E98D-4667-98AE-471E521AD8C5}.Release|CHSINT SDK For WinCE 6.0 (ARMV4I).ActiveCfg = Release|CHSINT SDK For WinCE 6.0 (ARMV4I)
 		{20895E82-E98D-4667-98AE-471E521AD8C5}.Release|CHSINT SDK For WinCE 6.0 (ARMV4I).Build.0 = Release|CHSINT SDK For WinCE 6.0 (ARMV4I)
 		{20895E82-E98D-4667-98AE-471E521AD8C5}.Release|CHSINT SDK For WinCE 6.0 (ARMV4I).Deploy.0 = Release|CHSINT SDK For WinCE 6.0 (ARMV4I)
 		{20895E82-E98D-4667-98AE-471E521AD8C5}.Release|gzsd6410_SDK (ARMV4I).ActiveCfg = Release|gzsd6410_SDK (ARMV4I)
 		{20895E82-E98D-4667-98AE-471E521AD8C5}.Release|gzsd6410_SDK (ARMV4I).Build.0 = Release|gzsd6410_SDK (ARMV4I)
 		{20895E82-E98D-4667-98AE-471E521AD8C5}.Release|gzsd6410_SDK (ARMV4I).Deploy.0 = Release|gzsd6410_SDK (ARMV4I)
+		{20895E82-E98D-4667-98AE-471E521AD8C5}.Release|My Device Emulator (ARMV4I).ActiveCfg = Release|My Device Emulator (ARMV4I)
+		{20895E82-E98D-4667-98AE-471E521AD8C5}.Release|My Device Emulator (ARMV4I).Build.0 = Release|My Device Emulator (ARMV4I)
+		{20895E82-E98D-4667-98AE-471E521AD8C5}.Release|My Device Emulator (ARMV4I).Deploy.0 = Release|My Device Emulator (ARMV4I)
 		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Debug|CHSINT SDK For WinCE 6.0 (ARMV4I).ActiveCfg = Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)
 		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Debug|CHSINT SDK For WinCE 6.0 (ARMV4I).Build.0 = Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)
 		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Debug|CHSINT SDK For WinCE 6.0 (ARMV4I).Deploy.0 = Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)
 		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Debug|gzsd6410_SDK (ARMV4I).ActiveCfg = Debug|gzsd6410_SDK (ARMV4I)
 		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Debug|gzsd6410_SDK (ARMV4I).Build.0 = Debug|gzsd6410_SDK (ARMV4I)
 		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Debug|gzsd6410_SDK (ARMV4I).Deploy.0 = Debug|gzsd6410_SDK (ARMV4I)
+		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Debug|My Device Emulator (ARMV4I).ActiveCfg = Debug|gzsd6410_SDK (ARMV4I)
 		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Release|CHSINT SDK For WinCE 6.0 (ARMV4I).ActiveCfg = Release|CHSINT SDK For WinCE 6.0 (ARMV4I)
 		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Release|CHSINT SDK For WinCE 6.0 (ARMV4I).Build.0 = Release|CHSINT SDK For WinCE 6.0 (ARMV4I)
 		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Release|CHSINT SDK For WinCE 6.0 (ARMV4I).Deploy.0 = Release|CHSINT SDK For WinCE 6.0 (ARMV4I)
 		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Release|gzsd6410_SDK (ARMV4I).ActiveCfg = Release|gzsd6410_SDK (ARMV4I)
 		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Release|gzsd6410_SDK (ARMV4I).Build.0 = Release|gzsd6410_SDK (ARMV4I)
 		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Release|gzsd6410_SDK (ARMV4I).Deploy.0 = Release|gzsd6410_SDK (ARMV4I)
+		{4F16422F-400F-4BD2-9D3F-08B2EDE03F02}.Release|My Device Emulator (ARMV4I).ActiveCfg = Release|gzsd6410_SDK (ARMV4I)
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
