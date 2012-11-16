@@ -34,7 +34,8 @@ enum {NormalHeat, FastHeat, WinterHeat};
 /** 温度显示状态*/
 enum {NoTempShow, InsulationState, HeatTempState};
 /** 图片所在的文件夹*/
-#define PicFolderName				_T("\\Storage Card\\Folder2\\")
+//#define PicFolderName				_T("\\Storage Card\\Folder2\\")
+#define PicFolderName				_T("\\Program Files\\Folder2\\")
 /** 定义文本输出坐标偏移量1*/
 #define TextOutMovePos1				8
 /** 定义文本输出坐标偏移量2*/
