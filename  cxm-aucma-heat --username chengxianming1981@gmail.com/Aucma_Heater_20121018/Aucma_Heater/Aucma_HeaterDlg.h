@@ -267,10 +267,10 @@ private:
 	int m_iInTempActual;
 	// 实际的环境温度
 	int m_iEnvTempActual;
-	// 设置高温报警温度
-	int m_iHighWarnTemp;
-	// 设置低温报警温度
-	int m_iLowWarnTemp;
+// 	// 设置高温报警温度
+// 	int m_iHighWarnTemp;
+// 	// 设置低温报警温度
+// 	int m_iLowWarnTemp;
 	// 串口接收数据处理记数
 	unsigned int m_uiUartRcvCount;
 	// 校验位

@@ -107,7 +107,7 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	}
 	else
 	{
-		TRACE(_T("串口打开失败！"));
+		AfxMessageBox(_T("串口打开失败！"));
 	}
 // 	// BlendOp字段指明了源混合操作，但只支持AC_SRC_OVER，即根据源alpha值把源图像叠加到目标图像上  
 // 	m_blendfun.BlendOp = AC_SRC_OVER;
@@ -403,12 +403,20 @@ void CAucma_HeaterDlg::OnClickedHeatfast()
 		m_iFastHeatState = FastHeat;
 		InvalidateRect(m_rectHeatFastPic, FALSE);
 		InvalidateRect(m_rectHeatFastText, FALSE);
+		// 夏季智能开启
+		OnWriteUartData(CMD_UP_SO, CMD_WORD_SO);
+		// 冬季智能关闭
+		OnWriteUartData(CMD_UP_WO, CMD_WORD_WC);
 	}
 	else if (m_iFastHeatState == FastHeat)
 	{
 		m_iFastHeatState = WinterHeat;
 		InvalidateRect(m_rectWinterPic, FALSE);
 		InvalidateRect(m_rectWinterText, FALSE);
+		// 夏季智能关闭
+		OnWriteUartData(CMD_UP_SO, CMD_WORD_SC);
+		// 冬季智能开启
+		OnWriteUartData(CMD_UP_WO, CMD_WORD_WO);
 	}
 	else if (m_iFastHeatState == WinterHeat)
 	{
@@ -417,6 +425,10 @@ void CAucma_HeaterDlg::OnClickedHeatfast()
 		InvalidateRect(m_rectHeatFastText, FALSE);
 		InvalidateRect(m_rectWinterPic, FALSE);
 		InvalidateRect(m_rectWinterText, FALSE);
+		// 夏季智能关闭
+		OnWriteUartData(CMD_UP_SO, CMD_WORD_SC);
+		// 冬季智能关闭
+		OnWriteUartData(CMD_UP_WO, CMD_WORD_WC);
 	}
 }
 
@@ -430,6 +442,16 @@ void CAucma_HeaterDlg::OnClickedHelper()
 	m_bHelper = !m_bHelper;
 	InvalidateRect(m_rectHelperPic, FALSE);
 	InvalidateRect(m_rectHelperText, FALSE);
+	if (m_bHelper == true)
+	{
+		// 智能助手开启
+		OnWriteUartData(CMD_UP_HP, CMD_WORD_HO);
+	}
+	else
+	{
+		// 智能助手关闭
+		OnWriteUartData(CMD_UP_HP, CMD_WORD_HC);
+	}
 }
 
 void CAucma_HeaterDlg::OnClickedWashhand()
@@ -442,6 +464,16 @@ void CAucma_HeaterDlg::OnClickedWashhand()
 	m_bWashHand = !m_bWashHand;
 	InvalidateRect(m_rectWashHandPic, FALSE);
 	InvalidateRect(m_rectWashHandText, FALSE);
+	if (m_bWashHand == true)
+	{
+		// 洗手加热开启
+		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHO);
+	}
+	else
+	{
+		// 洗手加热关闭
+		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHC);
+	}
 }
 
 void CAucma_HeaterDlg::OnClickedNight()
@@ -454,6 +486,16 @@ void CAucma_HeaterDlg::OnClickedNight()
 	m_bNight = !m_bNight;
 	InvalidateRect(m_rectNightModePic, FALSE);
 	InvalidateRect(m_rectNightModeText, FALSE);
+	if (m_bNight == true)
+	{
+		// 夜电运行方式开启
+		OnWriteUartData(CMD_UP_NO, CMD_WORD_NO);
+	}
+	else
+	{
+		// 夜电运行方式关闭
+		OnWriteUartData(CMD_UP_NO, CMD_WORD_NC);
+	}
 }
 
 void CAucma_HeaterDlg::OnClickedPower()
@@ -463,6 +505,16 @@ void CAucma_HeaterDlg::OnClickedPower()
 	{
 		OnInit();
 		Invalidate(FALSE);
+		// 夏季智能关闭
+		OnWriteUartData(CMD_UP_SO, CMD_WORD_SC);
+		// 冬季智能关闭
+		OnWriteUartData(CMD_UP_WO, CMD_WORD_WC);
+		// 智能助手关闭
+		OnWriteUartData(CMD_UP_HP, CMD_WORD_HC);
+		// 洗手加热关闭
+		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHC);
+		// 夜电运行方式关闭
+		OnWriteUartData(CMD_UP_NO, CMD_WORD_NC);
 	}
 	else
 	{
@@ -644,6 +696,8 @@ void CAucma_HeaterDlg::OnSetTemp(void)
 	else
 	{
 		KillTimer(TwinkleTimerEvent);
+		// 设置箱内温度
+		OnWriteUartData(CMD_UP_IT, m_iInTempSet + 127);
 	}
 	InvalidateRect(m_rectTempHighPic, FALSE);
 	InvalidateRect(m_rectTempLowPic, FALSE);
@@ -1184,44 +1238,71 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 	BYTE byData = m_ucRcvBuf[4];
 	switch(byCmd)
 	{
-	case CMD_IHMT_CTRL:
-		if (byData == CMD_IHMT_OFF)
-		{
-			TRACE(_T("关闭 LCD背光\n"));
-		}
-		else if (byData == CMD_IHMT_ON)
-		{
-			TRACE(_T("打开 LCD背光\n"));
-		}
-		break;
-	case CMD_IHMT_RST:
-		TRACE(_T("复位触摸屏\n"));
-		break;
+// 	case CMD_IHMT_CTRL:
+// 		if (byData == CMD_IHMT_OFF)
+// 		{
+// 			TRACE(_T("关闭 LCD背光\n"));
+// 		}
+// 		else if (byData == CMD_IHMT_ON)
+// 		{
+// 			TRACE(_T("打开 LCD背光\n"));
+// 		}
+// 		break;
+// 	case CMD_IHMT_RST:
+// 		TRACE(_T("复位触摸屏\n"));
+// 		break;
 	case CMD_DOWN_ET:
 		m_iEnvTempActual = (unsigned int)byData - 127;
-		TRACE(_T("实际环境温度 %d \n"), m_iEnvTempActual);
+		AfxMessageBox(_T("实际环境温度 %d \n"), m_iEnvTempActual);
 		break;
 	case CMD_DOWN_IT:
 		m_iInTempActual = (unsigned int)byData - 127;
-		TRACE(_T("实际箱内温度 %d \n"), m_iInTempActual);
+		AfxMessageBox(_T("实际箱内温度 %d \n"), m_iInTempActual);
 		break;
-	case CMD_DOWN_AM:
-		if (byData == CMD_DOWN_HAM)
+	case CMD_DOWN_WT:
+		if (byData == CMD_WORD_WT_NWE)
 		{
-			TRACE(_T("高温报警\n"));
+			AfxMessageBox(_T("干烧/缺水报警\n"));
 		}
-		else if (byData == CMD_DOWN_LAM)
+		else if (byData == CMD_WORD_WT_SE)
 		{
-			TRACE(_T("低温报警\n"));
+			AfxMessageBox(_T("传感器故障报警\n"));
 		}
-		else if (byData == CMD_DOWN_HAMC)
+		else if (byData == CMD_WORD_WT_LE)
 		{
-			TRACE(_T("高温报警消除\n"));
+			AfxMessageBox(_T("漏电故障报警\n"));
 		}
-		else if (byData == CMD_DOWN_LAMC)
+		else if (byData == CMD_WORD_WT_WHE)
 		{
-			TRACE(_T("低温报警消除\n"));
+			AfxMessageBox(_T("水温超高故障报警\n"));
 		}
+		else if (byData == CMD_WORD_WT_LCE)
+		{
+			AfxMessageBox(_T("漏电线圈故障报警\n"));
+		}
+		else if (byData == CMD_WORD_WT_NWEC)
+		{
+			AfxMessageBox(_T("干烧/缺水报警消除\n"));
+		}
+		else if (byData == CMD_WORD_WT_SEC)
+		{
+			AfxMessageBox(_T("传感器故障报警消除\n"));
+		}
+		else if (byData == CMD_WORD_WT_LEC)
+		{
+			AfxMessageBox(_T("漏电故障报警消除\n"));
+		}
+		else if (byData == CMD_WORD_WT_WHEC)
+		{
+			AfxMessageBox(_T("水温超高故障报警消除\n"));
+		}
+		else if (byData == CMD_WORD_WT_LCEC)
+		{
+			AfxMessageBox(_T("漏电线圈故障报警消除\n"));
+		}
+		break;
+	case CMD_DOWN_QT:
+		OnWriteUartData(CMD_UP_IT, m_iInTempSet + 127);
 		break;
 	default:
 		break;
@@ -1267,8 +1348,8 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_bAddOpt = false;
 	m_bReduceOpt = false;
 	m_iEnvTempActual = 0;
-	m_iHighWarnTemp = 0;
-	m_iLowWarnTemp = 0;
+// 	m_iHighWarnTemp = 0;
+// 	m_iLowWarnTemp = 0;
 	m_uiUartRcvCount = 0;
 	m_byCheck = 0;
 	m_uiTwinkleCount = 0;
