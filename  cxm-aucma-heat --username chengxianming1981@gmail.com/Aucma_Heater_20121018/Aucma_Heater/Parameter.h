@@ -1,8 +1,8 @@
 #ifndef _Parameter_h
 #define _Parameter_h
 
-/** 定义对话框背景颜色*/
-#define DialogBkColor		(RGB(255, 255, 255))
+/** ℃背景色*/
+#define TempTextColor		(RGB(255, 255, 255))
 /** 默认文字颜色*/
 #define DefaultTextColor	(RGB(132, 128, 144))
 /** 选中文字颜色*/
@@ -23,10 +23,10 @@
 #define TwinkleTimerEvent			4
 /** 设置闪烁定时间隔*/
 #define TwinkleTimeSet				500
-/** 增加或减少操作时暂时关闭闪烁定时器时间间隔*/
-#define TwinkleTimerSleepTimes		3
+/** 蜂鸣器定时器序号*/
+#define BuzzerTimerEvent			5
 /** 闪烁次数上限*/
-#define TwinkleMaxTimes				20
+#define TwinkleMaxTimes				6
 /** 点击增加和减少达到时间次数，用于判定连续操作*/
 #define ContinuousOptTimes			6
 /** 速热引擎状态枚举*/
@@ -50,6 +50,8 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define SetTempMinLimit				30
 /** 串口接收数据消息*/
 #define WM_RECV_UART_DATA	WM_USER + 100
+/** 默认蜂鸣器频率，设为1则频率为2Hz*/
+#define DefaultBuzzFrq				1
 /************************************************************************/
 /*                串口通讯命令字                                        */
 /************************************************************************/

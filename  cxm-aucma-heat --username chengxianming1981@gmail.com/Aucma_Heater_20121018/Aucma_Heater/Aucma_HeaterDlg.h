@@ -285,6 +285,8 @@ private:
 //	unsigned int m_uiTwinkleSleepTimes;
 	// png绘制类成员
 	CPngImage m_oPngImage;
+	// 蜂鸣器PWM
+	HANDLE m_hPWM;
 public:
 	// 鼠标左键单击坐标在所选区域内
 	bool OnPointInRect(CRect rect, CPoint point);
@@ -330,4 +332,8 @@ public:
 	void LoadFont(void);
 	// 设置窗口满屏
 	void SetWindowFullScreen(void);
+	// 开启蜂鸣器
+	void StartBuzzer(int iPwmValue = DefaultBuzzFrq);
+	// 关闭蜂鸣器
+	void StopBuzzer(void);
 };

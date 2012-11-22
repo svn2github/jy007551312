@@ -109,6 +109,17 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	{
 		AfxMessageBox(_T("串口打开失败！"));
 	}
+	m_hPWM = CreateFile(_T("PWM1:"),
+		GENERIC_READ | GENERIC_WRITE,
+		0,
+		NULL,
+		OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL,
+		NULL);
+	if ( m_hPWM == INVALID_HANDLE_VALUE )
+	{
+		AfxMessageBox(_T("Open PWM Failed!\n"));
+	}
 // 	// BlendOp字段指明了源混合操作，但只支持AC_SRC_OVER，即根据源alpha值把源图像叠加到目标图像上  
 // 	m_blendfun.BlendOp = AC_SRC_OVER;
 // 	// BlendFlags必须是0，也是为以后的应用保留的
@@ -501,6 +512,8 @@ void CAucma_HeaterDlg::OnClickedNight()
 void CAucma_HeaterDlg::OnClickedPower()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	StartBuzzer();
+	SetTimer(BuzzerTimerEvent, 300, NULL);
 	if (m_bPower == true)
 	{
 		OnInit();
@@ -908,9 +921,10 @@ void CAucma_HeaterDlg::OnPaint()
 	}
 	if (m_bTempLabelOld != m_bTempLabel)
 	{
-		dc.SetTextColor(DefaultTextColor);
+		dc.SetTextColor(TempTextColor);
 		dc.SelectObject(&m_FontTemp);
 		dc.ExtTextOut(m_rectTempLabelText.left, m_rectTempLabelText.top, ETO_OPAQUE, NULL, _T("℃"), NULL);
+		dc.SetTextColor(DefaultTextColor);
 		dc.SelectObject(&m_FontDefault);
 		m_bTempLabelOld = m_bTempLabel;
 	}
@@ -1042,10 +1056,6 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 	else if (nIDEvent == ShowTimeTimerEvent)
 	{
 		m_CurrTime = CTime::GetCurrentTime();
-// 		InvalidateRect(m_rectHourHighPic, FALSE);
-// 		InvalidateRect(m_rectHourLowPic, FALSE);
-// 		InvalidateRect(m_rectMinHighPic, FALSE);
-// 		InvalidateRect(m_rectMinLowPic, FALSE);
 		if ((m_CurrTime.GetHour() / 10) != (m_CurrTimeOld.GetHour() / 10))
 		{
 			InvalidateRect(m_rectHourHighPic, FALSE);
@@ -1080,14 +1090,7 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 	else if (nIDEvent == TwinkleTimerEvent)
 	{
-// 		if (m_uiTwinkleSleepTimes > 0)
-// 		{
-// 			m_uiTwinkleSleepTimes--;
-// 		}
-// 		else
-// 		{
-			m_uiTwinkleCount++;
-//		}
+		m_uiTwinkleCount++;
 		if (m_uiTwinkleCount >= TwinkleMaxTimes)
 		{
 			if (m_bSetTemp == true)
@@ -1099,9 +1102,6 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 				OnSetTime();
 			}
 		}
-// 		else if (m_uiTwinkleSleepTimes != 0)
-// 		{
-// 		}
 		else
 		{
 			if (m_uiTwinkleCount % 2 == 0)
@@ -1125,6 +1125,11 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 				InvalidateRect(m_rectMinLowPic, FALSE);
 			}
 		}
+	}
+	else if (nIDEvent == BuzzerTimerEvent)
+	{
+		StopBuzzer();
+		KillTimer(BuzzerTimerEvent);
 	}
 	CDialog::OnTimer(nIDEvent);
 }
@@ -1358,4 +1363,15 @@ void CAucma_HeaterDlg::OnInit(void)
 	KillTimer(ShowTempStateTimerEvent);
 	KillTimer(ContinuousOptTimerEvent);
 	KillTimer(TwinkleTimerEvent);
+}
+// 开启蜂鸣器
+void CAucma_HeaterDlg::StartBuzzer(int iPwmValue)
+{
+	DeviceIoControl(m_hPWM, 2, &iPwmValue, sizeof(iPwmValue), NULL, NULL, NULL, NULL);
+}
+
+// 关闭蜂鸣器
+void CAucma_HeaterDlg::StopBuzzer(void)
+{
+	DeviceIoControl(m_hPWM, 1, NULL, NULL, NULL, NULL, NULL, NULL);
 }
