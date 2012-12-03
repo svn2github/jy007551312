@@ -78,7 +78,7 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	OnInit();
 	SetTimer(ShowTimeTimerEvent, ShowTimeTimeSet, NULL);
 	m_oCEUart.m_OnUartRead = OnUartRead;
-	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
+	if (m_oCEUart.OpenPort(this, 2, 4800, NOPARITY, 8, ONESTOPBIT))
 	{
 		TRACE(_T("串口打开成功！"));
 		// @@@@测试数据发送
