@@ -25,6 +25,12 @@
 #define TwinkleTimeSet				500
 /** 蜂鸣器定时器序号*/
 #define BuzzerTimerEvent			5
+/** 蜂鸣器一次操作鸣响时间*/
+#define BuzzerOptTime				300
+/** 蜂鸣器报警鸣响时间*/
+#define BuzzerWarningTime			10500
+
+
 /** 闪烁次数上限*/
 #define TwinkleMaxTimes				6
 /** 点击增加和减少达到时间次数，用于判定连续操作*/
@@ -40,8 +46,12 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define TextOutMovePos1				8
 /** 定义文本输出坐标偏移量2*/
 #define TextOutMovePos2				4
-/** 默认设置温度*/
-#define DefaultSetTemp				30
+/** 普通加热默认设置温度*/
+#define DefaultNormalTemp			80
+/** 冬季加热默认设置温度*/
+#define DefaultWinterTemp			80
+/** 夏季加热默认设置温度*/
+#define DefaultSummerTemp			50
 /** 默认png图片透明度设置*/
 #define DefaultPNGTransparent		128
 /** 设置温度上限值*/
@@ -67,6 +77,8 @@ enum {NoTempShow, InsulationState, HeatTempState};
 // #define CMD_IHMT_CTRL				0x60
 // /** 复位触摸屏*/
 // #define CMD_IHMT_RST				0x61
+/** 智能助手执行*/
+#define CMD_DOWN_HP					0x69
 /** 实际环境温度*/
 #define	CMD_DOWN_ET					0x70
 /** 实际箱内温度*/

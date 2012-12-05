@@ -261,7 +261,7 @@ private:
 	// 串口通讯类成员
 	CCEUart m_oCEUart;
 	// 设置箱内温度
-	int m_iInTempSet;
+	int m_iInTempSet[3];
 	int m_iInTempSetOld;
 	// 实际的箱内温度
 	int m_iInTempActual;
@@ -333,7 +333,23 @@ public:
 	// 设置窗口满屏
 	void SetWindowFullScreen(void);
 	// 开启蜂鸣器
-	void StartBuzzer(int iPwmValue = DefaultBuzzFrq);
+	void StartBuzzer(void);
 	// 关闭蜂鸣器
 	void StopBuzzer(void);
+	// 打开串口
+	void OpenComm(void);
+	// 初始化蜂鸣器
+	void InitBuzzer(void);
+	// 操作蜂鸣器鸣响
+	void OptBuzzer(void);
+	// 报警蜂鸣器鸣响
+	void WarningBuzzer(void);
+	// 点击设置温度
+	void OnClickedSetTemp(void);
+	// 点击设置时间
+	void OnClickedSetTime(void);
+	// 增加操作
+	void OnOptAdd(void);
+	// 减小操作
+	void OnOptReduce(void);
 };
