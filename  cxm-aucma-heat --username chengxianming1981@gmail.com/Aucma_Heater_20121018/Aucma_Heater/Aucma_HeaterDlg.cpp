@@ -473,16 +473,16 @@ void CAucma_HeaterDlg::OnClickedPower()
 		OnInit();
 		Invalidate(FALSE);
 		OptBuzzer();
-// 		// 夏季智能关闭
-// 		OnWriteUartData(CMD_UP_SO, CMD_WORD_SC);
-// 		// 冬季智能关闭
-// 		OnWriteUartData(CMD_UP_WO, CMD_WORD_WC);
-// 		// 智能助手关闭
-// 		OnWriteUartData(CMD_UP_HP, CMD_WORD_HC);
-// 		// 洗手加热关闭
-// 		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHC);
-// 		// 夜电运行方式关闭
-// 		OnWriteUartData(CMD_UP_NO, CMD_WORD_NC);
+		// 夏季智能关闭
+		OnWriteUartData(CMD_UP_SO, CMD_WORD_SC);
+		// 冬季智能关闭
+		OnWriteUartData(CMD_UP_WO, CMD_WORD_WC);
+		// 智能助手关闭
+		OnWriteUartData(CMD_UP_HP, CMD_WORD_HC);
+		// 洗手加热关闭
+		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHC);
+		// 夜电运行方式关闭
+		OnWriteUartData(CMD_UP_NO, CMD_WORD_NC);
 	}
 	else
 	{
@@ -873,7 +873,7 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 	else if (nIDEvent == NightModeTimerEvent)
 	{
-		SendNightModeCmd();
+		ProNightMode();
 	}
 	else if (nIDEvent == HelperTwinkleTimerEvent)
 	{
@@ -1117,6 +1117,7 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_bWashHandOld = true;
 	m_bNight = false;
 	m_bNightOld = true;
+	m_bNightMode = false;
 	m_bHelperOld = !m_bHelper;
 	m_iTempState = NoTempShow;
 	m_iTempStateOld = HeatTempState;
@@ -1457,6 +1458,19 @@ void CAucma_HeaterDlg::UpdataCurrTime(void)
 	{
 		InvalidateRect(m_rectMinLowPic, FALSE);
 	}
+	if ((m_bNightMode == true) && (m_CurrTime.GetMinute() == 0))
+	{
+		if (m_CurrTime.GetHour() == 0)
+		{
+			// 夜电运行方式开启
+			OnWriteUartData(CMD_UP_NO, CMD_WORD_NO);
+		}
+		else if (m_CurrTime.GetHour() == 6)
+		{
+			// 夜电运行方式关闭
+			OnWriteUartData(CMD_UP_NO, CMD_WORD_NC);
+		}
+	}
 }
 
 void CAucma_HeaterDlg::ContinuousOpt(void)
@@ -1532,19 +1546,10 @@ void CAucma_HeaterDlg::SendWashHandCmd(void)
 }
 
 // 发送夜间模式命令
-void CAucma_HeaterDlg::SendNightModeCmd(void)
+void CAucma_HeaterDlg::ProNightMode(void)
 {
 	KillTimer(NightModeTimerEvent);
-	if (m_bNight == true)
-	{
-		// 夜电运行方式开启
-		OnWriteUartData(CMD_UP_NO, CMD_WORD_NO);
-	}
-	else
-	{
-		// 夜电运行方式关闭
-		OnWriteUartData(CMD_UP_NO, CMD_WORD_NC);
-	}
+	m_bNightMode = m_bNight;
 }
 
 // 智能助手闪烁处理

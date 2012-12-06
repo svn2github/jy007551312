@@ -216,6 +216,7 @@ private:
 	// 夜电模式标志位
 	bool m_bNight;
 	bool m_bNightOld;
+	bool m_bNightMode;
 	// 电源开关标志位
 	bool m_bPower;
 	bool m_bPowerOld;
@@ -365,7 +366,7 @@ public:
 	// 发送洗手加热命令
 	void SendWashHandCmd(void);
 	// 发送夜间模式命令
-	void SendNightModeCmd(void);
+	void ProNightMode(void);
 	// 智能助手闪烁处理
 	void TwinkleHelper(void);
 	// 速热引擎闪烁处理

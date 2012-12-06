@@ -14,7 +14,7 @@
 /** 监控系统时间定时器序号*/
 #define ShowTimeTimerEvent		2
 /** 监控系统时间定时间隔*/
-#define ShowTimeTimeSet			10000
+#define ShowTimeTimeSet			60000
 /** 连续增加和减少定时器序号*/
 #define ContinuousOptTimerEvent		3
 /** 连续增加和减少定时间隔*/
