@@ -47,7 +47,6 @@ CAucma_HeaterDlg::CAucma_HeaterDlg(CWnd* pParent /*=NULL*/)
 	m_iInTempSet[2] = DefaultWinterTemp;
 	m_iInTempSetOld = 0;
 	m_bHelper = false;
-	m_bHelperOld = true;
 }
 
 void CAucma_HeaterDlg::DoDataExchange(CDataExchange* pDX)
@@ -427,14 +426,14 @@ void CAucma_HeaterDlg::OnClickedHelper()
 		// 智能助手开启
 		OnWriteUartData(CMD_UP_HP, CMD_WORD_HO);
 		// 开启智能助手图标闪烁定时器
-
+		SetTimer(HelperTwinkleTimerEvent, HelperTwinkleTimeSet, NULL);
 	}
 	else
 	{
 		// 智能助手关闭
 		OnWriteUartData(CMD_UP_HP, CMD_WORD_HC);
 		// 关闭智能助手图标闪烁定时器
-
+		KillTimer(HelperTwinkleTimerEvent);
 	}
 }
 
@@ -449,16 +448,7 @@ void CAucma_HeaterDlg::OnClickedWashhand()
 	m_bWashHand = !m_bWashHand;
 	InvalidateRect(m_rectWashHandPic, FALSE);
 	InvalidateRect(m_rectWashHandText, FALSE);
-	if (m_bWashHand == true)
-	{
-		// 洗手加热开启
-		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHO);
-	}
-	else
-	{
-		// 洗手加热关闭
-		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHC);
-	}
+	SetTimer(WashHandTimerEvent, WashHandTimeSet, NULL);
 }
 
 void CAucma_HeaterDlg::OnClickedNight()
@@ -472,16 +462,7 @@ void CAucma_HeaterDlg::OnClickedNight()
 	m_bNight = !m_bNight;
 	InvalidateRect(m_rectNightModePic, FALSE);
 	InvalidateRect(m_rectNightModeText, FALSE);
-	if (m_bNight == true)
-	{
-		// 夜电运行方式开启
-		OnWriteUartData(CMD_UP_NO, CMD_WORD_NO);
-	}
-	else
-	{
-		// 夜电运行方式关闭
-		OnWriteUartData(CMD_UP_NO, CMD_WORD_NC);
-	}
+	SetTimer(NightModeTimerEvent, NightModeTimeSet, NULL);
 }
 
 void CAucma_HeaterDlg::OnClickedPower()
@@ -492,16 +473,16 @@ void CAucma_HeaterDlg::OnClickedPower()
 	{
 		OnInit();
 		Invalidate(FALSE);
-		// 夏季智能关闭
-		OnWriteUartData(CMD_UP_SO, CMD_WORD_SC);
-		// 冬季智能关闭
-		OnWriteUartData(CMD_UP_WO, CMD_WORD_WC);
-		// 智能助手关闭
-		OnWriteUartData(CMD_UP_HP, CMD_WORD_HC);
-		// 洗手加热关闭
-		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHC);
-		// 夜电运行方式关闭
-		OnWriteUartData(CMD_UP_NO, CMD_WORD_NC);
+// 		// 夏季智能关闭
+// 		OnWriteUartData(CMD_UP_SO, CMD_WORD_SC);
+// 		// 冬季智能关闭
+// 		OnWriteUartData(CMD_UP_WO, CMD_WORD_WC);
+// 		// 智能助手关闭
+// 		OnWriteUartData(CMD_UP_HP, CMD_WORD_HC);
+// 		// 洗手加热关闭
+// 		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHC);
+// 		// 夜电运行方式关闭
+// 		OnWriteUartData(CMD_UP_NO, CMD_WORD_NC);
 	}
 	else
 	{
@@ -564,6 +545,9 @@ void CAucma_HeaterDlg::OnSetTime(void)
 	else
 	{
 		KillTimer(TwinkleTimerEvent);
+		// 设置时间
+		OnWriteUartData(CMD_UP_HOUR, m_CurrTime.GetHour());
+		OnWriteUartData(CMD_UP_MIN, m_CurrTime.GetMinute());
 	}
 	InvalidateRect(m_rectHourHighPic, FALSE);
 	InvalidateRect(m_rectHourLowPic, FALSE);
@@ -649,7 +633,7 @@ void CAucma_HeaterDlg::OnPaint()
 	// 不为绘图消息调用 CDialog::OnPaint()
 	m_oPngImage.OnDcBitBlt(&dc, &m_dcBK, m_rectBK);
 	dc.SetBkMode(TRANSPARENT);
-	if (m_iFastHeatStateOld != m_iFastHeatState)
+	if ((m_iFastHeatStateOld != m_iFastHeatState) || (m_bTwinkleHeatFast == true))
 	{
 		if (m_iFastHeatState == NormalHeat)
 		{
@@ -684,7 +668,7 @@ void CAucma_HeaterDlg::OnPaint()
 		}
 		m_iFastHeatStateOld = m_iFastHeatState;
 	}
-	if (m_bHelperOld != m_bHelper)
+	if ((m_bHelperOld != m_bHelper) || (m_bTwinkleHelper == true))
 	{
 		if (m_bHelper == true)
 		{
@@ -760,21 +744,41 @@ void CAucma_HeaterDlg::OnPaint()
 		dc.SelectObject(&m_FontDefault);
 		m_bTempLabelOld = m_bTempLabel;
 	}
-	if ((m_iInTempSetOld != m_iInTempSet[m_iFastHeatState]) || (m_bSetTempOld != m_bSetTemp) || ((m_bTwinkle == true) && (m_bSetTemp == true)))
+	if (m_bSetTemp == true)
 	{
-		if (m_bSetTemp == true)
+		if ((m_bTwinkle == true) || (m_bSetTempOld != m_bSetTemp) || (m_iInTempSetOld != m_iInTempSet[m_iFastHeatState]))
 		{
 			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempHighSet[m_iInTempSet[m_iFastHeatState] / 10], m_rectTempHighPic);
 			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempLowSet[m_iInTempSet[m_iFastHeatState] % 10], m_rectTempLowPic);
+			m_iInTempSetOld = m_iInTempSet[m_iFastHeatState];
+			m_bSetTempOld = m_bSetTemp;
 		}
-		else
+	}
+	else
+	{
+		if ((m_bSetTempOld != m_bSetTemp) || (m_iInTempActualOld != m_iInTempActual))
 		{
 			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempHighShow[m_iInTempActual / 10], m_rectTempHighPic);
 			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempLowShow[m_iInTempActual % 10], m_rectTempLowPic);
+			m_iInTempActualOld = m_iInTempActual;
+			m_bSetTempOld = m_bSetTemp;
 		}
-		m_iInTempSetOld = m_iInTempSet[m_iFastHeatState];
-		m_bSetTempOld = m_bSetTemp;
 	}
+// 	if ((m_iInTempSetOld != m_iInTempSet[m_iFastHeatState]) || (m_bSetTempOld != m_bSetTemp) || ((m_bTwinkle == true) && (m_bSetTemp == true)))
+// 	{
+// 		if (m_bSetTemp == true)
+// 		{
+// 			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempHighSet[m_iInTempSet[m_iFastHeatState] / 10], m_rectTempHighPic);
+// 			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempLowSet[m_iInTempSet[m_iFastHeatState] % 10], m_rectTempLowPic);
+// 		}
+// 		else
+// 		{
+// 			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempHighShow[m_iInTempActual / 10], m_rectTempHighPic);
+// 			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempLowShow[m_iInTempActual % 10], m_rectTempLowPic);
+// 		}
+// 		m_iInTempSetOld = m_iInTempSet[m_iFastHeatState];
+// 		m_bSetTempOld = m_bSetTemp;
+// 	}
 	if ((m_CurrTimeOld != m_CurrTime) || (m_bSetTimeOld != m_bSetTime) || ((m_bTwinkle == true) && (m_bSetTime == true)))
 	{
 		if (m_bSetTime == true)
@@ -844,123 +848,39 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if (nIDEvent == ShowTempStateTimerEvent)
 	{
-		if (m_iInTempActual >= m_iInTempSet[m_iFastHeatState])
-		{
-			// 保温
-			if (m_iTempState != InsulationState)
-			{
-				m_iTempState = InsulationState;
-				InvalidateRect(m_rectTempPic, FALSE);
-				InvalidateRect(m_rectTempInsulationText, FALSE);
-				InvalidateRect(m_rectTempHeatText, FALSE);
-			}
-			m_bTempHeat = false;
-		}
-		else
-		{
-			// 加热
-			if (m_iTempState != HeatTempState)
-			{
-				m_iTempState = HeatTempState;
-				m_uiHeatCount = 0;
-				InvalidateRect(m_rectTempInsulationText, FALSE);
-				InvalidateRect(m_rectTempHeatText, FALSE);
-			}
-		}
-		if (m_iTempState == HeatTempState)
-		{
-			if (m_uiHeatCount == 0)
-			{
-				m_uiHeatCount = 1;
-			}
-			else if (m_uiHeatCount == 1)
-			{
-				m_uiHeatCount = 2;
-			}
-			else if (m_uiHeatCount == 2)
-			{
-				m_uiHeatCount = 0;
-			}
-			m_bTempHeat = true;
-			InvalidateRect(m_rectTempPic, FALSE);
-		}
+		UpdataHeatState();
 	}
 	else if (nIDEvent == ShowTimeTimerEvent)
 	{
-		m_CurrTime = CTime::GetCurrentTime();
-		if ((m_CurrTime.GetHour() / 10) != (m_CurrTimeOld.GetHour() / 10))
-		{
-			InvalidateRect(m_rectHourHighPic, FALSE);
-		}
-		if ((m_CurrTime.GetHour() % 10) != (m_CurrTimeOld.GetHour() % 10))
-		{
-			InvalidateRect(m_rectHourLowPic, FALSE);
-		}
-		if ((m_CurrTime.GetMinute() / 10) != (m_CurrTimeOld.GetMinute() / 10))
-		{
-			InvalidateRect(m_rectMinHighPic, FALSE);
-		}
-		if ((m_CurrTime.GetMinute() % 10) != (m_CurrTimeOld.GetMinute() % 10))
-		{
-			InvalidateRect(m_rectMinLowPic, FALSE);
-		}
+		UpdataCurrTime();
 	}
 	else if (nIDEvent == ContinuousOptTimerEvent)
 	{
-		m_uiContinuousCount++;
-		if (m_uiContinuousCount > ContinuousOptTimes)
-		{
-			if (m_bAddOpt == true)
-			{
-				OnOptAdd();
-			}
-			else if (m_bReduceOpt == true)
-			{
-				OnOptReduce();
-			}
-		}
+		ContinuousOpt();
 	}
 	else if (nIDEvent == TwinkleTimerEvent)
 	{
-		m_uiTwinkleCount++;
-		if (m_uiTwinkleCount >= TwinkleMaxTimes)
-		{
-			if (m_bSetTemp == true)
-			{
-				OnSetTemp();
-			}
-			else if (m_bSetTime == true)
-			{
-				OnSetTime();
-			}
-		}
-		else
-		{
-			if (m_uiTwinkleCount % 2 == 0)
-			{
-				m_bTwinkle = true;
-			}
-			else
-			{
-				m_bTwinkle = false;
-			}
-			if (m_bSetTemp == true)
-			{
-				InvalidateRect(m_rectTempHighPic, FALSE);
-				InvalidateRect(m_rectTempLowPic, FALSE);
-			}
-			else if (m_bSetTime == true)
-			{
-				InvalidateRect(m_rectHourHighPic, FALSE);
-				InvalidateRect(m_rectHourLowPic, FALSE);
-				InvalidateRect(m_rectMinHighPic, FALSE);
-				InvalidateRect(m_rectMinLowPic, FALSE);
-			}
-		}
+		TwinkleSet();
 	}
 	else if (nIDEvent == BuzzerTimerEvent)
 	{
 		StopBuzzer();
+	}
+	else if (nIDEvent == WashHandTimerEvent)
+	{
+		SendWashHandCmd();
+	}
+	else if (nIDEvent == NightModeTimerEvent)
+	{
+		SendNightModeCmd();
+	}
+	else if (nIDEvent == HelperTwinkleTimerEvent)
+	{
+		TwinkleHelper();
+	}
+	else if (nIDEvent == HeatFastTwinkleTimerEvent)
+	{
+		TwinkleHeatFast();
 	}
 	CDialog::OnTimer(nIDEvent);
 }
@@ -1072,6 +992,7 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 {
 	BYTE byCmd = m_ucRcvBuf[3];
 	BYTE byData = m_ucRcvBuf[4];
+	CString str = _T("");
 	switch(byCmd)
 	{
 // 	case CMD_IHMT_CTRL:
@@ -1089,15 +1010,29 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 // 		break;
 	case CMD_DOWN_HP:
 		// 关闭智能助手闪烁定时器
-		
+		KillTimer(HelperTwinkleTimerEvent);
+		m_bTwinkleHelper = true;
+		InvalidateRect(m_rectHelperPic, FALSE);
 		break;
 	case CMD_DOWN_ET:
 		m_iEnvTempActual = (unsigned int)byData - 127;
-		AfxMessageBox(_T("实际环境温度 %d"), m_iEnvTempActual);
+		str.Format(_T("实际环境温度 %d"), m_iEnvTempActual);
+		AfxMessageBox(str);
 		break;
 	case CMD_DOWN_IT:
 		m_iInTempActual = (unsigned int)byData - 127;
-		AfxMessageBox(_T("实际箱内温度 %d"), m_iInTempActual);
+		if (m_iInTempActual < 0)
+		{
+			m_iInTempActual = 0;
+		}
+		if ((m_iInTempActual / 10) != (m_iInTempActualOld / 10))
+		{
+			InvalidateRect(m_rectTempHighPic, FALSE);
+		}
+		if ((m_iInTempActual % 10) != (m_iInTempActualOld % 10))
+		{
+			InvalidateRect(m_rectTempLowPic, FALSE);
+		}
 		break;
 	case CMD_DOWN_WT:
 		if (byData == CMD_WORD_WT_NWE)
@@ -1150,6 +1085,18 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 			StopBuzzer();
 			AfxMessageBox(_T("漏电线圈故障报警消除"));
 		}
+		else if (byData == CMD_WORD_WT_WE)
+		{
+			// 关闭速热引擎闪烁定时器
+			KillTimer(HeatFastTwinkleTimerEvent);
+			m_bTwinkleHeatFast = true;
+			InvalidateRect(m_rectHeatFastPic, FALSE);
+		}
+		else if (byData == CMD_WORD_WT_WL)
+		{
+			// 开启速热引擎闪烁定时器
+			SetTimer(HeatFastTwinkleTimerEvent, HeatFastTwinkleTimeSet, NULL);
+		}
 		break;
 	case CMD_DOWN_QT:
 		OnWriteUartData(CMD_UP_IT, m_iInTempSet[m_iFastHeatState] + 127);
@@ -1169,6 +1116,7 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_bWashHandOld = true;
 	m_bNight = false;
 	m_bNightOld = true;
+	m_bHelperOld = !m_bHelper;
 	m_iTempState = NoTempShow;
 	m_iTempStateOld = HeatTempState;
 	m_bSetTemp = false;
@@ -1178,7 +1126,8 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_bPower = false;
 	m_bPowerOld = true;
 	m_uiHeatCount = 0;
-	m_iInTempActual = 48;
+	m_iInTempActual = DefaultInTempActual;
+	m_iInTempActualOld = 0;
 	m_bTempHeat = false;
 	m_CurrTime = CTime::GetCurrentTime();
 	m_CurrTimeOld = 1;
@@ -1200,23 +1149,29 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_byCheck = 0;
 	m_uiTwinkleCount = 0;
 	m_bTwinkle = false;
+	m_bTwinkleHelper = false;
+	m_bTwinkleHeatFast = false;
 //	m_uiTwinkleSleepTimes = 0;
 	KillTimer(ShowTempStateTimerEvent);
 	KillTimer(ContinuousOptTimerEvent);
 	KillTimer(TwinkleTimerEvent);
+	KillTimer(WashHandTimerEvent);
+	KillTimer(NightModeTimerEvent);
+// 	KillTimer(HelperTwinkleTimerEvent);
+// 	KillTimer(HeatFastTwinkleTimerEvent);
 }
 // 打开串口
 void CAucma_HeaterDlg::OpenComm(void)
 {
 	m_oCEUart.m_OnUartRead = OnUartRead;
 	// @@@调试时采用端口1，实际运行为端口2对应开发板COM1
-	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
+	if (m_oCEUart.OpenPort(this, 2, 4800, NOPARITY, 8, ONESTOPBIT))
 	{
 		TRACE(_T("串口打开成功！"));
 	}
 	else
 	{
-		TRACE(_T("串口打开失败！"));
+		AfxMessageBox(_T("串口打开失败！"));
 	}
 }
 
@@ -1436,4 +1391,173 @@ void CAucma_HeaterDlg::OnOptReduce(void)
 			InvalidateRect(m_rectMinLowPic, FALSE);
 		}
 	}
+}
+
+// 更新加热状态
+void CAucma_HeaterDlg::UpdataHeatState(void)
+{
+	if (m_iInTempActual >= m_iInTempSet[m_iFastHeatState])
+	{
+		// 保温
+		if (m_iTempState != InsulationState)
+		{
+			m_iTempState = InsulationState;
+			InvalidateRect(m_rectTempPic, FALSE);
+			InvalidateRect(m_rectTempInsulationText, FALSE);
+			InvalidateRect(m_rectTempHeatText, FALSE);
+		}
+		m_bTempHeat = false;
+	}
+	else
+	{
+		// 加热
+		if (m_iTempState != HeatTempState)
+		{
+			m_iTempState = HeatTempState;
+			m_uiHeatCount = 0;
+			InvalidateRect(m_rectTempInsulationText, FALSE);
+			InvalidateRect(m_rectTempHeatText, FALSE);
+		}
+	}
+	if (m_iTempState == HeatTempState)
+	{
+		if (m_uiHeatCount == 0)
+		{
+			m_uiHeatCount = 1;
+		}
+		else if (m_uiHeatCount == 1)
+		{
+			m_uiHeatCount = 2;
+		}
+		else if (m_uiHeatCount == 2)
+		{
+			m_uiHeatCount = 0;
+		}
+		m_bTempHeat = true;
+		InvalidateRect(m_rectTempPic, FALSE);
+	}
+}
+
+// 更新当前时间
+void CAucma_HeaterDlg::UpdataCurrTime(void)
+{
+	m_CurrTime = CTime::GetCurrentTime();
+	if ((m_CurrTime.GetHour() / 10) != (m_CurrTimeOld.GetHour() / 10))
+	{
+		InvalidateRect(m_rectHourHighPic, FALSE);
+	}
+	if ((m_CurrTime.GetHour() % 10) != (m_CurrTimeOld.GetHour() % 10))
+	{
+		InvalidateRect(m_rectHourLowPic, FALSE);
+	}
+	if ((m_CurrTime.GetMinute() / 10) != (m_CurrTimeOld.GetMinute() / 10))
+	{
+		InvalidateRect(m_rectMinHighPic, FALSE);
+	}
+	if ((m_CurrTime.GetMinute() % 10) != (m_CurrTimeOld.GetMinute() % 10))
+	{
+		InvalidateRect(m_rectMinLowPic, FALSE);
+	}
+}
+
+void CAucma_HeaterDlg::ContinuousOpt(void)
+{
+	m_uiContinuousCount++;
+	if (m_uiContinuousCount > ContinuousOptTimes)
+	{
+		if (m_bAddOpt == true)
+		{
+			OnOptAdd();
+		}
+		else if (m_bReduceOpt == true)
+		{
+			OnOptReduce();
+		}
+	}
+}
+
+// 闪烁设置参数
+void CAucma_HeaterDlg::TwinkleSet(void)
+{
+	m_uiTwinkleCount++;
+	if (m_uiTwinkleCount >= TwinkleMaxTimes)
+	{
+		if (m_bSetTemp == true)
+		{
+			OnSetTemp();
+		}
+		else if (m_bSetTime == true)
+		{
+			OnSetTime();
+		}
+	}
+	else
+	{
+		if (m_uiTwinkleCount % 2 == 0)
+		{
+			m_bTwinkle = true;
+		}
+		else
+		{
+			m_bTwinkle = false;
+		}
+		if (m_bSetTemp == true)
+		{
+			InvalidateRect(m_rectTempHighPic, FALSE);
+			InvalidateRect(m_rectTempLowPic, FALSE);
+		}
+		else if (m_bSetTime == true)
+		{
+			InvalidateRect(m_rectHourHighPic, FALSE);
+			InvalidateRect(m_rectHourLowPic, FALSE);
+			InvalidateRect(m_rectMinHighPic, FALSE);
+			InvalidateRect(m_rectMinLowPic, FALSE);
+		}
+	}
+}
+
+// 发送洗手加热命令
+void CAucma_HeaterDlg::SendWashHandCmd(void)
+{
+	KillTimer(WashHandTimerEvent);
+	if (m_bWashHand == true)
+	{
+		// 洗手加热开启
+		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHO);
+	}
+	else
+	{
+		// 洗手加热关闭
+		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHC);
+	}
+}
+
+// 发送夜间模式命令
+void CAucma_HeaterDlg::SendNightModeCmd(void)
+{
+	KillTimer(NightModeTimerEvent);
+	if (m_bNight == true)
+	{
+		// 夜电运行方式开启
+		OnWriteUartData(CMD_UP_NO, CMD_WORD_NO);
+	}
+	else
+	{
+		// 夜电运行方式关闭
+		OnWriteUartData(CMD_UP_NO, CMD_WORD_NC);
+	}
+}
+
+// 智能助手闪烁处理
+void CAucma_HeaterDlg::TwinkleHelper(void)
+{
+	m_bTwinkleHelper = !m_bTwinkleHelper;
+	InvalidateRect(m_rectHelperPic, FALSE);
+}
+
+// 速热引擎闪烁处理
+void CAucma_HeaterDlg::TwinkleHeatFast(void)
+{
+	m_bTwinkleHeatFast = !m_bTwinkleHeatFast;
+	InvalidateRect(m_rectHeatFastPic, FALSE);
 }

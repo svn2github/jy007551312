@@ -265,6 +265,7 @@ private:
 	int m_iInTempSetOld;
 	// 实际的箱内温度
 	int m_iInTempActual;
+	int m_iInTempActualOld;
 	// 实际的环境温度
 	int m_iEnvTempActual;
 // 	// 设置高温报警温度
@@ -281,8 +282,10 @@ private:
 	unsigned int m_uiTwinkleCount;
 	// 闪烁标志位
 	bool m_bTwinkle;
-//	// 闪烁休眠次数
-//	unsigned int m_uiTwinkleSleepTimes;
+	// 智能助手闪烁标志位
+	bool m_bTwinkleHelper;
+	// 速热引擎闪烁标志位
+	bool m_bTwinkleHeatFast;
 	// png绘制类成员
 	CPngImage m_oPngImage;
 	// 蜂鸣器PWM
@@ -352,4 +355,19 @@ public:
 	void OnOptAdd(void);
 	// 减小操作
 	void OnOptReduce(void);
+	// 更新加热状态
+	void UpdataHeatState(void);
+	// 更新当前时间
+	void UpdataCurrTime(void);
+	void ContinuousOpt(void);
+	// 闪烁设置参数
+	void TwinkleSet(void);
+	// 发送洗手加热命令
+	void SendWashHandCmd(void);
+	// 发送夜间模式命令
+	void SendNightModeCmd(void);
+	// 智能助手闪烁处理
+	void TwinkleHelper(void);
+	// 速热引擎闪烁处理
+	void TwinkleHeatFast(void);
 };

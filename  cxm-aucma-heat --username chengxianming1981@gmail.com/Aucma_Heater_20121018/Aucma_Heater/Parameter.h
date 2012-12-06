@@ -29,8 +29,22 @@
 #define BuzzerOptTime				300
 /** 蜂鸣器报警鸣响时间*/
 #define BuzzerWarningTime			10500
-
-
+/** 洗手加热确认定时器序号*/
+#define WashHandTimerEvent			6
+/** 洗手加热确认定时器时间*/
+#define WashHandTimeSet				3000
+/** 夜电模式确认定时器序号*/
+#define NightModeTimerEvent			7
+/** 夜电模式确认定时器时间*/
+#define NightModeTimeSet			3000
+/** 智能助手闪烁定时器序号*/
+#define HelperTwinkleTimerEvent		8
+/** 智能助手闪烁定时器时间*/
+#define HelperTwinkleTimeSet		500
+/** 速热引擎闪烁定时器序号*/
+#define HeatFastTwinkleTimerEvent	9
+/** 速热引擎闪烁定时器时间*/
+#define HeatFastTwinkleTimeSet		500
 /** 闪烁次数上限*/
 #define TwinkleMaxTimes				6
 /** 点击增加和减少达到时间次数，用于判定连续操作*/
@@ -52,6 +66,8 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define DefaultWinterTemp			80
 /** 夏季加热默认设置温度*/
 #define DefaultSummerTemp			50
+/** 默认箱内实际温度*/
+#define DefaultInTempActual			48
 /** 默认png图片透明度设置*/
 #define DefaultPNGTransparent		128
 /** 设置温度上限值*/
@@ -135,6 +151,10 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define CMD_WORD_WT_WHEC			0x08
 /** 漏电线圈故障报警消除*/
 #define CMD_WORD_WT_LCEC			0x09
+/** 水量充足*/
+#define CMD_WORD_WT_WE				0x0a
+/** 水量不足*/
+#define CMD_WORD_WT_WL				0x0b
 /** 冬季智能关闭*/
 #define CMD_WORD_WC					0x00
 /** 冬季智能开启*/
