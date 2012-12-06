@@ -28,7 +28,7 @@
 /** 蜂鸣器一次操作鸣响时间*/
 #define BuzzerOptTime				300
 /** 蜂鸣器报警鸣响时间*/
-#define BuzzerWarningTime			10500
+#define BuzzerWarningTime			9800
 /** 洗手加热确认定时器序号*/
 #define WashHandTimerEvent			6
 /** 洗手加热确认定时器时间*/

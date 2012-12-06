@@ -468,11 +468,11 @@ void CAucma_HeaterDlg::OnClickedNight()
 void CAucma_HeaterDlg::OnClickedPower()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	OptBuzzer();
 	if (m_bPower == true)
 	{
 		OnInit();
 		Invalidate(FALSE);
+		OptBuzzer();
 // 		// 夏季智能关闭
 // 		OnWriteUartData(CMD_UP_SO, CMD_WORD_SC);
 // 		// 冬季智能关闭
@@ -491,6 +491,7 @@ void CAucma_HeaterDlg::OnClickedPower()
 		InvalidateRect(m_rectPowerPic, FALSE);
 		// 设置温度
 		OnSetTemp();
+		OptBuzzer();
 	}
 }
 void CAucma_HeaterDlg::OnClickedAdd()
@@ -1038,52 +1039,52 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 		if (byData == CMD_WORD_WT_NWE)
 		{
 			WarningBuzzer();
-			AfxMessageBox(_T("干烧/缺水报警"));
+//			AfxMessageBox(_T("干烧/缺水报警"));
 		}
 		else if (byData == CMD_WORD_WT_SE)
 		{
 			WarningBuzzer();
-			AfxMessageBox(_T("传感器故障报警"));
+//			AfxMessageBox(_T("传感器故障报警"));
 		}
 		else if (byData == CMD_WORD_WT_LE)
 		{
 			WarningBuzzer();
-			AfxMessageBox(_T("漏电故障报警"));
+//			AfxMessageBox(_T("漏电故障报警"));
 		}
 		else if (byData == CMD_WORD_WT_WHE)
 		{
 			WarningBuzzer();
-			AfxMessageBox(_T("水温超高故障报警"));
+//			AfxMessageBox(_T("水温超高故障报警"));
 		}
 		else if (byData == CMD_WORD_WT_LCE)
 		{
 			WarningBuzzer();
-			AfxMessageBox(_T("漏电线圈故障报警"));
+//			AfxMessageBox(_T("漏电线圈故障报警"));
 		}
 		else if (byData == CMD_WORD_WT_NWEC)
 		{
-			WarningBuzzer();
-			AfxMessageBox(_T("干烧/缺水报警消除"));
+			StopBuzzer();
+//			AfxMessageBox(_T("干烧/缺水报警消除"));
 		}
 		else if (byData == CMD_WORD_WT_SEC)
 		{
 			StopBuzzer();
-			AfxMessageBox(_T("传感器故障报警消除"));
+//			AfxMessageBox(_T("传感器故障报警消除"));
 		}
 		else if (byData == CMD_WORD_WT_LEC)
 		{
 			StopBuzzer();
-			AfxMessageBox(_T("漏电故障报警消除"));
+//			AfxMessageBox(_T("漏电故障报警消除"));
 		}
 		else if (byData == CMD_WORD_WT_WHEC)
 		{
 			StopBuzzer();
-			AfxMessageBox(_T("水温超高故障报警消除"));
+//			AfxMessageBox(_T("水温超高故障报警消除"));
 		}
 		else if (byData == CMD_WORD_WT_LCEC)
 		{
 			StopBuzzer();
-			AfxMessageBox(_T("漏电线圈故障报警消除"));
+//			AfxMessageBox(_T("漏电线圈故障报警消除"));
 		}
 		else if (byData == CMD_WORD_WT_WE)
 		{
@@ -1208,7 +1209,6 @@ void CAucma_HeaterDlg::InitBuzzer(void)
 // 操作蜂鸣器鸣响
 void CAucma_HeaterDlg::OptBuzzer(void)
 {
-	StopBuzzer();
 	SetTimer(BuzzerTimerEvent, BuzzerOptTime, NULL);
 	StartBuzzer();
 }
@@ -1216,7 +1216,6 @@ void CAucma_HeaterDlg::OptBuzzer(void)
 // 报警蜂鸣器鸣响
 void CAucma_HeaterDlg::WarningBuzzer(void)
 {
-	StopBuzzer();
 	SetTimer(BuzzerTimerEvent, BuzzerWarningTime, NULL);
 	StartBuzzer();
 }
