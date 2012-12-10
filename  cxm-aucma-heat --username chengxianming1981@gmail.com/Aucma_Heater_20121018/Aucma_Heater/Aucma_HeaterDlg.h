@@ -291,6 +291,8 @@ private:
 	CPngImage m_oPngImage;
 	// 蜂鸣器PWM
 	HANDLE m_hPWM;
+	// 设置分钟
+	bool m_bSetTimeMin;
 public:
 	// 鼠标左键单击坐标在所选区域内
 	bool OnPointInRect(CRect rect, CPoint point);

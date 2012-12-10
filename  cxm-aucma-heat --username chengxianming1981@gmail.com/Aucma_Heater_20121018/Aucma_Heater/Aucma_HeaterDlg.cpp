@@ -383,16 +383,12 @@ void CAucma_HeaterDlg::OnClickedHeatfast()
 		InvalidateRect(m_rectHeatFastText, FALSE);
 		// 夏季智能开启
 		OnWriteUartData(CMD_UP_SO, CMD_WORD_SO);
-		// 冬季智能关闭
-		OnWriteUartData(CMD_UP_WO, CMD_WORD_WC);
 	}
 	else if (m_iFastHeatState == FastHeat)
 	{
 		m_iFastHeatState = WinterHeat;
 		InvalidateRect(m_rectWinterPic, FALSE);
 		InvalidateRect(m_rectWinterText, FALSE);
-		// 夏季智能关闭
-		OnWriteUartData(CMD_UP_SO, CMD_WORD_SC);
 		// 冬季智能开启
 		OnWriteUartData(CMD_UP_WO, CMD_WORD_WO);
 	}
@@ -403,11 +399,12 @@ void CAucma_HeaterDlg::OnClickedHeatfast()
 		InvalidateRect(m_rectHeatFastText, FALSE);
 		InvalidateRect(m_rectWinterPic, FALSE);
 		InvalidateRect(m_rectWinterText, FALSE);
-		// 夏季智能关闭
-		OnWriteUartData(CMD_UP_SO, CMD_WORD_SC);
-		// 冬季智能关闭
-		OnWriteUartData(CMD_UP_WO, CMD_WORD_WC);
+		// 普通加热模式开启
+		OnWriteUartData(CMD_UP_PW, CMD_WORD_PO);
 	}
+	m_bSetTemp = false;
+	// 设置温度
+	OnSetTemp();
 }
 
 void CAucma_HeaterDlg::OnClickedHelper()
@@ -472,17 +469,8 @@ void CAucma_HeaterDlg::OnClickedPower()
 	{
 		OnInit();
 		Invalidate(FALSE);
-		OptBuzzer();
-		// 夏季智能关闭
-		OnWriteUartData(CMD_UP_SO, CMD_WORD_SC);
-		// 冬季智能关闭
-		OnWriteUartData(CMD_UP_WO, CMD_WORD_WC);
-		// 智能助手关闭
-		OnWriteUartData(CMD_UP_HP, CMD_WORD_HC);
-		// 洗手加热关闭
-		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHC);
-		// 夜电运行方式关闭
-		OnWriteUartData(CMD_UP_NO, CMD_WORD_NC);
+		// 进入待机状态
+		OnWriteUartData(CMD_UP_PW, CMD_WORD_PC);
 	}
 	else
 	{
@@ -491,8 +479,10 @@ void CAucma_HeaterDlg::OnClickedPower()
 		InvalidateRect(m_rectPowerPic, FALSE);
 		// 设置温度
 		OnSetTemp();
-		OptBuzzer();
+		// 普通加热模式开启
+		OnWriteUartData(CMD_UP_PW, CMD_WORD_PO);
 	}
+	OptBuzzer();
 }
 void CAucma_HeaterDlg::OnClickedAdd()
 {
@@ -522,6 +512,7 @@ void CAucma_HeaterDlg::OnSetTemp(void)
 	if (m_bSetTemp == true)
 	{
 		m_uiTwinkleCount = 0;
+		KillTimer(TwinkleTimerEvent);
 		SetTimer(TwinkleTimerEvent, TwinkleTimeSet, NULL);
 	}
 	else
@@ -537,10 +528,29 @@ void CAucma_HeaterDlg::OnSetTemp(void)
 // 设置时间
 void CAucma_HeaterDlg::OnSetTime(void)
 {
+	unsigned int uiDayOfWeek = 0;
+	if ((m_bSetTime == true) && (m_bSetTimeMin == true))
+	{
+		m_bSetTimeMin = false;
+		m_bTwinkle = true;
+		m_uiTwinkleCount = 0;
+		KillTimer(TwinkleTimerEvent);
+		SetTimer(TwinkleTimerEvent, TwinkleTimeSet, NULL);
+		InvalidateRect(m_rectHourHighPic, FALSE);
+		InvalidateRect(m_rectHourLowPic, FALSE);
+ 		InvalidateRect(m_rectMinHighPic, FALSE);
+ 		InvalidateRect(m_rectMinLowPic, FALSE);
+		return;
+	}
+	else if (m_bSetTimeMin == false)
+	{
+		m_bSetTimeMin = true;
+	}
 	m_bSetTime = !m_bSetTime;
 	if (m_bSetTime == true)
 	{
 		m_uiTwinkleCount = 0;
+		KillTimer(TwinkleTimerEvent);
 		SetTimer(TwinkleTimerEvent, TwinkleTimeSet, NULL);
 	}
 	else
@@ -548,7 +558,12 @@ void CAucma_HeaterDlg::OnSetTime(void)
 		KillTimer(TwinkleTimerEvent);
 		// 设置时间
 		OnWriteUartData(CMD_UP_HOUR, m_CurrTime.GetHour());
-		OnWriteUartData(CMD_UP_MIN, m_CurrTime.GetMinute());
+		uiDayOfWeek = m_CurrTime.GetDayOfWeek() - 1;
+		if (uiDayOfWeek == 0)
+		{
+			uiDayOfWeek = 7;
+		}
+		OnWriteUartData(CMD_UP_WEEK, uiDayOfWeek);
 	}
 	InvalidateRect(m_rectHourHighPic, FALSE);
 	InvalidateRect(m_rectHourLowPic, FALSE);
@@ -993,6 +1008,7 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 {
 	BYTE byCmd = m_ucRcvBuf[3];
 	BYTE byData = m_ucRcvBuf[4];
+	unsigned int uiDayOfWeek = 0;
 	CString str = _T("");
 	switch(byCmd)
 	{
@@ -1038,52 +1054,52 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 	case CMD_DOWN_WT:
 		if (byData == CMD_WORD_WT_NWE)
 		{
-			WarningBuzzer();
+//			WarningBuzzer();
 //			AfxMessageBox(_T("干烧/缺水报警"));
 		}
 		else if (byData == CMD_WORD_WT_SE)
 		{
-			WarningBuzzer();
+//			WarningBuzzer();
 //			AfxMessageBox(_T("传感器故障报警"));
 		}
 		else if (byData == CMD_WORD_WT_LE)
 		{
-			WarningBuzzer();
+//			WarningBuzzer();
 //			AfxMessageBox(_T("漏电故障报警"));
 		}
 		else if (byData == CMD_WORD_WT_WHE)
 		{
-			WarningBuzzer();
+//			WarningBuzzer();
 //			AfxMessageBox(_T("水温超高故障报警"));
 		}
 		else if (byData == CMD_WORD_WT_LCE)
 		{
-			WarningBuzzer();
+//			WarningBuzzer();
 //			AfxMessageBox(_T("漏电线圈故障报警"));
 		}
 		else if (byData == CMD_WORD_WT_NWEC)
 		{
-			StopBuzzer();
+//			StopBuzzer();
 //			AfxMessageBox(_T("干烧/缺水报警消除"));
 		}
 		else if (byData == CMD_WORD_WT_SEC)
 		{
-			StopBuzzer();
+//			StopBuzzer();
 //			AfxMessageBox(_T("传感器故障报警消除"));
 		}
 		else if (byData == CMD_WORD_WT_LEC)
 		{
-			StopBuzzer();
+//			StopBuzzer();
 //			AfxMessageBox(_T("漏电故障报警消除"));
 		}
 		else if (byData == CMD_WORD_WT_WHEC)
 		{
-			StopBuzzer();
+//			StopBuzzer();
 //			AfxMessageBox(_T("水温超高故障报警消除"));
 		}
 		else if (byData == CMD_WORD_WT_LCEC)
 		{
-			StopBuzzer();
+//			StopBuzzer();
 //			AfxMessageBox(_T("漏电线圈故障报警消除"));
 		}
 		else if (byData == CMD_WORD_WT_WE)
@@ -1100,13 +1116,17 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 		}
 		break;
 	case CMD_DOWN_QT:
-		OnWriteUartData(CMD_UP_IT, m_iInTempSet[m_iFastHeatState] + 127);
+		OnWriteUartData(CMD_UP_HOUR, m_CurrTime.GetHour());
+		uiDayOfWeek = m_CurrTime.GetDayOfWeek() - 1;
+		if (uiDayOfWeek == 0)
+		{
+			uiDayOfWeek = 7;
+		}
+		OnWriteUartData(CMD_UP_WEEK, uiDayOfWeek);
 		break;
 	default:
 		break;
 	}
-	// @@@调试用
-//	m_oCEUart.WriteSyncPort(m_ucRcvBuf, UartFrameLength);
 }
 // 初始化界面参数
 void CAucma_HeaterDlg::OnInit(void)
@@ -1153,6 +1173,7 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_bTwinkle = false;
 	m_bTwinkleHelper = false;
 	m_bTwinkleHeatFast = false;
+	m_bSetTimeMin = true;
 //	m_uiTwinkleSleepTimes = 0;
 	KillTimer(ShowTempStateTimerEvent);
 	KillTimer(ContinuousOptTimerEvent);
@@ -1167,7 +1188,7 @@ void CAucma_HeaterDlg::OpenComm(void)
 {
 	m_oCEUart.m_OnUartRead = OnUartRead;
 	// @@@调试时采用端口1，实际运行为端口2对应开发板COM1
-	if (m_oCEUart.OpenPort(this, 2, 4800, NOPARITY, 8, ONESTOPBIT))
+	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
 	{
 		TRACE(_T("串口打开成功！"));
 	}
@@ -1247,7 +1268,8 @@ void CAucma_HeaterDlg::OnClickedSetTime(void)
 void CAucma_HeaterDlg::OnOptAdd(void)
 {
 	SYSTEMTIME sysTime;
-	CTimeSpan time(60);
+	CTimeSpan timeMin(60);
+	CTimeSpan timeHour(3600);
 	KillTimer(TwinkleTimerEvent);
 	if (m_uiContinuousCount == 0)
 	{
@@ -1290,7 +1312,14 @@ void CAucma_HeaterDlg::OnOptAdd(void)
 	{
 		KillTimer(ShowTimeTimerEvent);
 		memset(&sysTime, 0 ,sizeof(SYSTEMTIME));
-		m_CurrTime += time;
+		if (m_bSetTimeMin == true)
+		{
+			m_CurrTime += timeMin;
+		}
+		else
+		{
+			m_CurrTime += timeHour;
+		}
 		sysTime.wYear = (WORD)m_CurrTime.GetYear();
 		sysTime.wMonth = (WORD)m_CurrTime.GetMonth();
 		sysTime.wDay = (WORD)m_CurrTime.GetDay();
@@ -1322,7 +1351,8 @@ void CAucma_HeaterDlg::OnOptAdd(void)
 void CAucma_HeaterDlg::OnOptReduce(void)
 {
 	SYSTEMTIME sysTime;
-	CTimeSpan time(-60);
+	CTimeSpan timeMin(-60);
+	CTimeSpan timeHour(-3600);
 	KillTimer(TwinkleTimerEvent);
 	if (m_uiContinuousCount == 0)
 	{
@@ -1365,7 +1395,14 @@ void CAucma_HeaterDlg::OnOptReduce(void)
 	{
 		KillTimer(ShowTimeTimerEvent);
 		memset(&sysTime, 0 ,sizeof(SYSTEMTIME));
-		m_CurrTime += time;
+		if (m_bSetTimeMin == true)
+		{
+			m_CurrTime += timeMin;
+		}
+		else
+		{
+			m_CurrTime += timeHour;
+		}
 		sysTime.wYear = (WORD)m_CurrTime.GetYear();
 		sysTime.wMonth = (WORD)m_CurrTime.GetMonth();
 		sysTime.wDay = (WORD)m_CurrTime.GetDay();
@@ -1521,10 +1558,16 @@ void CAucma_HeaterDlg::TwinkleSet(void)
 		}
 		else if (m_bSetTime == true)
 		{
-			InvalidateRect(m_rectHourHighPic, FALSE);
-			InvalidateRect(m_rectHourLowPic, FALSE);
-			InvalidateRect(m_rectMinHighPic, FALSE);
-			InvalidateRect(m_rectMinLowPic, FALSE);
+			if (m_bSetTimeMin == true)
+			{
+				InvalidateRect(m_rectMinHighPic, FALSE);
+				InvalidateRect(m_rectMinLowPic, FALSE);
+			}
+			else
+			{
+				InvalidateRect(m_rectHourHighPic, FALSE);
+				InvalidateRect(m_rectHourLowPic, FALSE);
+			}
 		}
 	}
 }

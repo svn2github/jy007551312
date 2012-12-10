@@ -26,9 +26,9 @@
 /** 蜂鸣器定时器序号*/
 #define BuzzerTimerEvent			5
 /** 蜂鸣器一次操作鸣响时间*/
-#define BuzzerOptTime				300
+#define BuzzerOptTime				175
 /** 蜂鸣器报警鸣响时间*/
-#define BuzzerWarningTime			9800
+#define BuzzerWarningTime			4925
 /** 洗手加热确认定时器序号*/
 #define WashHandTimerEvent			6
 /** 洗手加热确认定时器时间*/
@@ -77,7 +77,7 @@ enum {NoTempShow, InsulationState, HeatTempState};
 /** 串口接收数据消息*/
 #define WM_RECV_UART_DATA	WM_USER + 100
 /** 默认蜂鸣器频率，设为1则频率为2Hz*/
-#define DefaultBuzzFrq				1
+#define DefaultBuzzFrq				2
 /************************************************************************/
 /*                串口通讯命令字                                        */
 /************************************************************************/
@@ -107,7 +107,7 @@ enum {NoTempShow, InsulationState, HeatTempState};
 /** 时间小时数*/
 #define CMD_UP_HOUR					0x60
 /** 时间分钟数*/
-#define CMD_UP_MIN					0x61
+#define CMD_UP_WEEK					0x61
 /** 冬季智能运行*/
 #define CMD_UP_WO					0x80
 /** 夏季智能运行*/
@@ -120,6 +120,8 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define CMD_UP_NO					0x84
 /** 洗手加热*/
 #define CMD_UP_WH					0x85
+/** 开关电源*/
+#define CMD_UP_PW					0x86
 // /** 高温报警温度设置*/
 // #define CMD_UP_HAM					0x84
 // /** 低温报警温度设置*/
@@ -155,12 +157,8 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define CMD_WORD_WT_WE				0x0a
 /** 水量不足*/
 #define CMD_WORD_WT_WL				0x0b
-/** 冬季智能关闭*/
-#define CMD_WORD_WC					0x00
 /** 冬季智能开启*/
 #define CMD_WORD_WO					0x01
-/** 夏季智能关闭*/
-#define CMD_WORD_SC					0x00
 /** 夏季智能开启*/
 #define CMD_WORD_SO					0x01
 /** 智能助手关闭*/
@@ -175,4 +173,8 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define CMD_WORD_WHC				0x00
 /** 洗手加热开启*/
 #define CMD_WORD_WHO				0x01
+/** 进入待机状态*/
+#define CMD_WORD_PC					0x00
+/** 普通加热模式*/
+#define CMD_WORD_PO					0x01
 #endif
