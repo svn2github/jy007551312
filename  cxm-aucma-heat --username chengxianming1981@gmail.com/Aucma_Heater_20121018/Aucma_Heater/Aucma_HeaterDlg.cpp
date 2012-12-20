@@ -190,10 +190,17 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_bNightMode = m_bNight;
 	m_bHelperOld = !m_bHelper;
 	m_bPowerOld = !m_bPower;
-	m_dwFastHeatStateOld = m_dwFastHeatState++;
-	if (m_dwFastHeatStateOld > WinterHeat)
+	if (m_dwFastHeatState == NormalHeat)
+	{
+		m_dwFastHeatStateOld = WinterHeat;
+	}
+	else if (m_dwFastHeatState == SummerHeat)
 	{
 		m_dwFastHeatStateOld = NormalHeat;
+	}
+	else if (m_dwFastHeatState == WinterHeat)
+	{
+		m_dwFastHeatStateOld = SummerHeat;
 	}
 }
 // 设置窗口满屏
@@ -429,13 +436,13 @@ void CAucma_HeaterDlg::OnClickedHeatfast()
 	OptBuzzer();
 	if (m_dwFastHeatState == NormalHeat)
 	{
-		m_dwFastHeatState = FastHeat;
+		m_dwFastHeatState = SummerHeat;
 		InvalidateRect(m_rectHeatFastPic, FALSE);
 		InvalidateRect(m_rectHeatFastText, FALSE);
 		// 夏季智能开启
 		OnWriteUartData(CMD_UP_SO, CMD_WORD_SO);
 	}
-	else if (m_dwFastHeatState == FastHeat)
+	else if (m_dwFastHeatState == SummerHeat)
 	{
 		m_dwFastHeatState = WinterHeat;
 		InvalidateRect(m_rectWinterPic, FALSE);
@@ -717,7 +724,7 @@ void CAucma_HeaterDlg::OnPaint()
 			dc.ExtTextOut(m_rectWinterText.left + TextOutMovePos2, m_rectWinterText.top, ETO_OPAQUE, NULL, _T("冬天"), NULL);
 			dc.SelectObject(&m_FontDefault);
 		}
-		else if (m_dwFastHeatState == FastHeat)
+		else if (m_dwFastHeatState == SummerHeat)
 		{
 			m_oPngImage.OnDcBitBlt(&dc, &m_dcHeatFastOn, m_rectHeatFastPic);
 			m_oPngImage.OnDcBitBlt(&dc, &m_dcWinterOff, m_rectWinterPic);
@@ -1241,7 +1248,7 @@ void CAucma_HeaterDlg::OpenComm(void)
 {
 	m_oCEUart.m_OnUartRead = OnUartRead;
 	// @@@调试时采用端口1，实际运行为端口2对应开发板COM1
-	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
+	if (m_oCEUart.OpenPort(this, 2, 4800, NOPARITY, 8, ONESTOPBIT))
 	{
 		TRACE(_T("串口打开成功！"));
 	}
@@ -1667,11 +1674,11 @@ DWORD CAucma_HeaterDlg::LoadRegKey(HKEY hKey, CString strKeyName, DWORD dwDefaul
 	long lResult = 0;
 	DWORD dwKeyValue = 0;
 	DWORD dwKeyValueType = 0;
-	DWORD dwKeyValueLength = 0;
+	DWORD dwKeyValueLength = 4;
 	if (dwOpenStyle == REG_CREATED_NEW_KEY)
 	{
 		dwKeyValue = dwDefaultKeyValue;
-		lResult = RegSetValueEx(hKey, strKeyName, 0, REG_SZ, 
+		lResult = RegSetValueEx(hKey, strKeyName, 0, REG_DWORD, 
 			(BYTE*)&dwKeyValue, sizeof(dwKeyValue));
 		ASSERT(lResult == ERROR_SUCCESS);
 	}
@@ -1683,46 +1690,57 @@ DWORD CAucma_HeaterDlg::LoadRegKey(HKEY hKey, CString strKeyName, DWORD dwDefaul
 	}
 	return dwKeyValue;
 }
-// 载入键值
-bool CAucma_HeaterDlg::LoadRegKey(HKEY hKey, CString strKeyName, bool bDefaultKeyValue, DWORD dwOpenStyle)
-{
-	long lResult = 0;
-	bool bKeyValue = false;
-	DWORD dwKeyValueType = 0;
-	DWORD dwKeyValueLength = 0;
-	if (dwOpenStyle == REG_CREATED_NEW_KEY)
-	{
-		bKeyValue = bDefaultKeyValue;
-		lResult = RegSetValueEx(hKey, strKeyName, 0, REG_SZ, 
-			(BYTE*)&bKeyValue, sizeof(bKeyValue));
-		ASSERT(lResult == ERROR_SUCCESS);
-	}
-	else if (dwOpenStyle == REG_OPENED_EXISTING_KEY)
-	{
-		lResult = RegQueryValueEx(hKey, strKeyName, 0, &dwKeyValueType, 
-			(BYTE*)&bKeyValue, &dwKeyValueLength);
-		ASSERT(lResult == ERROR_SUCCESS);
-	}
-	return bKeyValue;
-}
 // 从注册表中载入参数
 void CAucma_HeaterDlg::LoadParamFromReg(void)
 {
 	HKEY hOpenKey;
 	DWORD dwOpenStyle;
 	long lResult = 0;
+	DWORD dwReturn = 0;
 	// 打开或者新建指定的键
 	lResult = RegCreateKeyEx(HKEY_CURRENT_USER, RegKeyName, 0, _T(""), 
 		REG_OPTION_NON_VOLATILE, KEY_READ|KEY_WRITE , NULL, &hOpenKey, &dwOpenStyle);
 	ASSERT(lResult == ERROR_SUCCESS);
-	m_dwInTempSetReg[0] = LoadRegKey(hOpenKey, RegSubKeyNameNHST, (DWORD)DefaultNormalTemp, dwOpenStyle);
-	m_dwInTempSetReg[1] = LoadRegKey(hOpenKey, RegSubKeyNameSHST, (DWORD)DefaultSummerTemp, dwOpenStyle);
-	m_dwInTempSetReg[2] = LoadRegKey(hOpenKey, RegSubKeyNameWHST, (DWORD)DefaultWinterTemp, dwOpenStyle);
-	m_dwFastHeatStateReg = LoadRegKey(hOpenKey, RegSubKeyNameHeatMode, (DWORD)NormalHeat, dwOpenStyle);
-	m_bWashHandReg = LoadRegKey(hOpenKey, RegSubKeyNameWashMode, false, dwOpenStyle);
-	m_bNightReg = LoadRegKey(hOpenKey, RegSubKeyNameNightMode, false, dwOpenStyle);
-	m_bHelperReg = LoadRegKey(hOpenKey, RegSubKeyNameHelperMode, false, dwOpenStyle);
-	m_bPowerReg = LoadRegKey(hOpenKey, RegSubKeyNamePower, false, dwOpenStyle);
+	m_dwInTempSetReg[0] = LoadRegKey(hOpenKey, RegSubKeyNameNHST, DefaultNormalTemp, dwOpenStyle);
+	m_dwInTempSetReg[1] = LoadRegKey(hOpenKey, RegSubKeyNameSHST, DefaultSummerTemp, dwOpenStyle);
+	m_dwInTempSetReg[2] = LoadRegKey(hOpenKey, RegSubKeyNameWHST, DefaultWinterTemp, dwOpenStyle);
+	m_dwFastHeatStateReg = LoadRegKey(hOpenKey, RegSubKeyNameHeatMode, NormalHeat, dwOpenStyle);
+	dwReturn = LoadRegKey(hOpenKey, RegSubKeyNameWashMode, 0, dwOpenStyle);
+	if (dwReturn == 1)
+	{
+		m_bWashHandReg = true;
+	}
+	else
+	{
+		m_bWashHandReg = false;
+	}
+	dwReturn = LoadRegKey(hOpenKey, RegSubKeyNameNightMode, 0, dwOpenStyle);
+	if (dwReturn == 1)
+	{
+		m_bNightReg = true;
+	}
+	else
+	{
+		m_bNightReg = false;
+	}
+	dwReturn = LoadRegKey(hOpenKey, RegSubKeyNameHelperMode, 0, dwOpenStyle);
+	if (dwReturn == 1)
+	{
+		m_bHelperReg = true;
+	}
+	else
+	{
+		m_bHelperReg = false;
+	}
+	dwReturn = LoadRegKey(hOpenKey, RegSubKeyNamePower, 0, dwOpenStyle);
+	if (dwReturn == 1)
+	{
+		m_bPowerReg = true;
+	}
+	else
+	{
+		m_bPowerReg = false;
+	}
 	RegFlushKey(HKEY_CURRENT_USER);
 	RegCloseKey(hOpenKey);
 }
@@ -1754,19 +1772,51 @@ void CAucma_HeaterDlg::SaveParamToReg(void)
 	}
 	if (m_bWashHandReg != m_bWashHand)
 	{
-		m_bWashHandReg = LoadRegKey(hOpenKey, RegSubKeyNameWashMode, m_bWashHand);
+		if (m_bWashHand)
+		{
+			LoadRegKey(hOpenKey, RegSubKeyNameWashMode, 1);
+		}
+		else
+		{
+			LoadRegKey(hOpenKey, RegSubKeyNameWashMode, 0);
+		}
+		m_bWashHandReg = m_bWashHand;
 	}
 	if (m_bNightReg != m_bNight)
 	{
-		m_bNightReg = LoadRegKey(hOpenKey, RegSubKeyNameNightMode, m_bNight);
+		if (m_bNight)
+		{
+			LoadRegKey(hOpenKey, RegSubKeyNameNightMode, 1);
+		}
+		else
+		{
+			LoadRegKey(hOpenKey, RegSubKeyNameNightMode, 0);
+		}
+		m_bNightReg = m_bNight;
 	}
 	if (m_bHelperReg != m_bHelper)
 	{
-		m_bHelperReg = LoadRegKey(hOpenKey, RegSubKeyNameHelperMode, m_bHelper);
+		if (m_bHelper)
+		{
+			LoadRegKey(hOpenKey, RegSubKeyNameHelperMode, 1);
+		}
+		else
+		{
+			LoadRegKey(hOpenKey, RegSubKeyNameHelperMode, 0);
+		}
+		m_bHelperReg = m_bHelper;
 	}
 	if (m_bPowerReg != m_bPower)
 	{
-		m_bPowerReg = LoadRegKey(hOpenKey, RegSubKeyNamePower, m_bPower);
+		if (m_bPower)
+		{
+			LoadRegKey(hOpenKey, RegSubKeyNamePower, 1);
+		}
+		else
+		{
+			LoadRegKey(hOpenKey, RegSubKeyNamePower, 0);
+		}
+		m_bPowerReg = m_bPower;
 	}
 	RegFlushKey(HKEY_CURRENT_USER);
 	RegCloseKey(hOpenKey);

@@ -384,9 +384,8 @@ public:
 	// 程序初始化
 	void OnInit(void);
 	// 载入键值
-	DWORD LoadRegKey(HKEY hKey, CString strKeyName, DWORD dwDefaultKeyValue, DWORD dwOpenStyle = REG_CREATED_NEW_KEY);
-	// 载入键值
-	bool LoadRegKey(HKEY hKey, CString strKeyName, bool bDefaultKeyValue, DWORD dwOpenStyle = REG_CREATED_NEW_KEY);
+	DWORD LoadRegKey(HKEY hKey, CString strKeyName, DWORD dwDefaultKeyValue, 
+		DWORD dwOpenStyle = REG_CREATED_NEW_KEY);
 	// 从注册表中载入参数
 	void LoadParamFromReg(void);
 	// 保存参数到注册表

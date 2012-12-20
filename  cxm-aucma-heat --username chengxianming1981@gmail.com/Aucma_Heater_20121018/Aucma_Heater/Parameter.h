@@ -50,7 +50,7 @@
 /** 点击增加和减少达到时间次数，用于判定连续操作*/
 #define ContinuousOptTimes			6
 /** 速热引擎状态枚举*/
-enum {NormalHeat, FastHeat, WinterHeat};
+enum {NormalHeat, SummerHeat, WinterHeat};
 /** 温度显示状态*/
 enum {NoTempShow, InsulationState, HeatTempState};
 /** 图片所在的文件夹*/
