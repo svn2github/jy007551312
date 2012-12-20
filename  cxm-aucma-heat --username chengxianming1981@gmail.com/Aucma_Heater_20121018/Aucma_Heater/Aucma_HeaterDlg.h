@@ -210,22 +210,32 @@ private:
 	// 智能助手标志位
 	bool m_bHelper;
 	bool m_bHelperOld;
+	// 注册表中智能助手标志位
+	bool m_bHelperReg;
 	// 洗手加热标志位
 	bool m_bWashHand;
 	bool m_bWashHandOld;
+	// 注册表中洗手加热标志位
+	bool m_bWashHandReg;
 	// 夜电模式标志位
 	bool m_bNight;
 	bool m_bNightOld;
 	bool m_bNightMode;
+	// 注册表中夜电模式标志位
+	bool m_bNightReg;
 	// 电源开关标志位
 	bool m_bPower;
 	bool m_bPowerOld;
+	// 注册表中电源开关标志位
+	bool m_bPowerReg;
 	// 速热引擎状态
-	int m_iFastHeatState;
-	int m_iFastHeatStateOld;
+	DWORD m_dwFastHeatState;
+	DWORD m_dwFastHeatStateOld;
+	// 注册表中速热引擎状态
+	DWORD m_dwFastHeatStateReg;
 	// 温度显示状态
-	int m_iTempState;
-	int m_iTempStateOld;
+	DWORD m_dwTempState;
+	DWORD m_dwTempStateOld;
 	// 温度加热显示
 	bool m_bTempHeat;
 	// 温度单位
@@ -261,18 +271,16 @@ private:
 // 	BLENDFUNCTION m_blendfun;
 	// 串口通讯类成员
 	CCEUart m_oCEUart;
-	// 设置箱内温度
-	int m_iInTempSet[3];
-	int m_iInTempSetOld;
+	// 箱内温度设置
+	DWORD m_dwInTempSet[3];
+	DWORD m_dwInTempSetOld;
+	// 注册表中箱内温度设置
+	DWORD m_dwInTempSetReg[3];
 	// 实际的箱内温度
 	int m_iInTempActual;
 	int m_iInTempActualOld;
 	// 实际的环境温度
 	int m_iEnvTempActual;
-// 	// 设置高温报警温度
-// 	int m_iHighWarnTemp;
-// 	// 设置低温报警温度
-// 	int m_iLowWarnTemp;
 	// 串口接收数据处理记数
 	unsigned int m_uiUartRcvCount;
 	// 校验位
@@ -330,7 +338,7 @@ public:
 	afx_msg LRESULT OnRecvUartData(WPARAM wParam, LPARAM lParam);
 private:
 	// 初始化界面参数
-	void OnInit(void);
+	void OnReset(void);
 public:
 	// 载入图片
 	void LoadPicture(void);
@@ -373,4 +381,14 @@ public:
 	void TwinkleHelper(void);
 	// 速热引擎闪烁处理
 	void TwinkleHeatFast(void);
+	// 程序初始化
+	void OnInit(void);
+	// 载入键值
+	DWORD LoadRegKey(HKEY hKey, CString strKeyName, DWORD dwDefaultKeyValue, DWORD dwOpenStyle = REG_CREATED_NEW_KEY);
+	// 载入键值
+	bool LoadRegKey(HKEY hKey, CString strKeyName, bool bDefaultKeyValue, DWORD dwOpenStyle = REG_CREATED_NEW_KEY);
+	// 从注册表中载入参数
+	void LoadParamFromReg(void);
+	// 保存参数到注册表
+	void SaveParamToReg(void);
 };

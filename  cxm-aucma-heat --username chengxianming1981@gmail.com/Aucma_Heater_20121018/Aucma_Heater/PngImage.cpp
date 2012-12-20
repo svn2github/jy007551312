@@ -51,7 +51,7 @@ void CPngImage::ReleaseIImage()
 	CoUninitialize();
 }
 // 从文件中载入图片
-void CPngImage::LoadPicFromFile(CString strPicName)
+void CPngImage::LoadPicture(CString strPicName)
 {
 	CString strPicPath = PicFolderName + strPicName; // 图像文件的路径
 	if (FAILED(m_pImagingFactory->CreateImageFromFile(strPicPath, &m_pImage)))
@@ -60,7 +60,7 @@ void CPngImage::LoadPicFromFile(CString strPicName)
 	}
 }
 /** 从资源中载入图片*/
-BOOL CPngImage::LoadFromResource(LPCWSTR lpName, LPCWSTR lpType)  
+BOOL CPngImage::LoadPicture(LPCWSTR lpName, LPCWSTR lpType)  
 {  
 	// 在资源中寻找
 	HRSRC	hr;
