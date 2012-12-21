@@ -290,17 +290,27 @@ private:
 	// 闪烁次数计数
 	unsigned int m_uiTwinkleCount;
 	// 闪烁标志位
-	bool m_bTwinkle;
+	bool m_bTwinkleLabel;
 	// 智能助手闪烁标志位
+	bool m_bTwinkleHelperLabel;
+	// 智能助手图标闪烁功能开启标志位
 	bool m_bTwinkleHelper;
+	// 注册表中智能助手图标闪烁功能开启标志位
+	bool m_bTwinkleHelperReg;
 	// 速热引擎闪烁标志位
+	bool m_bTwinkleHeatFastLabel;
+	// 速热引擎图标闪烁功能开启标志位
 	bool m_bTwinkleHeatFast;
+	// 注册表中速热引擎图标闪烁功能开启标志位
+	bool m_bTwinkleHeatFastReg;
 	// png绘制类成员
 	CPngImage m_oPngImage;
 	// 蜂鸣器PWM
 	HANDLE m_hPWM;
 	// 设置分钟
 	bool m_bSetTimeMin;
+	// 软件使用次数限制
+	DWORD m_dwSoftUseLimit;
 public:
 	// 鼠标左键单击坐标在所选区域内
 	bool OnPointInRect(CRect rect, CPoint point);

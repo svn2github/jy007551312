@@ -48,9 +48,9 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	SetWindowFullScreen();
 	LoadParamFromReg();
 	OnInit();
-	SetWindowFullScreen();
 	LoadFont();
 	LoadPicture();
 	OpenComm();
@@ -86,6 +86,11 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 //	ShowWindow(SW_SHOWMAXIMIZED);
 //	// 创建背景刷子
 //	m_brushBk.CreateSolidBrush(DialogBkColor);
+	// @@@加入限制
+	if (m_dwSoftUseLimit > SoftUseLimitNum)
+	{
+		PostMessage(WM_DESTROY);
+	}
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -167,9 +172,9 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_uiUartRcvCount = 0;
 	m_byCheck = 0;
 	m_uiTwinkleCount = 0;
-	m_bTwinkle = false;
-	m_bTwinkleHelper = false;
-	m_bTwinkleHeatFast = false;
+	m_bTwinkleLabel = false;
+	m_bTwinkleHelperLabel = false;
+	m_bTwinkleHeatFastLabel = false;
 	m_bSetTimeMin = true;
 	m_bSetTemp = false;
 	m_bSetTempOld = !m_bSetTemp;
@@ -184,6 +189,18 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_bNight = m_bNightReg;
 	m_bHelper = m_bHelperReg;
 	m_bPower = m_bPowerReg;
+	m_bTwinkleHelper = m_bTwinkleHelperReg;
+	if (m_bTwinkleHelper)
+	{
+		// 开启智能助手图标闪烁定时器
+		SetTimer(HelperTwinkleTimerEvent, HelperTwinkleTimeSet, NULL);
+	}
+	m_bTwinkleHeatFast = m_bTwinkleHeatFastReg;
+	if (m_bTwinkleHeatFast)
+	{
+		// 开启速热引擎闪烁定时器
+		SetTimer(HeatFastTwinkleTimerEvent, HeatFastTwinkleTimeSet, NULL);
+	}
 
 	m_bWashHandOld = !m_bWashHand;
 	m_bNightOld = !m_bNight;
@@ -483,6 +500,7 @@ void CAucma_HeaterDlg::OnClickedHelper()
 		OnWriteUartData(CMD_UP_HP, CMD_WORD_HO);
 		// 开启智能助手图标闪烁定时器
 		SetTimer(HelperTwinkleTimerEvent, HelperTwinkleTimeSet, NULL);
+		m_bTwinkleHelper = true;
 	}
 	else
 	{
@@ -490,6 +508,7 @@ void CAucma_HeaterDlg::OnClickedHelper()
 		OnWriteUartData(CMD_UP_HP, CMD_WORD_HC);
 		// 关闭智能助手图标闪烁定时器
 		KillTimer(HelperTwinkleTimerEvent);
+		m_bTwinkleHelper = false;
 	}
 	SaveParamToReg();
 }
@@ -595,7 +614,7 @@ void CAucma_HeaterDlg::OnSetTime(void)
 	if ((m_bSetTime == true) && (m_bSetTimeMin == true))
 	{
 		m_bSetTimeMin = false;
-		m_bTwinkle = true;
+		m_bTwinkleLabel = true;
 		m_uiTwinkleCount = 0;
 		KillTimer(TwinkleTimerEvent);
 		SetTimer(TwinkleTimerEvent, TwinkleTimeSet, NULL);
@@ -712,7 +731,7 @@ void CAucma_HeaterDlg::OnPaint()
 	// 不为绘图消息调用 CDialog::OnPaint()
 	m_oPngImage.OnDcBitBlt(&dc, &m_dcBK, m_rectBK);
 	dc.SetBkMode(TRANSPARENT);
-	if ((m_dwFastHeatStateOld != m_dwFastHeatState) || (m_bTwinkleHeatFast == true))
+	if ((m_dwFastHeatStateOld != m_dwFastHeatState) || (m_bTwinkleHeatFastLabel == true))
 	{
 		if (m_dwFastHeatState == NormalHeat)
 		{
@@ -747,7 +766,7 @@ void CAucma_HeaterDlg::OnPaint()
 		}
 		m_dwFastHeatStateOld = m_dwFastHeatState;
 	}
-	if ((m_bHelperOld != m_bHelper) || (m_bTwinkleHelper == true))
+	if ((m_bHelperOld != m_bHelper) || (m_bTwinkleHelperLabel == true))
 	{
 		if (m_bHelper == true)
 		{
@@ -825,7 +844,7 @@ void CAucma_HeaterDlg::OnPaint()
 	}
 	if (m_bSetTemp == true)
 	{
-		if ((m_bTwinkle == true) || (m_bSetTempOld != m_bSetTemp) || (m_dwInTempSetOld != m_dwInTempSet[m_dwFastHeatState]))
+		if ((m_bTwinkleLabel == true) || (m_bSetTempOld != m_bSetTemp) || (m_dwInTempSetOld != m_dwInTempSet[m_dwFastHeatState]))
 		{
 			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempHighSet[m_dwInTempSet[m_dwFastHeatState] / 10], m_rectTempHighPic);
 			m_oPngImage.OnDcBitBlt(&dc, &m_dcTempLowSet[m_dwInTempSet[m_dwFastHeatState] % 10], m_rectTempLowPic);
@@ -858,7 +877,7 @@ void CAucma_HeaterDlg::OnPaint()
 // 		m_iInTempSetOld = m_iInTempSet[m_iFastHeatState];
 // 		m_bSetTempOld = m_bSetTemp;
 // 	}
-	if ((m_CurrTimeOld != m_CurrTime) || (m_bSetTimeOld != m_bSetTime) || ((m_bTwinkle == true) && (m_bSetTime == true)))
+	if ((m_CurrTimeOld != m_CurrTime) || (m_bSetTimeOld != m_bSetTime) || ((m_bTwinkleLabel == true) && (m_bSetTime == true)))
 	{
 		if (m_bSetTime == true)
 		{
@@ -1091,13 +1110,15 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 	case CMD_DOWN_HP:
 		// 关闭智能助手闪烁定时器
 		KillTimer(HelperTwinkleTimerEvent);
-		m_bTwinkleHelper = true;
+		m_bTwinkleHelperLabel = true;
+		m_bTwinkleHelper = false;
 		InvalidateRect(m_rectHelperPic, FALSE);
+		SaveParamToReg();
 		break;
 	case CMD_DOWN_ET:
 		m_iEnvTempActual = (unsigned int)byData - 127;
-		str.Format(_T("实际环境温度 %d"), m_iEnvTempActual);
-		AfxMessageBox(str);
+//		str.Format(_T("实际环境温度 %d"), m_iEnvTempActual);
+//		AfxMessageBox(str);
 		break;
 	case CMD_DOWN_IT:
 		m_iInTempActual = (unsigned int)byData - 127;
@@ -1169,13 +1190,17 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 		{
 			// 关闭速热引擎闪烁定时器
 			KillTimer(HeatFastTwinkleTimerEvent);
-			m_bTwinkleHeatFast = true;
+			m_bTwinkleHeatFastLabel = true;
+			m_bTwinkleHeatFast = false;
 			InvalidateRect(m_rectHeatFastPic, FALSE);
+			SaveParamToReg();
 		}
 		else if (byData == CMD_WORD_WT_WL)
 		{
 			// 开启速热引擎闪烁定时器
 			SetTimer(HeatFastTwinkleTimerEvent, HeatFastTwinkleTimeSet, NULL);
+			m_bTwinkleHeatFast = true;
+			SaveParamToReg();
 		}
 		break;
 	case CMD_DOWN_QT:
@@ -1231,9 +1256,9 @@ void CAucma_HeaterDlg::OnReset(void)
 	m_uiUartRcvCount = 0;
 	m_byCheck = 0;
 	m_uiTwinkleCount = 0;
-	m_bTwinkle = false;
-	m_bTwinkleHelper = false;
-	m_bTwinkleHeatFast = false;
+	m_bTwinkleLabel = false;
+	m_bTwinkleHelperLabel = false;
+	m_bTwinkleHeatFastLabel = false;
 	m_bSetTimeMin = true;
 	KillTimer(ShowTempStateTimerEvent);
 	KillTimer(ContinuousOptTimerEvent);
@@ -1255,6 +1280,7 @@ void CAucma_HeaterDlg::OpenComm(void)
 	else
 	{
 		AfxMessageBox(_T("串口打开失败！"));
+		PostMessage(WM_DESTROY);
 	}
 }
 
@@ -1336,9 +1362,9 @@ void CAucma_HeaterDlg::OnOptAdd(void)
 		KillTimer(ContinuousOptTimerEvent);
 		SetTimer(ContinuousOptTimerEvent, ContinuousOptTimeSet, NULL);
 		m_bAddOpt = true;
-		if (m_bTwinkle == false)
+		if (m_bTwinkleLabel == false)
 		{
-			m_bTwinkle = true;
+			m_bTwinkleLabel = true;
 			if (m_bSetTemp == true)
 			{
 				InvalidateRect(m_rectTempHighPic, FALSE);
@@ -1419,9 +1445,9 @@ void CAucma_HeaterDlg::OnOptReduce(void)
 		KillTimer(ContinuousOptTimerEvent);
 		SetTimer(ContinuousOptTimerEvent, ContinuousOptTimeSet, NULL);
 		m_bReduceOpt = true;
-		if (m_bTwinkle == false)
+		if (m_bTwinkleLabel == false)
 		{
-			m_bTwinkle = true;
+			m_bTwinkleLabel = true;
 			if (m_bSetTemp == true)
 			{
 				InvalidateRect(m_rectTempHighPic, FALSE);
@@ -1605,11 +1631,11 @@ void CAucma_HeaterDlg::TwinkleSet(void)
 	{
 		if (m_uiTwinkleCount % 2 == 0)
 		{
-			m_bTwinkle = true;
+			m_bTwinkleLabel = true;
 		}
 		else
 		{
-			m_bTwinkle = false;
+			m_bTwinkleLabel = false;
 		}
 		if (m_bSetTemp == true)
 		{
@@ -1658,14 +1684,14 @@ void CAucma_HeaterDlg::ProNightMode(void)
 // 智能助手闪烁处理
 void CAucma_HeaterDlg::TwinkleHelper(void)
 {
-	m_bTwinkleHelper = !m_bTwinkleHelper;
+	m_bTwinkleHelperLabel = !m_bTwinkleHelperLabel;
 	InvalidateRect(m_rectHelperPic, FALSE);
 }
 
 // 速热引擎闪烁处理
 void CAucma_HeaterDlg::TwinkleHeatFast(void)
 {
-	m_bTwinkleHeatFast = !m_bTwinkleHeatFast;
+	m_bTwinkleHeatFastLabel = !m_bTwinkleHeatFastLabel;
 	InvalidateRect(m_rectHeatFastPic, FALSE);
 }
 // 载入键值
@@ -1698,7 +1724,7 @@ void CAucma_HeaterDlg::LoadParamFromReg(void)
 	long lResult = 0;
 	DWORD dwReturn = 0;
 	// 打开或者新建指定的键
-	lResult = RegCreateKeyEx(HKEY_CURRENT_USER, RegKeyName, 0, _T(""), 
+	lResult = RegCreateKeyEx(HKEY_CURRENT_USER, RegKeyNameHeater, 0, _T(""), 
 		REG_OPTION_NON_VOLATILE, KEY_READ|KEY_WRITE , NULL, &hOpenKey, &dwOpenStyle);
 	ASSERT(lResult == ERROR_SUCCESS);
 	m_dwInTempSetReg[0] = LoadRegKey(hOpenKey, RegSubKeyNameNHST, DefaultNormalTemp, dwOpenStyle);
@@ -1741,6 +1767,27 @@ void CAucma_HeaterDlg::LoadParamFromReg(void)
 	{
 		m_bPowerReg = false;
 	}
+	dwReturn = LoadRegKey(hOpenKey, RegSubKeyNameHelperTwinkle, 0, dwOpenStyle);
+	if (dwReturn == 1)
+	{
+		m_bTwinkleHelperReg = true;
+	}
+	else
+	{
+		m_bTwinkleHelperReg = false;
+	}
+	dwReturn = LoadRegKey(hOpenKey, RegSubKeyNameHeatFastTwinkle, 0, dwOpenStyle);
+	if (dwReturn == 1)
+	{
+		m_bTwinkleHeatFastReg = true;
+	}
+	else
+	{
+		m_bTwinkleHeatFastReg = false;
+	}
+	m_dwSoftUseLimit = LoadRegKey(hOpenKey, RegSubKeyNameLimit, 0, dwOpenStyle);
+	m_dwSoftUseLimit++;
+	LoadRegKey(hOpenKey, RegSubKeyNameLimit, m_dwSoftUseLimit);
 	RegFlushKey(HKEY_CURRENT_USER);
 	RegCloseKey(hOpenKey);
 }
@@ -1751,7 +1798,7 @@ void CAucma_HeaterDlg::SaveParamToReg(void)
 	DWORD dwOpenStyle;
 	long lResult = 0;
 	// 打开或者新建指定的键
-	lResult = RegCreateKeyEx(HKEY_CURRENT_USER, RegKeyName, 0, _T(""), 
+	lResult = RegCreateKeyEx(HKEY_CURRENT_USER, RegKeyNameHeater, 0, _T(""), 
 		REG_OPTION_NON_VOLATILE, KEY_READ|KEY_WRITE , NULL, &hOpenKey, &dwOpenStyle);
 	ASSERT(lResult == ERROR_SUCCESS);
 	if (m_dwInTempSetReg[0] != m_dwInTempSet[0])
@@ -1817,6 +1864,30 @@ void CAucma_HeaterDlg::SaveParamToReg(void)
 			LoadRegKey(hOpenKey, RegSubKeyNamePower, 0);
 		}
 		m_bPowerReg = m_bPower;
+	}
+	if (m_bTwinkleHelperReg != m_bTwinkleHelper)
+	{
+		if (m_bTwinkleHelper)
+		{
+			LoadRegKey(hOpenKey, RegSubKeyNameHelperTwinkle, 1);
+		}
+		else
+		{
+			LoadRegKey(hOpenKey, RegSubKeyNameHelperTwinkle, 0);
+		}
+		m_bTwinkleHelperReg = m_bTwinkleHelper;
+	}
+	if (m_bTwinkleHeatFastReg != m_bTwinkleHeatFast)
+	{
+		if (m_bTwinkleHeatFast)
+		{
+			LoadRegKey(hOpenKey, RegSubKeyNameHeatFastTwinkle, 1);
+		}
+		else
+		{
+			LoadRegKey(hOpenKey, RegSubKeyNameHeatFastTwinkle, 0);
+		}
+		m_bTwinkleHeatFastReg = m_bTwinkleHeatFast;
 	}
 	RegFlushKey(HKEY_CURRENT_USER);
 	RegCloseKey(hOpenKey);

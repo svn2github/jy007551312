@@ -40,7 +40,7 @@ void CPngImage::ReleaseIImage()
 	// 释放IImagingFactory接口对象
 	if (m_pImagingFactory)
 	{
-		m_pImage->Release();
+		m_pImagingFactory->Release();
 	}
 	if (m_pImgDataBuf != NULL)  
 	{

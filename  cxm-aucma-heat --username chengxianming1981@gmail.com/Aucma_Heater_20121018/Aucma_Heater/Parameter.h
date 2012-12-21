@@ -54,26 +54,35 @@ enum {NormalHeat, SummerHeat, WinterHeat};
 /** 温度显示状态*/
 enum {NoTempShow, InsulationState, HeatTempState};
 /** 图片所在的文件夹*/
-//#define PicFolderName				_T("\\Storage Card\\Folder2\\")
-#define PicFolderName				_T("\\Program Files\\Folder2\\")
+//#define PicFolderName					_T("\\Storage Card\\Folder2\\")
+#define PicFolderName					_T("\\Program Files\\Folder2\\")
 /** 定义注册表主键名*/
-#define RegKeyName					_T("Aucma\\Heater")
+#define RegKeyNameHeater				_T("Aucma\\Heater")
 /** 定义注册表普通加热温度设置子键名*/
-#define RegSubKeyNameNHST			_T("普通设置温度")
+#define RegSubKeyNameNHST				_T("普通设置温度")
 /** 定义注册表夏季加热温度设置子键名*/
-#define RegSubKeyNameSHST			_T("夏季设置温度")
+#define RegSubKeyNameSHST				_T("夏季设置温度")
 /** 定义注册表冬季加热温度设置子键名*/
-#define RegSubKeyNameWHST			_T("冬季设置温度")
+#define RegSubKeyNameWHST				_T("冬季设置温度")
 /** 定义注册表加热模式子键名*/
-#define RegSubKeyNameHeatMode		_T("加热模式")
+#define RegSubKeyNameHeatMode			_T("加热模式")
 /** 定义注册表洗手模式子键名*/
-#define RegSubKeyNameWashMode		_T("洗手模式")
+#define RegSubKeyNameWashMode			_T("洗手模式")
 /** 定义注册表夜间模式子键名*/
-#define RegSubKeyNameNightMode		_T("夜间模式")
+#define RegSubKeyNameNightMode			_T("夜间模式")
 /** 定义注册表助手模式子键名*/
-#define RegSubKeyNameHelperMode		_T("助手模式")
+#define RegSubKeyNameHelperMode			_T("助手模式")
 /** 定义注册表电源开关子键名*/
-#define RegSubKeyNamePower			_T("电源开关")
+#define RegSubKeyNamePower				_T("电源开关")
+/** 定义注册表智能助手闪烁子键名*/
+#define RegSubKeyNameHelperTwinkle		_T("智能助手闪烁")
+/** 定义注册表速热引擎闪烁子键名*/
+#define RegSubKeyNameHeatFastTwinkle	_T("速热引擎闪烁")
+// @@@加入限制
+/** 定义注册表软件使用次数限制子键名*/
+#define RegSubKeyNameLimit				_T("次数限制")
+/** 软件试用次数限制*/
+#define SoftUseLimitNum					20
 /** 定义文本输出坐标偏移量1*/
 #define TextOutMovePos1				8
 /** 定义文本输出坐标偏移量2*/
