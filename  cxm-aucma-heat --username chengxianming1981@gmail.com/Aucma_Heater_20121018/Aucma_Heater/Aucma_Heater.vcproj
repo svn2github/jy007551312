@@ -573,6 +573,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CEHttp.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\UART_WINCE\CEUart.cpp"
 				>
 			</File>
@@ -644,6 +648,10 @@
 			</File>
 			<File
 				RelativePath=".\Aucma_HeaterDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CEHttp.h"
 				>
 			</File>
 			<File
