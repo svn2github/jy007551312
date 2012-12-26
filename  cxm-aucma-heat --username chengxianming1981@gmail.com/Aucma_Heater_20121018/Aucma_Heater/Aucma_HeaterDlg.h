@@ -4,6 +4,7 @@
 #include "..\UART_WINCE\CEUart.h"
 #include "Parameter.h"
 #include "PngImage.h"
+#include "CEHttp.h"
 // CAucma_HeaterDlg 对话框
 class CAucma_HeaterDlg : public CDialog
 {
@@ -311,6 +312,8 @@ private:
 	bool m_bSetTimeMin;
 	// 软件使用次数限制
 	DWORD m_dwSoftUseLimit;
+	// HTTP连接类成员
+	CCEHttp m_oCEHttp;
 public:
 	// 鼠标左键单击坐标在所选区域内
 	bool OnPointInRect(CRect rect, CPoint point);

@@ -57,6 +57,7 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	InitBuzzer();
 	OptBuzzer();
 	SetTimer(ShowTimeTimerEvent, ShowTimeTimeSet, NULL);
+	m_oCEHttp.ConnectServer();
 // 	// BlendOp字段指明了源混合操作，但只支持AC_SRC_OVER，即根据源alpha值把源图像叠加到目标图像上  
 // 	m_blendfun.BlendOp = AC_SRC_OVER;
 // 	// BlendFlags必须是0，也是为以后的应用保留的
@@ -1273,7 +1274,7 @@ void CAucma_HeaterDlg::OpenComm(void)
 {
 	m_oCEUart.m_OnUartRead = OnUartRead;
 	// @@@调试时采用端口1，实际运行为端口2对应开发板COM1
-	if (m_oCEUart.OpenPort(this, 2, 4800, NOPARITY, 8, ONESTOPBIT))
+	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
 	{
 		TRACE(_T("串口打开成功！"));
 	}
