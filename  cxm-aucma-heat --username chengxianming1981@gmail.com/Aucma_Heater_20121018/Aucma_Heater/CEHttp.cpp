@@ -18,8 +18,8 @@ void CCEHttp::OnInit(void)
 bool CCEHttp::ConnectServer(void)
 {
 //	https://accounts.google.com/ServiceLogin?hl=zh-CN&continue=http://www.google.com.hk&username=chengxianming1981&password=jy00755131@/
-//	http://mail.shgymy.com:9898/reshui.jsp?id=SN&time=2012-12-03 10:59:38&temperature=18&errorcode=0&statecode=012345
-	CString pstrURL = _T("http://mail.shgymy.com:9898/reshui.jsp");
+//	http://mail.shgymy.com:9898/reshuiqiSrv/renshuiqisrv?id=0&time=2012-12-18%2018:18:18&errorcode=0&statecode=123456
+	CString pstrURL = _T("http://mail.shgymy.com:9898/reshuiqiSrv/renshuiqisrv");
 	DWORD dwServiceType;
 	CString strServer;
 	CString strObject;
@@ -58,7 +58,7 @@ bool CCEHttp::ConnectServer(void)
 		return false;
 	}
 
-	DWORD dwHttpTimeout = 1000;
+	DWORD dwHttpTimeout = 10000;
 	if(!InternetSetOption(m_hRequest, INTERNET_OPTION_CONNECT_TIMEOUT, &dwHttpTimeout, sizeof(DWORD)))
 	{
 		InternetCloseHandle(m_hRequest);
@@ -81,7 +81,7 @@ bool CCEHttp::ConnectServer(void)
 		return false;
 	}
 	CString strHeaders = _T("Content-Type: application/x-www-form-urlencoded");
-	CString strFormData = _T("id=SN&time=2012-12-03 10:59:38&temperature=18&errorcode=0&statecode=012345");
+	CString strFormData = _T("id=0&time=2012-12-18%2018:18:18&errorcode=0&statecode=123456");
 
 	int len = WideCharToMultiByte(CP_ACP, 0, strFormData, strFormData.GetLength(), NULL, 0, NULL, NULL);
 	//为多字节字符数组申请空间，数组大小为按字节计算的宽字节字节大小,以字节为单位
@@ -91,6 +91,7 @@ bool CCEHttp::ConnectServer(void)
 	if(HttpSendRequest(m_hRequest, strHeaders, strHeaders.GetLength(), pszData, strFormData.GetLength())
 		== FALSE)
 	{
+		int iError = GetLastError();
 		InternetCloseHandle(m_hRequest);
 		InternetCloseHandle(m_hConnect);
 		InternetCloseHandle(m_hOpen);
