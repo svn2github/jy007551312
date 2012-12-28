@@ -185,7 +185,7 @@ BOOL CCEUart::OpenPort(void* pFatherPtr, UINT uiPortNo, UINT uiBaud, UINT uiPari
 	// 清空接收和发送缓冲区
 	PurgeComm(m_hComm, PURGE_RXCLEAR | PURGE_TXCLEAR);
 	CString strEvent;
-	strEvent.Format(_T("Com_ReadCloseEvent%d"), uiPortNo);
+	strEvent.Format(_T("Com_CloseEvent%d"), uiPortNo);
 	m_hReadCloseEvent = CreateEvent(NULL, TRUE, FALSE, strEvent);
 
 	// 创建串口读数据接收线程

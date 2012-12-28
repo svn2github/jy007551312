@@ -57,7 +57,7 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	InitBuzzer();
 	OptBuzzer();
 	SetTimer(ShowTimeTimerEvent, ShowTimeTimeSet, NULL);
-	m_oCEHttp.ConnectServer();
+	m_oCEHttp.OnInit(this);
 // 	// BlendOp字段指明了源混合操作，但只支持AC_SRC_OVER，即根据源alpha值把源图像叠加到目标图像上  
 // 	m_blendfun.BlendOp = AC_SRC_OVER;
 // 	// BlendFlags必须是0，也是为以后的应用保留的
@@ -443,6 +443,7 @@ void CAucma_HeaterDlg::OnDestroy()
 	m_dcBK.DeleteDC();
 	m_oCEUart.ClosePort();
 	m_oPngImage.ReleaseIImage();
+	m_oCEHttp.OnClose();
 }
 void CAucma_HeaterDlg::OnClickedHeatfast()
 {

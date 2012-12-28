@@ -102,9 +102,11 @@ enum {NoTempShow, InsulationState, HeatTempState};
 /** 设置温度上限值*/
 #define SetTempMinLimit				30
 /** 串口接收数据消息*/
-#define WM_RECV_UART_DATA	WM_USER + 100
+#define WM_RECV_UART_DATA			WM_USER + 100
 /** 默认蜂鸣器频率，设为1则频率为2Hz*/
 #define DefaultBuzzFrq				2
+/** 强制结束线程时间*/
+#define TerminalThreadTime			4000
 /************************************************************************/
 /*                串口通讯命令字                                        */
 /************************************************************************/
@@ -204,4 +206,15 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define CMD_WORD_PC					0x00
 /** 普通加热模式*/
 #define CMD_WORD_PO					0x01
+/************************************************************************/
+/*					HTTP通讯                                            */
+/************************************************************************/
+/** 服务器网址信息*/
+#define ServerURL	_T("http://mail.shgymy.com:9898/reshuiqiSrv/renshuiqisrv")
+/** HTTP超时时间*/
+#define HttpTimeout					1000
+/** HTTP请求线程休眠时间*/
+#define HttpThreadSleepTime			3000
+/** HTTP*/
+#define HttpContentType	_T("Content-Type: application/x-www-form-urlencoded")
 #endif
