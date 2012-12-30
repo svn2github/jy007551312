@@ -217,4 +217,16 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define HttpThreadSleepTime			3000
 /** HTTP*/
 #define HttpContentType	_T("Content-Type: application/x-www-form-urlencoded")
+/** HTTP消息设置温度*/
+#define WM_HTTP_SETTEMP				WM_USER + 101
+/** HTTP消息设置时间*/
+#define WM_HTTP_SETTIME				WM_USER + 102
+/** HTTP消息速热引擎*/
+#define WM_HTTP_HEATFAST			WM_USER + 103
+/** HTTP消息智能助手*/
+#define WM_HTTP_HELPER				WM_USER + 104
+/** HTTP消息洗手加热*/
+#define WM_HTTP_WASHHAND			WM_USER + 105
+/** HTTP消息夜间模式*/
+#define WM_HTTP_NIGHTMODE			WM_USER + 106
 #endif

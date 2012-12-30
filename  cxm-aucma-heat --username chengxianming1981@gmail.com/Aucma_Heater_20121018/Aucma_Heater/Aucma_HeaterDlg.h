@@ -314,6 +314,8 @@ private:
 	DWORD m_dwSoftUseLimit;
 	// HTTP连接类成员
 	CCEHttp m_oCEHttp;
+	// errorcode
+	unsigned int m_uiErrorCode;
 public:
 	// 鼠标左键单击坐标在所选区域内
 	bool OnPointInRect(CRect rect, CPoint point);
@@ -337,6 +339,12 @@ public:
 	void OnClickedReduce();
 	// 串口接收数据回调函数
 	static void CALLBACK OnUartRead(void* pFatherPtr, BYTE* pbuf, DWORD dwbufLen);
+	// Http请求回调函数
+	static CString CALLBACK OnHttpRequest(void* pFatherPtr);
+	// Http响应回调函数
+	static void CALLBACK OnHttpResponse(void* pFatherPtr, CString strResponse);
+	// Http单条命令处理
+	void OnHttpResponseCmd(CString str);
 	// 向串口发送数据
 	void OnWriteUartData(BYTE ucCmd, BYTE ucData);
 	// 解析串口接收数据帧
@@ -349,6 +357,12 @@ public:
 	afx_msg void OnPaint();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg LRESULT OnRecvUartData(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnHttpSetTemp(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnHttpSetTime(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnHttpHeatFast(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnHttpHelper(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnHttpWashHand(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnHttpNightMode(WPARAM wParam, LPARAM lParam);
 private:
 	// 初始化界面参数
 	void OnReset(void);

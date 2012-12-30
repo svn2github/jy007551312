@@ -33,6 +33,12 @@ BEGIN_MESSAGE_MAP(CAucma_HeaterDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_TIMER()
 	ON_MESSAGE(WM_RECV_UART_DATA, &CAucma_HeaterDlg::OnRecvUartData)
+	ON_MESSAGE(WM_HTTP_SETTEMP, &CAucma_HeaterDlg::OnHttpSetTemp)
+	ON_MESSAGE(WM_HTTP_SETTIME, &CAucma_HeaterDlg::OnHttpSetTime)
+	ON_MESSAGE(WM_HTTP_HEATFAST, &CAucma_HeaterDlg::OnHttpHeatFast)
+	ON_MESSAGE(WM_HTTP_HELPER, &CAucma_HeaterDlg::OnHttpHelper)
+	ON_MESSAGE(WM_HTTP_WASHHAND, &CAucma_HeaterDlg::OnHttpWashHand)
+	ON_MESSAGE(WM_HTTP_NIGHTMODE, &CAucma_HeaterDlg::OnHttpNightMode)
 END_MESSAGE_MAP()
 
 
@@ -57,6 +63,8 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	InitBuzzer();
 	OptBuzzer();
 	SetTimer(ShowTimeTimerEvent, ShowTimeTimeSet, NULL);
+	m_oCEHttp.m_oHttpRequest = OnHttpRequest;
+	m_oCEHttp.m_oHttpResponse = OnHttpResponse;
 	m_oCEHttp.OnInit(this);
 // 	// BlendOp字段指明了源混合操作，但只支持AC_SRC_OVER，即根据源alpha值把源图像叠加到目标图像上  
 // 	m_blendfun.BlendOp = AC_SRC_OVER;
@@ -190,6 +198,10 @@ void CAucma_HeaterDlg::OnInit(void)
 	m_bNight = m_bNightReg;
 	m_bHelper = m_bHelperReg;
 	m_bPower = m_bPowerReg;
+	if (m_bPower == true)
+	{
+		SetTimer(ShowTempStateTimerEvent, ShowTempStateTimeSet, NULL);
+	}
 	m_bTwinkleHelper = m_bTwinkleHelperReg;
 	if (m_bTwinkleHelper)
 	{
@@ -220,6 +232,7 @@ void CAucma_HeaterDlg::OnInit(void)
 	{
 		m_dwFastHeatStateOld = SummerHeat;
 	}
+	m_uiErrorCode = 0;
 }
 // 设置窗口满屏
 void CAucma_HeaterDlg::SetWindowFullScreen(void)
@@ -1116,6 +1129,7 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 		m_bTwinkleHelper = false;
 		InvalidateRect(m_rectHelperPic, FALSE);
 		SaveParamToReg();
+		m_uiErrorCode = 11;
 		break;
 	case CMD_DOWN_ET:
 		m_iEnvTempActual = (unsigned int)byData - 127;
@@ -1142,51 +1156,61 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 		{
 //			WarningBuzzer();
 //			AfxMessageBox(_T("干烧/缺水报警"));
+			m_uiErrorCode = 1;
 		}
 		else if (byData == CMD_WORD_WT_SE)
 		{
 //			WarningBuzzer();
 //			AfxMessageBox(_T("传感器故障报警"));
+			m_uiErrorCode = 2;
 		}
 		else if (byData == CMD_WORD_WT_LE)
 		{
 //			WarningBuzzer();
 //			AfxMessageBox(_T("漏电故障报警"));
+			m_uiErrorCode = 3;
 		}
 		else if (byData == CMD_WORD_WT_WHE)
 		{
 //			WarningBuzzer();
 //			AfxMessageBox(_T("水温超高故障报警"));
+			m_uiErrorCode = 4;
 		}
 		else if (byData == CMD_WORD_WT_LCE)
 		{
 //			WarningBuzzer();
 //			AfxMessageBox(_T("漏电线圈故障报警"));
+			m_uiErrorCode = 5;
 		}
 		else if (byData == CMD_WORD_WT_NWEC)
 		{
 //			StopBuzzer();
 //			AfxMessageBox(_T("干烧/缺水报警消除"));
+			m_uiErrorCode = 6;
 		}
 		else if (byData == CMD_WORD_WT_SEC)
 		{
 //			StopBuzzer();
 //			AfxMessageBox(_T("传感器故障报警消除"));
+			m_uiErrorCode = 7;
 		}
 		else if (byData == CMD_WORD_WT_LEC)
 		{
 //			StopBuzzer();
 //			AfxMessageBox(_T("漏电故障报警消除"));
+			m_uiErrorCode = 8;
 		}
 		else if (byData == CMD_WORD_WT_WHEC)
 		{
 //			StopBuzzer();
 //			AfxMessageBox(_T("水温超高故障报警消除"));
+			m_uiErrorCode = 9;
 		}
 		else if (byData == CMD_WORD_WT_LCEC)
 		{
 //			StopBuzzer();
 //			AfxMessageBox(_T("漏电线圈故障报警消除"));
+			m_uiErrorCode = 10;
 		}
 		else if (byData == CMD_WORD_WT_WE)
 		{
@@ -1196,6 +1220,7 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 			m_bTwinkleHeatFast = false;
 			InvalidateRect(m_rectHeatFastPic, FALSE);
 			SaveParamToReg();
+			m_uiErrorCode = 12;
 		}
 		else if (byData == CMD_WORD_WT_WL)
 		{
@@ -1203,6 +1228,7 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 			SetTimer(HeatFastTwinkleTimerEvent, HeatFastTwinkleTimeSet, NULL);
 			m_bTwinkleHeatFast = true;
 			SaveParamToReg();
+			m_uiErrorCode = 13;
 		}
 		break;
 	case CMD_DOWN_QT:
@@ -1893,4 +1919,183 @@ void CAucma_HeaterDlg::SaveParamToReg(void)
 	}
 	RegFlushKey(HKEY_CURRENT_USER);
 	RegCloseKey(hOpenKey);
+}
+CString CALLBACK CAucma_HeaterDlg::OnHttpRequest(void* pFatherPtr)
+{
+	CString strData = _T("");
+	CString str = _T("");
+	CAucma_HeaterDlg* pThis = (CAucma_HeaterDlg*)pFatherPtr;
+	//_T("id=0&time=2012-12-18%18:18:18&errorcode=0&statecode=123456")
+	str.Format(_T("id=%d"), ClientNo);
+	strData += str;
+	str.Format(_T("&time=%04d-%02d-%02d"), pThis->m_CurrTime.GetYear(),
+		pThis->m_CurrTime.GetMonth(), pThis->m_CurrTime.GetDay());
+	strData += str;
+	strData += _T("%");
+	str.Format(_T("%02d:%02d:%02d"), pThis->m_CurrTime.GetHour(),
+		pThis->m_CurrTime.GetMinute(), pThis->m_CurrTime.GetSecond());
+	strData += str;
+	str.Format(_T("&errorcode=%d"), pThis->m_uiErrorCode);
+	strData += str;
+	str.Format(_T("&statecode=%d%d%d%d%d%d"), pThis->m_bPower, pThis->m_dwTempState,
+		pThis->m_bNight, pThis->m_bWashHand, pThis->m_bHelper, pThis->m_dwFastHeatState);
+	strData += str;
+	return strData;
+}
+void CALLBACK CAucma_HeaterDlg::OnHttpResponse(void* pFatherPtr, CString strResponse)
+{
+	CString strCmd = _T("");
+	int iPos = 0;
+	int iPosOld = 0;
+	CAucma_HeaterDlg* pThis = (CAucma_HeaterDlg*)pFatherPtr;
+	while(iPos != NULL)
+	{
+		iPos = strResponse.Find(_T(";"), iPosOld);
+		if (iPos == NULL)
+		{
+			strCmd = strResponse.Mid(iPosOld, strResponse.GetLength() - iPosOld);
+		}
+		else
+		{
+			strCmd = strResponse.Mid(iPosOld, iPos - iPosOld);
+		}
+		pThis->OnHttpResponseCmd(strCmd);
+		iPosOld = iPos + 1;
+	}
+}
+void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
+{
+	CString strCmd = _T("");
+	CString strParam = _T("");
+	CString strData = _T("");
+	CString strTime = _T("");
+	int iCmd = 0;
+	int iPos = 0;
+	iPos = str.Find(_T(","));
+	if (iPos == NULL)
+	{
+		strCmd = str;
+	}
+	else
+	{
+		strCmd = str.Mid(0, iPos);
+		strParam = str.Mid(iPos + 1, str.GetLength() - iPos - 1);
+	}
+	iCmd = _ttoi(strCmd);
+	switch(iCmd)
+	{
+	case 0:
+		break;
+	case 1:
+		PostMessage(WM_HTTP_SETTEMP, _ttoi(strParam));
+		break;
+	case 2:
+		strData = strParam.Mid(0, 8);
+		strTime = strParam.Mid(8, 6);
+		PostMessage(WM_HTTP_SETTIME, _ttoi(strData), _ttoi(strTime));
+		break;
+	case 3:
+		PostMessage(WM_HTTP_HEATFAST, WinterHeat);
+		break;
+	case 4:
+		PostMessage(WM_HTTP_HEATFAST, SummerHeat);
+		break;
+	case 5:
+		PostMessage(WM_HTTP_HEATFAST, NormalHeat);
+		break;
+	case 6:
+		PostMessage(WM_HTTP_HELPER, CMD_WORD_HC);
+		break;
+	case 7:
+		PostMessage(WM_HTTP_HELPER, CMD_WORD_HO);
+		break;
+	case 8:
+		PostMessage(WM_HTTP_WASHHAND, CMD_WORD_WHC);
+		break;
+	case 9:
+		PostMessage(WM_HTTP_WASHHAND, CMD_WORD_WHO);
+		break;
+	case 10:
+		PostMessage(WM_HTTP_NIGHTMODE, CMD_WORD_NC);
+		break;
+	case 11:
+		PostMessage(WM_HTTP_NIGHTMODE, CMD_WORD_NO);
+		break;
+	default:
+		break;
+	}
+}
+LRESULT CAucma_HeaterDlg::OnHttpSetTemp(WPARAM wParam, LPARAM lParam)
+{
+	m_bSetTemp = true;
+	m_bSetTempOld = true;
+	m_dwInTempSet[m_dwFastHeatState] = wParam;
+	OnSetTemp();
+	return 0;
+}
+LRESULT CAucma_HeaterDlg::OnHttpSetTime(WPARAM wParam, LPARAM lParam)
+{
+	SYSTEMTIME sysTime;
+	CTime time(wParam/10000, wParam/100 - wParam/10000*100, wParam - wParam/100*100,
+		lParam/10000, lParam/100 - lParam/10000*100, lParam - lParam/100*100);
+	m_CurrTime = time;
+	memset(&sysTime, 0 ,sizeof(SYSTEMTIME));
+	sysTime.wYear = (WORD)m_CurrTime.GetYear();
+	sysTime.wMonth = (WORD)m_CurrTime.GetMonth();
+	sysTime.wDay = (WORD)m_CurrTime.GetDay();
+	sysTime.wDayOfWeek = (WORD)m_CurrTime.GetDayOfWeek();
+	sysTime.wHour = (WORD)m_CurrTime.GetHour();
+	sysTime.wMinute = (WORD)m_CurrTime.GetMinute();
+	sysTime.wSecond = (WORD)m_CurrTime.GetSecond();
+	::SetLocalTime(&sysTime);
+	m_bSetTime = true;
+	m_bSetTimeOld = true;
+	m_bSetTimeMin = false;
+	OnSetTime();
+	return 0;
+}
+LRESULT CAucma_HeaterDlg::OnHttpHeatFast(WPARAM wParam, LPARAM lParam)
+{
+	if (m_dwFastHeatState != wParam)
+	{
+		m_dwFastHeatState = wParam;
+		OnClickedHeatfast();
+	}
+	return 0;
+}
+LRESULT CAucma_HeaterDlg::OnHttpHelper(WPARAM wParam, LPARAM lParam)
+{
+	if ((wParam == CMD_WORD_HC) && (m_bHelper == true))
+	{
+		OnClickedHelper();
+	}
+	else if ((wParam == CMD_WORD_HO) && (m_bHelper == false))
+	{
+		OnClickedHelper();
+	}
+	return 0;
+}
+LRESULT CAucma_HeaterDlg::OnHttpWashHand(WPARAM wParam, LPARAM lParam)
+{
+	if ((wParam == CMD_WORD_WHC) && (m_bWashHand == true))
+	{
+		OnClickedWashhand();
+	}
+	else if ((wParam == CMD_WORD_WHO) && (m_bWashHand == false))
+	{
+		OnClickedWashhand();
+	}
+	return 0;
+}
+LRESULT CAucma_HeaterDlg::OnHttpNightMode(WPARAM wParam, LPARAM lParam)
+{
+	if ((wParam == CMD_WORD_NC) && (m_bNight == true))
+	{
+		OnClickedNight();
+	}
+	else if ((wParam == CMD_WORD_NO) && (m_bNight == false))
+	{
+		OnClickedNight();
+	}
+	return 0;
 }

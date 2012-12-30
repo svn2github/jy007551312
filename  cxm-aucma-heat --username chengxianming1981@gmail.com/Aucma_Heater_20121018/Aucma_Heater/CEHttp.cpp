@@ -4,6 +4,8 @@
 CCEHttp::CCEHttp(void)
 {
 	m_pFatherPtr = NULL;
+	m_oHttpRequest = NULL;
+	m_oHttpResponse = NULL;
 }
 
 CCEHttp::~CCEHttp(void)
@@ -34,7 +36,6 @@ DWORD CCEHttp::ThreadProc(LPVOID lparam)
 			if (pCEHttp->m_oHttpRequest)
 			{
 				strRequest = pCEHttp->m_oHttpRequest(pCEHttp->m_pFatherPtr);
-				// _T("id=0&time=2012-12-18%18:18:18&errorcode=0&statecode=123456")
 				bConnect = pCEHttp->SendHttpRequest(strRequest);
 			}
 		}
@@ -174,6 +175,11 @@ bool CCEHttp::SendHttpRequest(CString strRequest)
 		InternetCloseHandle(m_hConnect);
 		InternetCloseHandle(m_hOpen);
 		return false;  
+	}
+	CString strResponse(cResponse);
+	if (m_oHttpResponse)
+	{
+		m_oHttpResponse(m_pFatherPtr, strResponse);
 	}
 	return true;
 }
