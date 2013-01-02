@@ -39,6 +39,7 @@ BEGIN_MESSAGE_MAP(CAucma_HeaterDlg, CDialog)
 	ON_MESSAGE(WM_HTTP_HELPER, &CAucma_HeaterDlg::OnHttpHelper)
 	ON_MESSAGE(WM_HTTP_WASHHAND, &CAucma_HeaterDlg::OnHttpWashHand)
 	ON_MESSAGE(WM_HTTP_NIGHTMODE, &CAucma_HeaterDlg::OnHttpNightMode)
+	ON_MESSAGE(WM_HTTP_POWER, &CAucma_HeaterDlg::OnHttpPower)
 END_MESSAGE_MAP()
 
 
@@ -1301,7 +1302,7 @@ void CAucma_HeaterDlg::OpenComm(void)
 {
 	m_oCEUart.m_OnUartRead = OnUartRead;
 	// @@@调试时采用端口1，实际运行为端口2对应开发板COM1
-	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
+	if (m_oCEUart.OpenPort(this, 2, 4800, NOPARITY, 8, ONESTOPBIT))
 	{
 		TRACE(_T("串口打开成功！"));
 	}
@@ -1925,15 +1926,17 @@ CString CALLBACK CAucma_HeaterDlg::OnHttpRequest(void* pFatherPtr)
 	CString strData = _T("");
 	CString str = _T("");
 	CAucma_HeaterDlg* pThis = (CAucma_HeaterDlg*)pFatherPtr;
-	//_T("id=0&time=2012-12-18%18:18:18&errorcode=0&statecode=123456")
+	//_T("id=0&time=2012-12-09%2016:08:38&temperature=28&errorcode=0&statecode=010000")
 	str.Format(_T("id=%d"), ClientNo);
 	strData += str;
 	str.Format(_T("&time=%04d-%02d-%02d"), pThis->m_CurrTime.GetYear(),
 		pThis->m_CurrTime.GetMonth(), pThis->m_CurrTime.GetDay());
 	strData += str;
-	strData += _T("%");
+	strData += _T("%20");
 	str.Format(_T("%02d:%02d:%02d"), pThis->m_CurrTime.GetHour(),
 		pThis->m_CurrTime.GetMinute(), pThis->m_CurrTime.GetSecond());
+	strData += str;
+	str.Format(_T("&temperature=%d"), pThis->m_iInTempActual);
 	strData += str;
 	str.Format(_T("&errorcode=%d"), pThis->m_uiErrorCode);
 	strData += str;
@@ -1948,19 +1951,27 @@ void CALLBACK CAucma_HeaterDlg::OnHttpResponse(void* pFatherPtr, CString strResp
 	int iPos = 0;
 	int iPosOld = 0;
 	CAucma_HeaterDlg* pThis = (CAucma_HeaterDlg*)pFatherPtr;
-	while(iPos != NULL)
+// 	do
+// 	{
+// 		iPos = strResponse.Find(_T(";"), iPosOld);
+// 		if (iPos == -1)
+// 		{
+// 			strCmd = strResponse.Mid(iPosOld, strResponse.GetLength() - iPosOld);
+// 		}
+// 		else
+// 		{
+// 			strCmd = strResponse.Mid(iPosOld, iPos - iPosOld);
+// 		}
+// 		pThis->OnHttpResponseCmd(strCmd);
+// 		iPosOld = iPos + 1;
+// 	}while(iPos != -1);
+	iPos = strResponse.Find(_T(";"), iPosOld);
+	while(iPos != -1)
 	{
-		iPos = strResponse.Find(_T(";"), iPosOld);
-		if (iPos == NULL)
-		{
-			strCmd = strResponse.Mid(iPosOld, strResponse.GetLength() - iPosOld);
-		}
-		else
-		{
-			strCmd = strResponse.Mid(iPosOld, iPos - iPosOld);
-		}
+		strCmd = strResponse.Mid(iPosOld, iPos - iPosOld);
 		pThis->OnHttpResponseCmd(strCmd);
 		iPosOld = iPos + 1;
+		iPos = strResponse.Find(_T(";"), iPosOld);
 	}
 }
 void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
@@ -1972,7 +1983,7 @@ void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
 	int iCmd = 0;
 	int iPos = 0;
 	iPos = str.Find(_T(","));
-	if (iPos == NULL)
+	if (iPos == -1)
 	{
 		strCmd = str;
 	}
@@ -2021,12 +2032,19 @@ void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
 	case 11:
 		PostMessage(WM_HTTP_NIGHTMODE, CMD_WORD_NO);
 		break;
+	case 12:
+		PostMessage(WM_HTTP_POWER, CMD_WORD_PC);
+		break;
+	case 13:
+		PostMessage(WM_HTTP_POWER, CMD_WORD_PO);
+		break;
 	default:
 		break;
 	}
 }
 LRESULT CAucma_HeaterDlg::OnHttpSetTemp(WPARAM wParam, LPARAM lParam)
 {
+	TRACE(_T("设置温度命令"));
 	m_bSetTemp = true;
 	m_bSetTempOld = true;
 	m_dwInTempSet[m_dwFastHeatState] = wParam;
@@ -2056,6 +2074,7 @@ LRESULT CAucma_HeaterDlg::OnHttpSetTime(WPARAM wParam, LPARAM lParam)
 }
 LRESULT CAucma_HeaterDlg::OnHttpHeatFast(WPARAM wParam, LPARAM lParam)
 {
+	TRACE(_T("速热引擎命令"));
 	if (m_dwFastHeatState != wParam)
 	{
 		m_dwFastHeatState = wParam;
@@ -2096,6 +2115,19 @@ LRESULT CAucma_HeaterDlg::OnHttpNightMode(WPARAM wParam, LPARAM lParam)
 	else if ((wParam == CMD_WORD_NO) && (m_bNight == false))
 	{
 		OnClickedNight();
+	}
+	return 0;
+}
+LRESULT CAucma_HeaterDlg::OnHttpPower(WPARAM wParam, LPARAM lParam)
+{
+	TRACE(_T("电源开关命令"));
+	if ((wParam == CMD_WORD_PC) && (m_bPower == true))
+	{
+		OnClickedPower();
+	}
+	else if ((wParam == CMD_WORD_PO) && (m_bPower == false))
+	{
+		OnClickedPower();
 	}
 	return 0;
 }

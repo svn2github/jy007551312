@@ -161,8 +161,8 @@ bool CCEHttp::SendHttpRequest(CString strRequest)
 		InternetCloseHandle(m_hOpen);
 		return false;
 	}
-	char cResponse[4096];
-	if(!InternetReadFile (m_hRequest, (LPVOID)(cResponse), 4096, &dwSize))
+	char cResponse[40960];
+	if(!InternetReadFile (m_hRequest, (LPVOID)(cResponse), 40960, &dwSize))
 	{
 		InternetCloseHandle(m_hRequest);
 		InternetCloseHandle(m_hConnect);

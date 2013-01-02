@@ -465,40 +465,16 @@
 			<File
 				RelativePath=".\UART_WINCE.rc"
 				>
-				<FileConfiguration
-					Name="Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|gzsd6410_SDK (ARMV4I)"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|CHSINT SDK For WinCE 6.0 (ARMV4I)"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|gzsd6410_SDK (ARMV4I)"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\res\UART_WINCE.rc2"
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath="..\Aucma_Heater\ReadMe.txt"
+			>
+		</File>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>

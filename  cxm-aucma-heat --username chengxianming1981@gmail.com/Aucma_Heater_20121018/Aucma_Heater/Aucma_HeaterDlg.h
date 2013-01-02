@@ -363,6 +363,7 @@ public:
 	afx_msg LRESULT OnHttpHelper(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnHttpWashHand(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnHttpNightMode(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnHttpPower(WPARAM wParam, LPARAM lParam);
 private:
 	// 初始化界面参数
 	void OnReset(void);
