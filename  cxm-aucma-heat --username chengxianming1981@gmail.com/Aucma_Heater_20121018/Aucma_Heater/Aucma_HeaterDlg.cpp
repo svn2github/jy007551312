@@ -1302,7 +1302,7 @@ void CAucma_HeaterDlg::OpenComm(void)
 {
 	m_oCEUart.m_OnUartRead = OnUartRead;
 	// @@@调试时采用端口1，实际运行为端口2对应开发板COM1
-	if (m_oCEUart.OpenPort(this, 2, 4800, NOPARITY, 8, ONESTOPBIT))
+	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
 	{
 		TRACE(_T("串口打开成功！"));
 	}
@@ -1927,7 +1927,8 @@ CString CALLBACK CAucma_HeaterDlg::OnHttpRequest(void* pFatherPtr)
 	CString str = _T("");
 	CAucma_HeaterDlg* pThis = (CAucma_HeaterDlg*)pFatherPtr;
 	//_T("id=0&time=2012-12-09%2016:08:38&temperature=28&errorcode=0&statecode=010000")
-	str.Format(_T("id=%d"), ClientNo);
+	// @@@我用ID=1，ID=0供Aucma调试
+	str.Format(_T("id=%d"), 1);
 	strData += str;
 	str.Format(_T("&time=%04d-%02d-%02d"), pThis->m_CurrTime.GetYear(),
 		pThis->m_CurrTime.GetMonth(), pThis->m_CurrTime.GetDay());
