@@ -1927,7 +1927,8 @@ CString CALLBACK CAucma_HeaterDlg::OnHttpRequest(void* pFatherPtr)
 	CString str = _T("");
 	CAucma_HeaterDlg* pThis = (CAucma_HeaterDlg*)pFatherPtr;
 	//_T("id=0&time=2012-12-09%2016:08:38&temperature=28&errorcode=0&statecode=010000")
-	// @@@我用ID=1，ID=0供Aucma调试
+	// 服务器运行地址http://mail.shgymy.com:9898/reshuiqiSrv/renshuiqicon.jsp?id=1
+	// @@@我用ID=1，ID=0供Aucma调试，ID=2供许磊调试
 	str.Format(_T("id=%d"), 1);
 	strData += str;
 	str.Format(_T("&time=%04d-%02d-%02d"), pThis->m_CurrTime.GetYear(),
