@@ -1302,7 +1302,7 @@ void CAucma_HeaterDlg::OpenComm(void)
 {
 	m_oCEUart.m_OnUartRead = OnUartRead;
 	// @@@调试时采用端口1，实际运行为端口2对应开发板COM1
-	if (m_oCEUart.OpenPort(this, 1, 4800, NOPARITY, 8, ONESTOPBIT))
+	if (m_oCEUart.OpenPort(this, 2, 4800, NOPARITY, 8, ONESTOPBIT))
 	{
 		TRACE(_T("串口打开成功！"));
 	}
@@ -2079,7 +2079,6 @@ LRESULT CAucma_HeaterDlg::OnHttpHeatFast(WPARAM wParam, LPARAM lParam)
 	TRACE(_T("速热引擎命令"));
 	if (m_dwFastHeatState != wParam)
 	{
-		m_dwFastHeatState = wParam;
 		OnClickedHeatfast();
 	}
 	return 0;
