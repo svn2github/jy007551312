@@ -357,13 +357,6 @@ public:
 	afx_msg void OnPaint();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg LRESULT OnRecvUartData(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnHttpSetTemp(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnHttpSetTime(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnHttpHeatFast(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnHttpHelper(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnHttpWashHand(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnHttpNightMode(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnHttpPower(WPARAM wParam, LPARAM lParam);
 private:
 	// 初始化界面参数
 	void OnReset(void);

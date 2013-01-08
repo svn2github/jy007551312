@@ -33,13 +33,6 @@ BEGIN_MESSAGE_MAP(CAucma_HeaterDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_TIMER()
 	ON_MESSAGE(WM_RECV_UART_DATA, &CAucma_HeaterDlg::OnRecvUartData)
-	ON_MESSAGE(WM_HTTP_SETTEMP, &CAucma_HeaterDlg::OnHttpSetTemp)
-	ON_MESSAGE(WM_HTTP_SETTIME, &CAucma_HeaterDlg::OnHttpSetTime)
-	ON_MESSAGE(WM_HTTP_HEATFAST, &CAucma_HeaterDlg::OnHttpHeatFast)
-	ON_MESSAGE(WM_HTTP_HELPER, &CAucma_HeaterDlg::OnHttpHelper)
-	ON_MESSAGE(WM_HTTP_WASHHAND, &CAucma_HeaterDlg::OnHttpWashHand)
-	ON_MESSAGE(WM_HTTP_NIGHTMODE, &CAucma_HeaterDlg::OnHttpNightMode)
-	ON_MESSAGE(WM_HTTP_POWER, &CAucma_HeaterDlg::OnHttpPower)
 END_MESSAGE_MAP()
 
 
@@ -745,6 +738,7 @@ void CAucma_HeaterDlg::OnPaint()
 	CPaintDC dc(this); // device context for painting
 	// TODO: 在此处添加消息处理程序代码
 	// 不为绘图消息调用 CDialog::OnPaint()
+	TRACE(_T("Paint\n"));
 	m_oPngImage.OnDcBitBlt(&dc, &m_dcBK, m_rectBK);
 	dc.SetBkMode(TRANSPARENT);
 	if ((m_dwFastHeatStateOld != m_dwFastHeatState) || (m_bTwinkleHeatFastLabel == true))
@@ -1980,10 +1974,12 @@ void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
 {
 	CString strCmd = _T("");
 	CString strParam = _T("");
-	CString strData = _T("");
-	CString strTime = _T("");
+	CString strOut = _T("");
+	unsigned int uiData = 0;
+	unsigned int uiTime = 0;
 	int iCmd = 0;
 	int iPos = 0;
+	SYSTEMTIME sysTime;
 	iPos = str.Find(_T(","));
 	if (iPos == -1)
 	{
@@ -2000,135 +1996,108 @@ void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
 	case 0:
 		break;
 	case 1:
-		PostMessage(WM_HTTP_SETTEMP, _ttoi(strParam));
+		m_bSetTemp = true;
+		m_bSetTempOld = true;
+		m_dwInTempSet[m_dwFastHeatState] = _ttoi(strParam);
+		OnSetTemp();
 		break;
 	case 2:
-		strData = strParam.Mid(0, 8);
-		strTime = strParam.Mid(8, 6);
-		PostMessage(WM_HTTP_SETTIME, _ttoi(strData), _ttoi(strTime));
+		uiData = _ttoi(strParam.Mid(0, 8));
+		uiTime = _ttoi(strParam.Mid(8, 6));
+		memset(&sysTime, 0 ,sizeof(SYSTEMTIME));
+		sysTime.wYear = uiData/10000;
+		sysTime.wMonth = uiData/100 - uiData/10000*100;
+		sysTime.wDay = uiData - uiData/100*100;
+		sysTime.wHour = uiTime/10000;
+		sysTime.wMinute = uiTime/100 - uiTime/10000*100;
+		sysTime.wSecond = uiTime - uiTime/100*100;
+		::SetLocalTime(&sysTime);
+		m_CurrTime = CTime::GetCurrentTime();
+		m_bSetTime = true;
+		m_bSetTimeOld = true;
+		m_bSetTimeMin = false;
+		OnSetTime();
 		break;
 	case 3:
-		PostMessage(WM_HTTP_HEATFAST, WinterHeat);
+		if (m_dwFastHeatState != WinterHeat)
+		{
+			OnClickedHeatfast();
+		}
 		break;
 	case 4:
-		PostMessage(WM_HTTP_HEATFAST, SummerHeat);
+		if (m_dwFastHeatState != SummerHeat)
+		{
+			OnClickedHeatfast();
+		}
 		break;
 	case 5:
-		PostMessage(WM_HTTP_HEATFAST, NormalHeat);
+		if (m_dwFastHeatState != NormalHeat)
+		{
+			OnClickedHeatfast();
+		}
 		break;
 	case 6:
-		PostMessage(WM_HTTP_HELPER, CMD_WORD_HC);
+		if (m_bHelper == true)
+		{
+			OnClickedHelper();
+		}
 		break;
 	case 7:
-		PostMessage(WM_HTTP_HELPER, CMD_WORD_HO);
+		if (m_bHelper == false)
+		{
+			OnClickedHelper();
+		}
 		break;
 	case 8:
-		PostMessage(WM_HTTP_WASHHAND, CMD_WORD_WHC);
+		if (m_bWashHand == true)
+		{
+			OnClickedWashhand();
+			OutputDebugString(_T("关闭洗手加热\n"));
+		}
+		else
+		{
+			strOut.Format(_T("关闭洗手加热ERROR%d\n"), iCmd);
+			OutputDebugString(strOut);
+		}
 		break;
 	case 9:
-		PostMessage(WM_HTTP_WASHHAND, CMD_WORD_WHO);
+		if (m_bWashHand == false)
+		{
+			OnClickedWashhand();
+			OutputDebugString(_T("开启洗手加热\n"));
+		}
+		else
+		{
+			strOut.Format(_T("开启洗手加热ERROR%d\n"), iCmd);
+			OutputDebugString(strOut);
+		}
 		break;
 	case 10:
-		PostMessage(WM_HTTP_NIGHTMODE, CMD_WORD_NC);
+		if (m_bNight == true)
+		{
+			OnClickedNight();
+		}
 		break;
 	case 11:
-		PostMessage(WM_HTTP_NIGHTMODE, CMD_WORD_NO);
+		if (m_bNight == false)
+		{
+			OnClickedNight();
+		}
 		break;
 	case 12:
-		PostMessage(WM_HTTP_POWER, CMD_WORD_PC);
+		if (m_bPower == true)
+		{
+			OnClickedPower();
+		}
 		break;
 	case 13:
-		PostMessage(WM_HTTP_POWER, CMD_WORD_PO);
+		if (m_bPower == false)
+		{
+			OnClickedPower();
+		}
 		break;
 	default:
 		break;
 	}
 }
-LRESULT CAucma_HeaterDlg::OnHttpSetTemp(WPARAM wParam, LPARAM lParam)
-{
-	TRACE(_T("设置温度命令"));
-	m_bSetTemp = true;
-	m_bSetTempOld = true;
-	m_dwInTempSet[m_dwFastHeatState] = wParam;
-	OnSetTemp();
-	return 0;
-}
-LRESULT CAucma_HeaterDlg::OnHttpSetTime(WPARAM wParam, LPARAM lParam)
-{
-	SYSTEMTIME sysTime;
-	CTime time(wParam/10000, wParam/100 - wParam/10000*100, wParam - wParam/100*100,
-		lParam/10000, lParam/100 - lParam/10000*100, lParam - lParam/100*100);
-	m_CurrTime = time;
-	memset(&sysTime, 0 ,sizeof(SYSTEMTIME));
-	sysTime.wYear = (WORD)m_CurrTime.GetYear();
-	sysTime.wMonth = (WORD)m_CurrTime.GetMonth();
-	sysTime.wDay = (WORD)m_CurrTime.GetDay();
-	sysTime.wDayOfWeek = (WORD)m_CurrTime.GetDayOfWeek();
-	sysTime.wHour = (WORD)m_CurrTime.GetHour();
-	sysTime.wMinute = (WORD)m_CurrTime.GetMinute();
-	sysTime.wSecond = (WORD)m_CurrTime.GetSecond();
-	::SetLocalTime(&sysTime);
-	m_bSetTime = true;
-	m_bSetTimeOld = true;
-	m_bSetTimeMin = false;
-	OnSetTime();
-	return 0;
-}
-LRESULT CAucma_HeaterDlg::OnHttpHeatFast(WPARAM wParam, LPARAM lParam)
-{
-	TRACE(_T("速热引擎命令"));
-	if (m_dwFastHeatState != wParam)
-	{
-		OnClickedHeatfast();
-	}
-	return 0;
-}
-LRESULT CAucma_HeaterDlg::OnHttpHelper(WPARAM wParam, LPARAM lParam)
-{
-	if ((wParam == CMD_WORD_HC) && (m_bHelper == true))
-	{
-		OnClickedHelper();
-	}
-	else if ((wParam == CMD_WORD_HO) && (m_bHelper == false))
-	{
-		OnClickedHelper();
-	}
-	return 0;
-}
-LRESULT CAucma_HeaterDlg::OnHttpWashHand(WPARAM wParam, LPARAM lParam)
-{
-	if ((wParam == CMD_WORD_WHC) && (m_bWashHand == true))
-	{
-		OnClickedWashhand();
-	}
-	else if ((wParam == CMD_WORD_WHO) && (m_bWashHand == false))
-	{
-		OnClickedWashhand();
-	}
-	return 0;
-}
-LRESULT CAucma_HeaterDlg::OnHttpNightMode(WPARAM wParam, LPARAM lParam)
-{
-	if ((wParam == CMD_WORD_NC) && (m_bNight == true))
-	{
-		OnClickedNight();
-	}
-	else if ((wParam == CMD_WORD_NO) && (m_bNight == false))
-	{
-		OnClickedNight();
-	}
-	return 0;
-}
-LRESULT CAucma_HeaterDlg::OnHttpPower(WPARAM wParam, LPARAM lParam)
-{
-	TRACE(_T("电源开关命令"));
-	if ((wParam == CMD_WORD_PC) && (m_bPower == true))
-	{
-		OnClickedPower();
-	}
-	else if ((wParam == CMD_WORD_PO) && (m_bPower == false))
-	{
-		OnClickedPower();
-	}
-	return 0;
-}
+
