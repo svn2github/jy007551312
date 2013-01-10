@@ -317,6 +317,8 @@ private:
 	// errorcode
 	unsigned int m_uiErrorCode;
 public:
+	bool m_bPaint;
+public:
 	// 鼠标左键单击坐标在所选区域内
 	bool OnPointInRect(CRect rect, CPoint point);
 	// 设置温度
