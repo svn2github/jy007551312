@@ -462,7 +462,7 @@ void CAucma_HeaterDlg::OnClickedHeatfast()
 	}
 	if (m_bPaint == false)
 	{
-		OutputDebugString(_T("Wait for paint!"));
+		OutputDebugString(_T("Wait for paint!\n"));
 		return;
 	}
 	m_bPaint = false;
@@ -508,7 +508,7 @@ void CAucma_HeaterDlg::OnClickedHelper()
 // 	}
 	if (m_bPaint == false)
 	{
-		OutputDebugString(_T("Wait for paint!"));
+		OutputDebugString(_T("Wait for paint!\n"));
 		return;
 	}
 	m_bPaint = false;
@@ -544,7 +544,7 @@ void CAucma_HeaterDlg::OnClickedWashhand()
 	}
 	if (m_bPaint == false)
 	{
-		OutputDebugString(_T("Wait for paint!"));
+		OutputDebugString(_T("Wait for paint!\n"));
 		return;
 	}
 	m_bPaint = false;
@@ -565,7 +565,7 @@ void CAucma_HeaterDlg::OnClickedNight()
 	}
 	if (m_bPaint == false)
 	{
-		OutputDebugString(_T("Wait for paint!"));
+		OutputDebugString(_T("Wait for paint!\n"));
 		return;
 	}
 	m_bPaint = false;
@@ -582,7 +582,7 @@ void CAucma_HeaterDlg::OnClickedPower()
 	// TODO: 在此添加控件通知处理程序代码
 	if (m_bPaint == false)
 	{
-		OutputDebugString(_T("Wait for paint!"));
+		OutputDebugString(_T("Wait for paint!\n"));
 		return;
 	}
 	m_bPaint = false;
@@ -613,6 +613,12 @@ void CAucma_HeaterDlg::OnClickedAdd()
 	{
 		return;
 	}
+	if (m_bPaint == false)
+	{
+		OutputDebugString(_T("Wait for paint!\n"));
+		return;
+	}
+	m_bPaint = false;
 	OptBuzzer();
 	OnOptAdd();
 }
@@ -624,18 +630,24 @@ void CAucma_HeaterDlg::OnClickedReduce()
 	{
 		return;
 	}
+	if (m_bPaint == false)
+	{
+		OutputDebugString(_T("Wait for paint!\n"));
+		return;
+	}
+	m_bPaint = false;
 	OptBuzzer();
 	OnOptReduce();
 }
 // 设置温度
 void CAucma_HeaterDlg::OnSetTemp(void)
 {
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!"));
-		return;
-	}
-	m_bPaint = false;
+// 	if (m_bPaint == false)
+// 	{
+// 		OutputDebugString(_T("Wait for paint!\n"));
+// 		return;
+// 	}
+// 	m_bPaint = false;
 	m_bSetTemp = !m_bSetTemp;
 	KillTimer(TwinkleTimerEvent);
 	if (m_bSetTemp == true)
@@ -656,12 +668,12 @@ void CAucma_HeaterDlg::OnSetTemp(void)
 // 设置时间
 void CAucma_HeaterDlg::OnSetTime(void)
 {
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!"));
-		return;
-	}
-	m_bPaint = false;
+// 	if (m_bPaint == false)
+// 	{
+// 		OutputDebugString(_T("Wait for paint!\n"));
+// 		return;
+// 	}
+// 	m_bPaint = false;
 	unsigned int uiDayOfWeek = 0;
 	if ((m_bSetTime == true) && (m_bSetTimeMin == true))
 	{
@@ -1164,7 +1176,7 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 	case CMD_DOWN_HP:
 		if (m_bPaint == false)
 		{
-			OutputDebugString(_T("Wait for paint!"));
+			OutputDebugString(_T("Wait for paint!\n"));
 			break;
 		}
 		m_bPaint = false;
@@ -1184,7 +1196,7 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 	case CMD_DOWN_IT:
 		if (m_bPaint == false)
 		{
-			OutputDebugString(_T("Wait for paint!"));
+			OutputDebugString(_T("Wait for paint!\n"));
 			break;
 		}
 		m_bPaint = false;
@@ -1267,7 +1279,7 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 		{
 			if (m_bPaint == false)
 			{
-				OutputDebugString(_T("Wait for paint!"));
+				OutputDebugString(_T("Wait for paint!\n"));
 				break;
 			}
 			m_bPaint = false;
@@ -1420,6 +1432,12 @@ void CAucma_HeaterDlg::OnClickedSetTemp(void)
 	{
 		return;
 	}
+	if (m_bPaint == false)
+	{
+		OutputDebugString(_T("Wait for paint!\n"));
+		return;
+	}
+	m_bPaint = false;
 	OptBuzzer();
 	OnSetTemp();
 }
@@ -1431,6 +1449,12 @@ void CAucma_HeaterDlg::OnClickedSetTime(void)
 	{
 		return;
 	}
+	if (m_bPaint == false)
+	{
+		OutputDebugString(_T("Wait for paint!\n"));
+		return;
+	}
+	m_bPaint = false;
 	OptBuzzer();
 	OnSetTime();
 }
@@ -1438,12 +1462,6 @@ void CAucma_HeaterDlg::OnClickedSetTime(void)
 // 增加操作
 void CAucma_HeaterDlg::OnOptAdd(void)
 {
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!"));
-		return;
-	}
-	m_bPaint = false;
 	SYSTEMTIME sysTime;
 	CTimeSpan timeMin(60);
 	CTimeSpan timeHour(3600);
@@ -1475,14 +1493,18 @@ void CAucma_HeaterDlg::OnOptAdd(void)
 		if (m_dwInTempSet[m_dwFastHeatState] < SetTempMaxLimit)
 		{
 			m_dwInTempSet[m_dwFastHeatState]++;
-			if ((m_dwInTempSet[m_dwFastHeatState] / 10) != (m_dwInTempSetOld / 10))
-			{
-				InvalidateRect(m_rectTempHighPic, FALSE);
-			}
-			if ((m_dwInTempSet[m_dwFastHeatState] % 10) != (m_dwInTempSetOld % 10))
-			{
-				InvalidateRect(m_rectTempLowPic, FALSE);
-			}
+		}
+		else
+		{
+			m_bPaint = true;
+		}
+		if ((m_dwInTempSet[m_dwFastHeatState] / 10) != (m_dwInTempSetOld / 10))
+		{
+			InvalidateRect(m_rectTempHighPic, FALSE);
+		}
+		if ((m_dwInTempSet[m_dwFastHeatState] % 10) != (m_dwInTempSetOld % 10))
+		{
+			InvalidateRect(m_rectTempLowPic, FALSE);
 		}
 	}
 	else if (m_bSetTime == true)
@@ -1527,12 +1549,6 @@ void CAucma_HeaterDlg::OnOptAdd(void)
 // 减小操作
 void CAucma_HeaterDlg::OnOptReduce(void)
 {
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!"));
-		return;
-	}
-	m_bPaint = false;
 	SYSTEMTIME sysTime;
 	CTimeSpan timeMin(-60);
 	CTimeSpan timeHour(-3600);
@@ -1564,6 +1580,10 @@ void CAucma_HeaterDlg::OnOptReduce(void)
 		if (m_dwInTempSet[m_dwFastHeatState] > SetTempMinLimit)
 		{
 			m_dwInTempSet[m_dwFastHeatState]--;
+		}
+		else
+		{
+			m_bPaint = true;
 		}
 		if ((m_dwInTempSet[m_dwFastHeatState] / 10) != (m_dwInTempSetOld / 10))
 		{
@@ -1616,12 +1636,12 @@ void CAucma_HeaterDlg::OnOptReduce(void)
 // 更新加热状态
 void CAucma_HeaterDlg::UpdataHeatState(void)
 {
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!"));
-		return;
-	}
-	m_bPaint = false;
+// 	if (m_bPaint == false)
+// 	{
+// 		OutputDebugString(_T("Wait for paint!\n"));
+// 		return;
+// 	}
+// 	m_bPaint = false;
 	if (m_iInTempActual >= (int)m_dwInTempSet[m_dwFastHeatState])
 	{
 		// 保温
@@ -1667,12 +1687,12 @@ void CAucma_HeaterDlg::UpdataHeatState(void)
 // 更新当前时间
 void CAucma_HeaterDlg::UpdataCurrTime(void)
 {
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!"));
-		return;
-	}
-	m_bPaint = false;
+// 	if (m_bPaint == false)
+// 	{
+// 		OutputDebugString(_T("Wait for paint!\n"));
+// 		return;
+// 	}
+// 	m_bPaint = false;
 	m_CurrTime = CTime::GetCurrentTime();
 	if ((m_CurrTime.GetHour() / 10) != (m_CurrTimeOld.GetHour() / 10))
 	{
@@ -1737,12 +1757,12 @@ void CAucma_HeaterDlg::TwinkleSet(void)
 	}
 	else
 	{
-		if (m_bPaint == false)
-		{
-			OutputDebugString(_T("Wait for paint!"));
-			return;
-		}
-		m_bPaint = false;
+// 		if (m_bPaint == false)
+// 		{
+// 			OutputDebugString(_T("Wait for paint!\n"));
+// 			return;
+// 		}
+// 		m_bPaint = false;
 		m_uiTwinkleCount++;
 		if (m_uiTwinkleCount % 2 == 0)
 		{
@@ -1799,12 +1819,12 @@ void CAucma_HeaterDlg::ProNightMode(void)
 // 智能助手闪烁处理
 void CAucma_HeaterDlg::TwinkleHelper(void)
 {
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!"));
-		return;
-	}
-	m_bPaint = false;
+// 	if (m_bPaint == false)
+// 	{
+// 		OutputDebugString(_T("Wait for paint!\n"));
+// 		return;
+// 	}
+// 	m_bPaint = false;
 	m_bTwinkleHelperLabel = !m_bTwinkleHelperLabel;
 	InvalidateRect(m_rectHelperPic, FALSE);
 }
@@ -1812,12 +1832,12 @@ void CAucma_HeaterDlg::TwinkleHelper(void)
 // 速热引擎闪烁处理
 void CAucma_HeaterDlg::TwinkleHeatFast(void)
 {
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!"));
-		return;
-	}
-	m_bPaint = false;
+// 	if (m_bPaint == false)
+// 	{
+// 		OutputDebugString(_T("Wait for paint!\n"));
+// 		return;
+// 	}
+// 	m_bPaint = false;
 	m_bTwinkleHeatFastLabel = !m_bTwinkleHeatFastLabel;
 	InvalidateRect(m_rectHeatFastPic, FALSE);
 }
@@ -2024,7 +2044,7 @@ CString CALLBACK CAucma_HeaterDlg::OnHttpRequest(void* pFatherPtr)
 	CString strData = _T("");
 	CString str = _T("");
 	CAucma_HeaterDlg* pThis = (CAucma_HeaterDlg*)pFatherPtr;
-	//_T("id=0&time=2012-12-09%2016:08:38&temperature=28&errorcode=0&statecode=010000")
+	//_T("id=0&time=2012-12-09%2016:08:38&temperature=28&shizhiwen=58&errorcode=0&statecode=010000")
 	// 服务器运行地址http://mail.shgymy.com:9898/reshuiqiSrv/renshuiqicon.jsp?id=1
 	// @@@我用ID=1，ID=0供Aucma调试，ID=2供许磊调试
 	str.Format(_T("id=%d"), 1);
@@ -2037,6 +2057,8 @@ CString CALLBACK CAucma_HeaterDlg::OnHttpRequest(void* pFatherPtr)
 		pThis->m_CurrTime.GetMinute(), pThis->m_CurrTime.GetSecond());
 	strData += str;
 	str.Format(_T("&temperature=%d"), pThis->m_iInTempActual);
+	strData += str;
+	str.Format(_T("&shizhiwen=%d"), pThis->m_dwInTempSet[pThis->m_dwFastHeatState]);
 	strData += str;
 	str.Format(_T("&errorcode=%d"), pThis->m_uiErrorCode);
 	strData += str;
@@ -2100,10 +2122,10 @@ void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
 	case 0:
 		break;
 	case 1:
-		m_bSetTemp = true;
-		m_bSetTempOld = true;
+// 		m_bSetTemp = true;
+// 		m_bSetTempOld = true;
 		m_dwInTempSet[m_dwFastHeatState] = _ttoi(strParam);
-		OnSetTemp();
+		OnClickedSetTemp();
 		break;
 	case 2:
 		uiData = _ttoi(strParam.Mid(0, 8));
@@ -2117,10 +2139,11 @@ void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
 		sysTime.wSecond = uiTime - uiTime/100*100;
 		::SetLocalTime(&sysTime);
 		m_CurrTime = CTime::GetCurrentTime();
-		m_bSetTime = true;
-		m_bSetTimeOld = true;
-		m_bSetTimeMin = false;
-		OnSetTime();
+		OnClickedSetTime();
+// 		m_bSetTime = true;
+// 		m_bSetTimeOld = true;
+// 		m_bSetTimeMin = false;
+// 		OnSetTime();
 		break;
 	case 3:
 		if (m_dwFastHeatState != WinterHeat)
