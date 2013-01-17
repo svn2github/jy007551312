@@ -316,6 +316,8 @@ private:
 	CCEHttp m_oCEHttp;
 	// errorcode
 	unsigned int m_uiErrorCode;
+	// 使用次数超过设定次数时锁定界面
+	bool m_bLock;
 public:
 	bool m_bPaint;
 public:
@@ -413,4 +415,6 @@ public:
 	void LoadParamFromReg(void);
 	// 保存参数到注册表
 	void SaveParamToReg(void);
+	// 解锁函数
+	void UnLockFunc(void);
 };

@@ -82,7 +82,7 @@ enum {NoTempShow, InsulationState, HeatTempState};
 /** 定义注册表软件使用次数限制子键名*/
 #define RegSubKeyNameLimit				_T("次数限制")
 /** 软件试用次数限制*/
-#define SoftUseLimitNum					50
+#define SoftUseLimitNum					20
 /** 定义文本输出坐标偏移量1*/
 #define TextOutMovePos1					8
 /** 定义文本输出坐标偏移量2*/
@@ -107,6 +107,8 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define DefaultBuzzFrq					2
 /** 强制结束线程时间*/
 #define TerminalThreadTime				4000
+/** 使用次数限制清零密码*/
+#define ClearLimitPwd					_T("cxm1013")
 /************************************************************************/
 /*                串口通讯命令字                                        */
 /************************************************************************/

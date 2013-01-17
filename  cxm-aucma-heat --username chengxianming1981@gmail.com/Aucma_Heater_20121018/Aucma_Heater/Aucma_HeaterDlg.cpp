@@ -92,7 +92,7 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	// @@@加入限制
 	if (m_dwSoftUseLimit > SoftUseLimitNum)
 	{
-		PostMessage(WM_DESTROY);
+		m_bLock = true;
 	}
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -227,6 +227,7 @@ void CAucma_HeaterDlg::OnInit(void)
 		m_dwFastHeatStateOld = SummerHeat;
 	}
 	m_uiErrorCode = 0;
+	m_bLock = false;
 	m_bPaint = false;
 }
 // 设置窗口满屏
@@ -729,6 +730,10 @@ bool CAucma_HeaterDlg::OnPointInRect(CRect rect, CPoint point)
 void CAucma_HeaterDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if (m_bLock == true)
+	{
+		return;
+	}
 	// 判断点击速热引擎
 	if ((true == OnPointInRect(m_rectHeatFastPic, point))
 		|| (true == OnPointInRect(m_rectHeatFastText, point)))
@@ -776,6 +781,10 @@ void CAucma_HeaterDlg::OnLButtonDown(UINT nFlags, CPoint point)
 void CAucma_HeaterDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if (m_bLock == true)
+	{
+		return;
+	}
 	KillTimer(ContinuousOptTimerEvent);
 	m_uiContinuousCount = 0;
 	if ((m_bAddOpt == true) || (m_bReduceOpt == true))
@@ -2223,8 +2232,29 @@ void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
 			OnClickedPower();
 		}
 		break;
+	case 14:
+		if ((strParam == ClearLimitPwd) && (m_bLock == true))
+		{
+			m_bLock = false;
+			UnLockFunc();
+		}
 	default:
 		break;
 	}
 }
 
+// 解锁函数
+void CAucma_HeaterDlg::UnLockFunc(void)
+{
+	HKEY hOpenKey;
+	DWORD dwOpenStyle;
+	long lResult = 0;
+	// 打开或者新建指定的键
+	lResult = RegCreateKeyEx(HKEY_CURRENT_USER, RegKeyNameHeater, 0, _T(""), 
+		REG_OPTION_NON_VOLATILE, KEY_READ|KEY_WRITE , NULL, &hOpenKey, &dwOpenStyle);
+	ASSERT(lResult == ERROR_SUCCESS);
+	m_dwSoftUseLimit = 0;
+	LoadRegKey(hOpenKey, RegSubKeyNameLimit, m_dwSoftUseLimit);
+	RegFlushKey(HKEY_CURRENT_USER);
+	RegCloseKey(hOpenKey);
+}
