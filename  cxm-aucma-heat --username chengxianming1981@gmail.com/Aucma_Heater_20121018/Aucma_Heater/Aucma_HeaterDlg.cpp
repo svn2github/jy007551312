@@ -228,7 +228,7 @@ void CAucma_HeaterDlg::OnInit(void)
 	}
 	m_uiErrorCode = 0;
 	m_bLock = false;
-	m_bPaint = false;
+	m_bLBtnDownLimit = false;
 }
 // 设置窗口满屏
 void CAucma_HeaterDlg::SetWindowFullScreen(void)
@@ -461,12 +461,6 @@ void CAucma_HeaterDlg::OnClickedHeatfast()
 	{
 		return;
 	}
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!\n"));
-		return;
-	}
-	m_bPaint = false;
 	OptBuzzer();
 	if (m_dwFastHeatState == NormalHeat)
 	{
@@ -507,12 +501,6 @@ void CAucma_HeaterDlg::OnClickedHelper()
 // 	{
 // 		return;
 // 	}
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!\n"));
-		return;
-	}
-	m_bPaint = false;
 	OptBuzzer();
 	m_bHelper = !m_bHelper;
 	InvalidateRect(m_rectHelperPic, FALSE);
@@ -543,12 +531,6 @@ void CAucma_HeaterDlg::OnClickedWashhand()
 	{
 		return;
 	}
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!\n"));
-		return;
-	}
-	m_bPaint = false;
 	OptBuzzer();
 	m_bWashHand = !m_bWashHand;
 	InvalidateRect(m_rectWashHandPic, FALSE);
@@ -564,12 +546,6 @@ void CAucma_HeaterDlg::OnClickedNight()
 	{
 		return;
 	}
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!\n"));
-		return;
-	}
-	m_bPaint = false;
 	OptBuzzer();
 	m_bNight = !m_bNight;
 	InvalidateRect(m_rectNightModePic, FALSE);
@@ -581,12 +557,6 @@ void CAucma_HeaterDlg::OnClickedNight()
 void CAucma_HeaterDlg::OnClickedPower()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!\n"));
-		return;
-	}
-	m_bPaint = false;
 	if (m_bPower == true)
 	{
 		OnReset();
@@ -614,12 +584,6 @@ void CAucma_HeaterDlg::OnClickedAdd()
 	{
 		return;
 	}
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!\n"));
-		return;
-	}
-	m_bPaint = false;
 	OptBuzzer();
 	OnOptAdd();
 }
@@ -631,24 +595,12 @@ void CAucma_HeaterDlg::OnClickedReduce()
 	{
 		return;
 	}
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!\n"));
-		return;
-	}
-	m_bPaint = false;
 	OptBuzzer();
 	OnOptReduce();
 }
 // 设置温度
 void CAucma_HeaterDlg::OnSetTemp(void)
 {
-// 	if (m_bPaint == false)
-// 	{
-// 		OutputDebugString(_T("Wait for paint!\n"));
-// 		return;
-// 	}
-// 	m_bPaint = false;
 	m_bSetTemp = !m_bSetTemp;
 	KillTimer(TwinkleTimerEvent);
 	if (m_bSetTemp == true)
@@ -669,12 +621,6 @@ void CAucma_HeaterDlg::OnSetTemp(void)
 // 设置时间
 void CAucma_HeaterDlg::OnSetTime(void)
 {
-// 	if (m_bPaint == false)
-// 	{
-// 		OutputDebugString(_T("Wait for paint!\n"));
-// 		return;
-// 	}
-// 	m_bPaint = false;
 	unsigned int uiDayOfWeek = 0;
 	if ((m_bSetTime == true) && (m_bSetTimeMin == true))
 	{
@@ -731,6 +677,15 @@ void CAucma_HeaterDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if (m_bLock == true)
+	{
+		return;
+	}
+	if (m_bLBtnDownLimit == false)
+	{
+		m_bLBtnDownLimit = true;
+		SetTimer(LBtnLimitTimerEvent, LBtnLimitTimerEventSet, NULL);
+	}
+	else
 	{
 		return;
 	}
@@ -792,9 +747,9 @@ void CAucma_HeaterDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		m_uiTwinkleCount = 0;
 		SetTimer(TwinkleTimerEvent, TwinkleTimeSet, NULL);
 		SetTimer(ShowTimeTimerEvent, ShowTimeTimeSet, NULL);
+		m_bAddOpt = false;
+		m_bReduceOpt = false;
 	}
-	m_bAddOpt = false;
-	m_bReduceOpt = false;
 	CDialog::OnLButtonUp(nFlags, point);
 }
 void CAucma_HeaterDlg::OnPaint()
@@ -802,7 +757,6 @@ void CAucma_HeaterDlg::OnPaint()
 	CPaintDC dc(this); // device context for painting
 	// TODO: 在此处添加消息处理程序代码
 	// 不为绘图消息调用 CDialog::OnPaint()
-	OutputDebugString(_T("Paint\n"));
 	m_oPngImage.OnDcBitBlt(&dc, &m_dcBK, m_rectBK);
 	dc.SetBkMode(TRANSPARENT);
 	if ((m_dwFastHeatStateOld != m_dwFastHeatState) || (m_bTwinkleHeatFastLabel == true))
@@ -1013,7 +967,6 @@ void CAucma_HeaterDlg::OnPaint()
 		}
 		m_dwTempStateOld = m_dwTempState;
 	}
-	m_bPaint = true;
 }
 
 void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
@@ -1054,6 +1007,11 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 	else if (nIDEvent == HeatFastTwinkleTimerEvent)
 	{
 		TwinkleHeatFast();
+	}
+	else if (nIDEvent == LBtnLimitTimerEvent)
+	{
+		KillTimer(LBtnLimitTimerEvent);
+		m_bLBtnDownLimit = false;
 	}
 	CDialog::OnTimer(nIDEvent);
 }
@@ -1183,12 +1141,6 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 // 		OutputDebugString(_T("复位触摸屏\n"));
 // 		break;
 	case CMD_DOWN_HP:
-		if (m_bPaint == false)
-		{
-			OutputDebugString(_T("Wait for paint!\n"));
-			break;
-		}
-		m_bPaint = false;
 		// 关闭智能助手闪烁定时器
 		KillTimer(HelperTwinkleTimerEvent);
 		m_bTwinkleHelperLabel = true;
@@ -1203,12 +1155,6 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 //		AfxMessageBox(str);
 		break;
 	case CMD_DOWN_IT:
-		if (m_bPaint == false)
-		{
-			OutputDebugString(_T("Wait for paint!\n"));
-			break;
-		}
-		m_bPaint = false;
 		m_iInTempActual = (unsigned int)byData - 127;
 		if (m_iInTempActual < 0)
 		{
@@ -1286,12 +1232,6 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 		}
 		else if (byData == CMD_WORD_WT_WE)
 		{
-			if (m_bPaint == false)
-			{
-				OutputDebugString(_T("Wait for paint!\n"));
-				break;
-			}
-			m_bPaint = false;
 			// 关闭速热引擎闪烁定时器
 			KillTimer(HeatFastTwinkleTimerEvent);
 			m_bTwinkleHeatFastLabel = true;
@@ -1441,12 +1381,6 @@ void CAucma_HeaterDlg::OnClickedSetTemp(void)
 	{
 		return;
 	}
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!\n"));
-		return;
-	}
-	m_bPaint = false;
 	OptBuzzer();
 	OnSetTemp();
 }
@@ -1458,12 +1392,6 @@ void CAucma_HeaterDlg::OnClickedSetTime(void)
 	{
 		return;
 	}
-	if (m_bPaint == false)
-	{
-		OutputDebugString(_T("Wait for paint!\n"));
-		return;
-	}
-	m_bPaint = false;
 	OptBuzzer();
 	OnSetTime();
 }
@@ -1502,10 +1430,6 @@ void CAucma_HeaterDlg::OnOptAdd(void)
 		if (m_dwInTempSet[m_dwFastHeatState] < SetTempMaxLimit)
 		{
 			m_dwInTempSet[m_dwFastHeatState]++;
-		}
-		else
-		{
-			m_bPaint = true;
 		}
 		if ((m_dwInTempSet[m_dwFastHeatState] / 10) != (m_dwInTempSetOld / 10))
 		{
@@ -1590,10 +1514,6 @@ void CAucma_HeaterDlg::OnOptReduce(void)
 		{
 			m_dwInTempSet[m_dwFastHeatState]--;
 		}
-		else
-		{
-			m_bPaint = true;
-		}
 		if ((m_dwInTempSet[m_dwFastHeatState] / 10) != (m_dwInTempSetOld / 10))
 		{
 			InvalidateRect(m_rectTempHighPic, FALSE);
@@ -1645,12 +1565,6 @@ void CAucma_HeaterDlg::OnOptReduce(void)
 // 更新加热状态
 void CAucma_HeaterDlg::UpdataHeatState(void)
 {
-// 	if (m_bPaint == false)
-// 	{
-// 		OutputDebugString(_T("Wait for paint!\n"));
-// 		return;
-// 	}
-// 	m_bPaint = false;
 	if (m_iInTempActual >= (int)m_dwInTempSet[m_dwFastHeatState])
 	{
 		// 保温
@@ -1696,12 +1610,6 @@ void CAucma_HeaterDlg::UpdataHeatState(void)
 // 更新当前时间
 void CAucma_HeaterDlg::UpdataCurrTime(void)
 {
-// 	if (m_bPaint == false)
-// 	{
-// 		OutputDebugString(_T("Wait for paint!\n"));
-// 		return;
-// 	}
-// 	m_bPaint = false;
 	m_CurrTime = CTime::GetCurrentTime();
 	if ((m_CurrTime.GetHour() / 10) != (m_CurrTimeOld.GetHour() / 10))
 	{
@@ -1766,12 +1674,6 @@ void CAucma_HeaterDlg::TwinkleSet(void)
 	}
 	else
 	{
-// 		if (m_bPaint == false)
-// 		{
-// 			OutputDebugString(_T("Wait for paint!\n"));
-// 			return;
-// 		}
-// 		m_bPaint = false;
 		m_uiTwinkleCount++;
 		if (m_uiTwinkleCount % 2 == 0)
 		{
@@ -1828,12 +1730,6 @@ void CAucma_HeaterDlg::ProNightMode(void)
 // 智能助手闪烁处理
 void CAucma_HeaterDlg::TwinkleHelper(void)
 {
-// 	if (m_bPaint == false)
-// 	{
-// 		OutputDebugString(_T("Wait for paint!\n"));
-// 		return;
-// 	}
-// 	m_bPaint = false;
 	m_bTwinkleHelperLabel = !m_bTwinkleHelperLabel;
 	InvalidateRect(m_rectHelperPic, FALSE);
 }
@@ -1841,12 +1737,6 @@ void CAucma_HeaterDlg::TwinkleHelper(void)
 // 速热引擎闪烁处理
 void CAucma_HeaterDlg::TwinkleHeatFast(void)
 {
-// 	if (m_bPaint == false)
-// 	{
-// 		OutputDebugString(_T("Wait for paint!\n"));
-// 		return;
-// 	}
-// 	m_bPaint = false;
 	m_bTwinkleHeatFastLabel = !m_bTwinkleHeatFastLabel;
 	InvalidateRect(m_rectHeatFastPic, FALSE);
 }

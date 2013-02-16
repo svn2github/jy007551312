@@ -45,6 +45,10 @@
 #define HeatFastTwinkleTimerEvent	9
 /** 速热引擎闪烁定时器时间*/
 #define HeatFastTwinkleTimeSet		500
+/** 连续点击按键限制定时器序号*/
+#define LBtnLimitTimerEvent			10
+/** 连续点击按键限制定时器时间*/
+#define LBtnLimitTimerEventSet		200
 /** 闪烁次数上限*/
 #define TwinkleMaxTimes				6
 /** 点击增加和减少达到时间次数，用于判定连续操作*/

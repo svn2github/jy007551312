@@ -319,7 +319,8 @@ private:
 	// 使用次数超过设定次数时锁定界面
 	bool m_bLock;
 public:
-	bool m_bPaint;
+	// 防止快速连续点击按键造成按键响应速度跟不上
+	bool m_bLBtnDownLimit;
 public:
 	// 鼠标左键单击坐标在所选区域内
 	bool OnPointInRect(CRect rect, CPoint point);
