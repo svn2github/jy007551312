@@ -217,6 +217,10 @@ BOOL CCEUart::WriteSyncPort(const BYTE* pbuf, DWORD dwbufLen)
 	DWORD dwNumBytesWritten = 0;
 	DWORD dwNumHaveWritten = 0;
 	int iRetryCount = 0;
+	if (m_bOpened == false)
+	{
+		return FALSE;
+	}
 	ASSERT(m_hComm != INVALID_HANDLE_VALUE);
 	do 
 	{

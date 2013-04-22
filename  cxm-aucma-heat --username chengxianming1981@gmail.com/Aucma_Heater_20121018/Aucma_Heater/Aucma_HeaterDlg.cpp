@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(CAucma_HeaterDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_TIMER()
 	ON_MESSAGE(WM_RECV_UART_DATA, &CAucma_HeaterDlg::OnRecvUartData)
+	ON_MESSAGE(WM_RECV_HTTP_DATA, &CAucma_HeaterDlg::OnHttpResponseCmd)
 END_MESSAGE_MAP()
 
 
@@ -680,56 +681,11 @@ void CAucma_HeaterDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		return;
 	}
-	if (m_bLBtnDownLimit == false)
-	{
-		m_bLBtnDownLimit = true;
-		SetTimer(LBtnLimitTimerEvent, LBtnLimitTimerEventSet, NULL);
-	}
-	else
-	{
-		return;
-	}
-	// 判断点击速热引擎
-	if ((true == OnPointInRect(m_rectHeatFastPic, point))
-		|| (true == OnPointInRect(m_rectHeatFastText, point)))
-	{
-		OnClickedHeatfast();
-	}
-	else if ((true == OnPointInRect(m_rectHelperPic, point))
-		|| (true == OnPointInRect(m_rectHelperText, point)))
-	{
-		OnClickedHelper();
-	}
-	else if ((true == OnPointInRect(m_rectWashHandPic, point))
-		|| (true == OnPointInRect(m_rectWashHandText, point)))
-	{
-		OnClickedWashhand();
-	}
-	else if ((true == OnPointInRect(m_rectNightModePic, point))
-		|| (true == OnPointInRect(m_rectNightModeText, point)))
-	{
-		OnClickedNight();
-	}
-	else if (true == OnPointInRect(m_rectPowerPic, point))
-	{
-		OnClickedPower();
-	}
-	else if (true == OnPointInRect(m_rectTemp, point))
-	{
-		OnClickedSetTemp();
-	}
-	else if (true == OnPointInRect(m_rectTime, point))
-	{
-		OnClickedSetTime();
-	}
-	else if (true == OnPointInRect(m_rectAdd, point))
-	{
-		OnClickedAdd();
-	}
-	else if (true == OnPointInRect(m_rectReduce, point))
-	{
-		OnClickedReduce();
-	}
+	m_bLBtnDownLimit = true;
+	m_pointLBtn.x = point.x;
+	m_pointLBtn.y = point.y;
+	KillTimer(LBtnLimitTimerEvent);
+	SetTimer(LBtnLimitTimerEvent, LBtnLimitTimerEventSet, NULL);
 	CDialog::OnLButtonDown(nFlags, point);
 }
 
@@ -740,6 +696,7 @@ void CAucma_HeaterDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	{
 		return;
 	}
+	m_bLBtnDownLimit = false;
 	KillTimer(ContinuousOptTimerEvent);
 	m_uiContinuousCount = 0;
 	if ((m_bAddOpt == true) || (m_bReduceOpt == true))
@@ -1011,7 +968,51 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 	else if (nIDEvent == LBtnLimitTimerEvent)
 	{
 		KillTimer(LBtnLimitTimerEvent);
-		m_bLBtnDownLimit = false;
+		if (m_bLBtnDownLimit == true)
+		{
+			// 判断点击速热引擎
+			if ((true == OnPointInRect(m_rectHeatFastPic, m_pointLBtn))
+				|| (true == OnPointInRect(m_rectHeatFastText, m_pointLBtn)))
+			{
+				OnClickedHeatfast();
+				TRACE(_T("1\n"));
+			}
+			else if ((true == OnPointInRect(m_rectHelperPic, m_pointLBtn))
+				|| (true == OnPointInRect(m_rectHelperText, m_pointLBtn)))
+			{
+				OnClickedHelper();
+			}
+			else if ((true == OnPointInRect(m_rectWashHandPic, m_pointLBtn))
+				|| (true == OnPointInRect(m_rectWashHandText, m_pointLBtn)))
+			{
+				OnClickedWashhand();
+			}
+			else if ((true == OnPointInRect(m_rectNightModePic, m_pointLBtn))
+				|| (true == OnPointInRect(m_rectNightModeText, m_pointLBtn)))
+			{
+				OnClickedNight();
+			}
+			else if (true == OnPointInRect(m_rectPowerPic, m_pointLBtn))
+			{
+				OnClickedPower();
+			}
+			else if (true == OnPointInRect(m_rectTemp, m_pointLBtn))
+			{
+				OnClickedSetTemp();
+			}
+			else if (true == OnPointInRect(m_rectTime, m_pointLBtn))
+			{
+				OnClickedSetTime();
+			}
+			else if (true == OnPointInRect(m_rectAdd, m_pointLBtn))
+			{
+				OnClickedAdd();
+			}
+			else if (true == OnPointInRect(m_rectReduce, m_pointLBtn))
+			{
+				OnClickedReduce();
+			}
+		}
 	}
 	CDialog::OnTimer(nIDEvent);
 }
@@ -1971,32 +1972,27 @@ void CALLBACK CAucma_HeaterDlg::OnHttpResponse(void* pFatherPtr, CString strResp
 	CString strCmd = _T("");
 	int iPos = 0;
 	int iPosOld = 0;
+	wchar_t* pBuf = NULL;
+	DWORD dwbufLen = 0;
 	CAucma_HeaterDlg* pThis = (CAucma_HeaterDlg*)pFatherPtr;
-// 	do
-// 	{
-// 		iPos = strResponse.Find(_T(";"), iPosOld);
-// 		if (iPos == -1)
-// 		{
-// 			strCmd = strResponse.Mid(iPosOld, strResponse.GetLength() - iPosOld);
-// 		}
-// 		else
-// 		{
-// 			strCmd = strResponse.Mid(iPosOld, iPos - iPosOld);
-// 		}
-// 		pThis->OnHttpResponseCmd(strCmd);
-// 		iPosOld = iPos + 1;
-// 	}while(iPos != -1);
 	iPos = strResponse.Find(_T(";"), iPosOld);
 	while(iPos != -1)
 	{
 		strCmd = strResponse.Mid(iPosOld, iPos - iPosOld);
-		pThis->OnHttpResponseCmd(strCmd);
+		dwbufLen = strCmd.GetLength() + 1;
+		pBuf = new wchar_t[dwbufLen];
+		pBuf = (LPWSTR)(LPCWSTR)strCmd;
+		pThis->PostMessage(WM_RECV_HTTP_DATA, WPARAM(pBuf), dwbufLen);
+
+//		pThis->OnHttpResponseCmd(strCmd);
 		iPosOld = iPos + 1;
 		iPos = strResponse.Find(_T(";"), iPosOld);
 	}
 }
-void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
+LRESULT CAucma_HeaterDlg::OnHttpResponseCmd(WPARAM wParam, LPARAM lParam)
 {
+	wchar_t* pBuf = (wchar_t*)wParam;
+	CString str = pBuf;
 	CString strCmd = _T("");
 	CString strParam = _T("");
 	CString strOut = _T("");
@@ -2021,8 +2017,6 @@ void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
 	case 0:
 		break;
 	case 1:
-// 		m_bSetTemp = true;
-// 		m_bSetTempOld = true;
 		m_dwInTempSet[m_dwFastHeatState] = _ttoi(strParam);
 		OnClickedSetTemp();
 		break;
@@ -2039,88 +2033,27 @@ void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
 		::SetLocalTime(&sysTime);
 		m_CurrTime = CTime::GetCurrentTime();
 		OnClickedSetTime();
-// 		m_bSetTime = true;
-// 		m_bSetTimeOld = true;
-// 		m_bSetTimeMin = false;
-// 		OnSetTime();
 		break;
 	case 3:
-		if (m_dwFastHeatState != WinterHeat)
-		{
-			OnClickedHeatfast();
-		}
-		break;
 	case 4:
-		if (m_dwFastHeatState != SummerHeat)
-		{
-			OnClickedHeatfast();
-		}
-		break;
 	case 5:
-		if (m_dwFastHeatState != NormalHeat)
-		{
-			OnClickedHeatfast();
-		}
+		OnClickedHeatfast();
 		break;
 	case 6:
-		if (m_bHelper == true)
-		{
-			OnClickedHelper();
-		}
-		break;
 	case 7:
-		if (m_bHelper == false)
-		{
-			OnClickedHelper();
-		}
+		OnClickedHelper();
 		break;
 	case 8:
-		if (m_bWashHand == true)
-		{
-			OnClickedWashhand();
-			OutputDebugString(_T("关闭洗手加热\n"));
-		}
-		else
-		{
-			strOut.Format(_T("关闭洗手加热ERROR%d\n"), iCmd);
-			OutputDebugString(strOut);
-		}
-		break;
 	case 9:
-		if (m_bWashHand == false)
-		{
-			OnClickedWashhand();
-			OutputDebugString(_T("开启洗手加热\n"));
-		}
-		else
-		{
-			strOut.Format(_T("开启洗手加热ERROR%d\n"), iCmd);
-			OutputDebugString(strOut);
-		}
+		OnClickedWashhand();
 		break;
 	case 10:
-		if (m_bNight == true)
-		{
-			OnClickedNight();
-		}
-		break;
 	case 11:
-		if (m_bNight == false)
-		{
-			OnClickedNight();
-		}
+		OnClickedNight();
 		break;
 	case 12:
-		if (m_bPower == true)
-		{
-			OnClickedPower();
-		}
-		break;
 	case 13:
-		if (m_bPower == false)
-		{
-			OnClickedPower();
-		}
+		OnClickedPower();
 		break;
 	case 14:
 		if ((strParam == ClearLimitPwd) && (m_bLock == true))
@@ -2131,6 +2064,9 @@ void CAucma_HeaterDlg::OnHttpResponseCmd(CString str)
 	default:
 		break;
 	}
+	delete[] pBuf;
+	pBuf = NULL;
+	return TRUE;
 }
 
 // 解锁函数

@@ -321,6 +321,8 @@ private:
 public:
 	// 防止快速连续点击按键造成按键响应速度跟不上
 	bool m_bLBtnDownLimit;
+	// 鼠标左键点击区域坐标
+	CPoint m_pointLBtn;
 public:
 	// 鼠标左键单击坐标在所选区域内
 	bool OnPointInRect(CRect rect, CPoint point);
@@ -349,7 +351,7 @@ public:
 	// Http响应回调函数
 	static void CALLBACK OnHttpResponse(void* pFatherPtr, CString strResponse);
 	// Http单条命令处理
-	void OnHttpResponseCmd(CString str);
+	LRESULT OnHttpResponseCmd(WPARAM wParam, LPARAM lParam);
 	// 向串口发送数据
 	void OnWriteUartData(BYTE ucCmd, BYTE ucData);
 	// 解析串口接收数据帧

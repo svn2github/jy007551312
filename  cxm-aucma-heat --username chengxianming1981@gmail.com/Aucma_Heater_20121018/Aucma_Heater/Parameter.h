@@ -48,7 +48,7 @@
 /** 连续点击按键限制定时器序号*/
 #define LBtnLimitTimerEvent			10
 /** 连续点击按键限制定时器时间*/
-#define LBtnLimitTimerEventSet		200
+#define LBtnLimitTimerEventSet		100
 /** 闪烁次数上限*/
 #define TwinkleMaxTimes				6
 /** 点击增加和减少达到时间次数，用于判定连续操作*/
@@ -107,6 +107,8 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define SetTempMinLimit					30
 /** 串口接收数据消息*/
 #define WM_RECV_UART_DATA				WM_USER + 100
+/** HTTP接收数据消息*/
+#define WM_RECV_HTTP_DATA				WM_USER + 101
 /** 默认蜂鸣器频率，设为1则频率为2Hz*/
 #define DefaultBuzzFrq					2
 /** 强制结束线程时间*/
