@@ -458,41 +458,18 @@ void CAucma_HeaterDlg::OnDestroy()
 void CAucma_HeaterDlg::OnClickedHeatfast()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (m_bPower == false)
-	{
-		return;
-	}
-	OptBuzzer();
 	if (m_dwFastHeatState == NormalHeat)
 	{
-		m_dwFastHeatState = SummerHeat;
-		InvalidateRect(m_rectHeatFastPic, FALSE);
-		InvalidateRect(m_rectHeatFastText, FALSE);
-		// 夏季智能开启
-		OnWriteUartData(CMD_UP_SO, CMD_WORD_SO);
+		OnHeatfastSummer();
 	}
 	else if (m_dwFastHeatState == SummerHeat)
 	{
-		m_dwFastHeatState = WinterHeat;
-		InvalidateRect(m_rectWinterPic, FALSE);
-		InvalidateRect(m_rectWinterText, FALSE);
-		// 冬季智能开启
-		OnWriteUartData(CMD_UP_WO, CMD_WORD_WO);
+		OnHeatfastWinter();
 	}
 	else if (m_dwFastHeatState == WinterHeat)
 	{
-		m_dwFastHeatState = NormalHeat;
-		InvalidateRect(m_rectHeatFastPic, FALSE);
-		InvalidateRect(m_rectHeatFastText, FALSE);
-		InvalidateRect(m_rectWinterPic, FALSE);
-		InvalidateRect(m_rectWinterText, FALSE);
-		// 普通加热模式开启
-		OnWriteUartData(CMD_UP_PW, CMD_WORD_PO);
+		OnHeatfastNormal();
 	}
-	SaveParamToReg();
-	m_bSetTemp = false;
-	// 设置温度
-	OnSetTemp();
 }
 
 void CAucma_HeaterDlg::OnClickedHelper()
@@ -2035,25 +2012,82 @@ LRESULT CAucma_HeaterDlg::OnHttpResponseCmd(WPARAM wParam, LPARAM lParam)
 		OnClickedSetTime();
 		break;
 	case 3:
+		if (m_dwFastHeatState != WinterHeat)
+		{
+			OnHeatfastWinter();
+		}
+		break;
 	case 4:
+		if (m_dwFastHeatState != SummerHeat)
+		{
+			OnHeatfastSummer();
+		}
+		break;
 	case 5:
-		OnClickedHeatfast();
+		if (m_dwFastHeatState != NormalHeat)
+		{
+			OnHeatfastNormal();
+		}
 		break;
 	case 6:
+		if (m_bHelper == true)
+		{
+			OnClickedHelper();
+		}
+		break;
 	case 7:
-		OnClickedHelper();
+		if (m_bHelper == false)
+		{
+			OnClickedHelper();
+		}
 		break;
 	case 8:
+		if (m_bWashHand == true)
+		{
+			OnClickedWashhand();
+			OutputDebugString(_T("关闭洗手加热\n"));
+		}
+		else
+		{
+			strOut.Format(_T("关闭洗手加热ERROR%d\n"), iCmd);
+			OutputDebugString(strOut);
+		}
+		break;
 	case 9:
-		OnClickedWashhand();
+		if (m_bWashHand == false)
+		{
+			OnClickedWashhand();
+			OutputDebugString(_T("开启洗手加热\n"));
+		}
+		else
+		{
+			strOut.Format(_T("开启洗手加热ERROR%d\n"), iCmd);
+			OutputDebugString(strOut);
+		}
 		break;
 	case 10:
+		if (m_bNight == true)
+		{
+			OnClickedNight();
+		}
+		break;
 	case 11:
-		OnClickedNight();
+		if (m_bNight == false)
+		{
+			OnClickedNight();
+		}
 		break;
 	case 12:
+		if (m_bPower == true)
+		{
+			OnClickedPower();
+		}
+		break;
 	case 13:
-		OnClickedPower();
+		if (m_bPower == false)
+		{
+			OnClickedPower();
+		}
 		break;
 	case 14:
 		if ((strParam == ClearLimitPwd) && (m_bLock == true))
@@ -2083,4 +2117,67 @@ void CAucma_HeaterDlg::UnLockFunc(void)
 	LoadRegKey(hOpenKey, RegSubKeyNameLimit, m_dwSoftUseLimit);
 	RegFlushKey(HKEY_CURRENT_USER);
 	RegCloseKey(hOpenKey);
+}
+
+// 普通加热
+void CAucma_HeaterDlg::OnHeatfastNormal(void)
+{
+	if (m_bPower == false)
+	{
+		return;
+	}
+	OptBuzzer();
+	m_dwFastHeatState = NormalHeat;
+	InvalidateRect(m_rectHeatFastPic, FALSE);
+	InvalidateRect(m_rectHeatFastText, FALSE);
+	InvalidateRect(m_rectWinterPic, FALSE);
+	InvalidateRect(m_rectWinterText, FALSE);
+	// 普通加热模式开启
+	OnWriteUartData(CMD_UP_PW, CMD_WORD_PO);
+	SaveParamToReg();
+	m_bSetTemp = false;
+	// 设置温度
+	OnSetTemp();
+}
+
+// 夏季加热
+void CAucma_HeaterDlg::OnHeatfastSummer(void)
+{
+	if (m_bPower == false)
+	{
+		return;
+	}
+	OptBuzzer();
+	m_dwFastHeatState = SummerHeat;
+	InvalidateRect(m_rectHeatFastPic, FALSE);
+	InvalidateRect(m_rectHeatFastText, FALSE);
+	InvalidateRect(m_rectWinterPic, FALSE);
+	InvalidateRect(m_rectWinterText, FALSE);
+	// 夏季智能开启
+	OnWriteUartData(CMD_UP_SO, CMD_WORD_SO);
+	SaveParamToReg();
+	m_bSetTemp = false;
+	// 设置温度
+	OnSetTemp();
+}
+
+// 冬季加热
+void CAucma_HeaterDlg::OnHeatfastWinter(void)
+{
+	if (m_bPower == false)
+	{
+		return;
+	}
+	OptBuzzer();
+	m_dwFastHeatState = WinterHeat;
+	InvalidateRect(m_rectHeatFastPic, FALSE);
+	InvalidateRect(m_rectHeatFastText, FALSE);
+	InvalidateRect(m_rectWinterPic, FALSE);
+	InvalidateRect(m_rectWinterText, FALSE);
+	// 冬季智能开启
+	OnWriteUartData(CMD_UP_WO, CMD_WORD_WO);
+	SaveParamToReg();
+	m_bSetTemp = false;
+	// 设置温度
+	OnSetTemp();
 }

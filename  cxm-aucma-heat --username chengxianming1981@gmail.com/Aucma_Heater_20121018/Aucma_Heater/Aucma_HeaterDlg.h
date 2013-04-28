@@ -420,4 +420,10 @@ public:
 	void SaveParamToReg(void);
 	// 解锁函数
 	void UnLockFunc(void);
+	// 普通加热
+	void OnHeatfastNormal(void);
+	// 夏季加热
+	void OnHeatfastSummer(void);
+	// 冬季加热
+	void OnHeatfastWinter(void);
 };
