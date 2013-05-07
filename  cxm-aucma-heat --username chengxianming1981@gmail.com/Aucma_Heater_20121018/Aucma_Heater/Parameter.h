@@ -138,7 +138,7 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define	CMD_DOWN_IT						0x71
 /** 报警类型*/
 #define	CMD_DOWN_WT						0x72
-/** 请求箱内温度*/
+/** 查询时间*/
 #define CMD_DOWN_QT						0x73
 
 /** 时间小时数*/

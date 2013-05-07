@@ -97,6 +97,7 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	if (m_dwSoftUseLimit > SoftUseLimitNum)
 	{
 		m_bLock = true;
+		AddMsgToLog(_T("超过使用次数，界面锁定！"));
 	}
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -497,6 +498,7 @@ void CAucma_HeaterDlg::OnClickedHelper()
 		// 开启智能助手图标闪烁定时器
 		SetTimer(HelperTwinkleTimerEvent, HelperTwinkleTimeSet, NULL);
 		m_bTwinkleHelper = true;
+		AddMsgToLog(_T("智能助手开启"));
 	}
 	else
 	{
@@ -505,6 +507,7 @@ void CAucma_HeaterDlg::OnClickedHelper()
 		// 关闭智能助手图标闪烁定时器
 		KillTimer(HelperTwinkleTimerEvent);
 		m_bTwinkleHelper = false;
+		AddMsgToLog(_T("智能助手关闭"));
 	}
 	SaveParamToReg();
 }
@@ -548,6 +551,7 @@ void CAucma_HeaterDlg::OnClickedPower()
 		Invalidate(FALSE);
 		// 进入待机状态
 		OnWriteUartData(CMD_UP_PW, CMD_WORD_PC);
+		AddMsgToLog(_T("电源开关关闭"));
 	}
 	else
 	{
@@ -558,6 +562,7 @@ void CAucma_HeaterDlg::OnClickedPower()
 		OnSetTemp();
 		// 普通加热模式开启
 		OnWriteUartData(CMD_UP_PW, CMD_WORD_PO);
+		AddMsgToLog(_T("电源开关开启"));
 	}
 	OptBuzzer();
 	SaveParamToReg();
@@ -958,41 +963,50 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 			if ((true == OnPointInRect(m_rectHeatFastPic, m_pointLBtn))
 				|| (true == OnPointInRect(m_rectHeatFastText, m_pointLBtn)))
 			{
+				AddMsgToLog(_T("点击速热引擎"));
 				OnClickedHeatfast();
 			}
 			else if ((true == OnPointInRect(m_rectHelperPic, m_pointLBtn))
 				|| (true == OnPointInRect(m_rectHelperText, m_pointLBtn)))
 			{
+				AddMsgToLog(_T("点击智能助手"));
 				OnClickedHelper();
 			}
 			else if ((true == OnPointInRect(m_rectWashHandPic, m_pointLBtn))
 				|| (true == OnPointInRect(m_rectWashHandText, m_pointLBtn)))
 			{
+				AddMsgToLog(_T("点击洗手加热"));
 				OnClickedWashhand();
 			}
 			else if ((true == OnPointInRect(m_rectNightModePic, m_pointLBtn))
 				|| (true == OnPointInRect(m_rectNightModeText, m_pointLBtn)))
 			{
+				AddMsgToLog(_T("点击夜间模式"));
 				OnClickedNight();
 			}
 			else if (true == OnPointInRect(m_rectPowerPic, m_pointLBtn))
 			{
+				AddMsgToLog(_T("点击电源开关"));
 				OnClickedPower();
 			}
 			else if (true == OnPointInRect(m_rectTemp, m_pointLBtn))
 			{
+				AddMsgToLog(_T("点击设置温度"));
 				OnClickedSetTemp();
 			}
 			else if (true == OnPointInRect(m_rectTime, m_pointLBtn))
 			{
+				AddMsgToLog(_T("点击设置时间"));
 				OnClickedSetTime();
 			}
 			else if (true == OnPointInRect(m_rectAdd, m_pointLBtn))
 			{
+				AddMsgToLog(_T("点击增加按键"));
 				OnClickedAdd();
 			}
 			else if (true == OnPointInRect(m_rectReduce, m_pointLBtn))
 			{
+				AddMsgToLog(_T("点击减少按键"));
 				OnClickedReduce();
 			}
 		}
@@ -1132,11 +1146,12 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 		InvalidateRect(m_rectHelperPic, FALSE);
 		SaveParamToReg();
 		m_uiErrorCode = 11;
+		AddMsgToLog(_T("接收到串口智能助手执行命令"));
 		break;
 	case CMD_DOWN_ET:
 		m_iEnvTempActual = (unsigned int)byData - 127;
-//		str.Format(_T("实际环境温度 %d"), m_iEnvTempActual);
-//		AfxMessageBox(str);
+		str.Format(_T("接收到串口实际环境温度 %d度"), m_iEnvTempActual);
+		AddMsgToLog(str);
 		break;
 	case CMD_DOWN_IT:
 		m_iInTempActual = (unsigned int)byData - 127;
@@ -1152,66 +1167,68 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 		{
 			InvalidateRect(m_rectTempLowPic, FALSE);
 		}
+		str.Format(_T("接收到串口实际箱内温度 %d度"), m_iInTempActual);
+		AddMsgToLog(str);
 		break;
 	case CMD_DOWN_WT:
 		if (byData == CMD_WORD_WT_NWE)
 		{
 //			WarningBuzzer();
-//			AfxMessageBox(_T("干烧/缺水报警"));
+			AddMsgToLog(_T("干烧/缺水报警"));
 			m_uiErrorCode = 1;
 		}
 		else if (byData == CMD_WORD_WT_SE)
 		{
 //			WarningBuzzer();
-//			AfxMessageBox(_T("传感器故障报警"));
+			AddMsgToLog(_T("传感器故障报警"));
 			m_uiErrorCode = 2;
 		}
 		else if (byData == CMD_WORD_WT_LE)
 		{
 //			WarningBuzzer();
-//			AfxMessageBox(_T("漏电故障报警"));
+			AddMsgToLog(_T("漏电故障报警"));
 			m_uiErrorCode = 3;
 		}
 		else if (byData == CMD_WORD_WT_WHE)
 		{
 //			WarningBuzzer();
-//			AfxMessageBox(_T("水温超高故障报警"));
+			AddMsgToLog(_T("水温超高故障报警"));
 			m_uiErrorCode = 4;
 		}
 		else if (byData == CMD_WORD_WT_LCE)
 		{
 //			WarningBuzzer();
-//			AfxMessageBox(_T("漏电线圈故障报警"));
+			AddMsgToLog(_T("漏电线圈故障报警"));
 			m_uiErrorCode = 5;
 		}
 		else if (byData == CMD_WORD_WT_NWEC)
 		{
 //			StopBuzzer();
-//			AfxMessageBox(_T("干烧/缺水报警消除"));
+			AddMsgToLog(_T("干烧/缺水报警消除"));
 			m_uiErrorCode = 6;
 		}
 		else if (byData == CMD_WORD_WT_SEC)
 		{
 //			StopBuzzer();
-//			AfxMessageBox(_T("传感器故障报警消除"));
+			AddMsgToLog(_T("传感器故障报警消除"));
 			m_uiErrorCode = 7;
 		}
 		else if (byData == CMD_WORD_WT_LEC)
 		{
 //			StopBuzzer();
-//			AfxMessageBox(_T("漏电故障报警消除"));
+			AddMsgToLog(_T("漏电故障报警消除"));
 			m_uiErrorCode = 8;
 		}
 		else if (byData == CMD_WORD_WT_WHEC)
 		{
 //			StopBuzzer();
-//			AfxMessageBox(_T("水温超高故障报警消除"));
+			AddMsgToLog(_T("水温超高故障报警消除"));
 			m_uiErrorCode = 9;
 		}
 		else if (byData == CMD_WORD_WT_LCEC)
 		{
 //			StopBuzzer();
-//			AfxMessageBox(_T("漏电线圈故障报警消除"));
+			AddMsgToLog(_T("漏电线圈故障报警消除"));
 			m_uiErrorCode = 10;
 		}
 		else if (byData == CMD_WORD_WT_WE)
@@ -1223,6 +1240,7 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 			InvalidateRect(m_rectHeatFastPic, FALSE);
 			SaveParamToReg();
 			m_uiErrorCode = 12;
+			AddMsgToLog(_T("水量充足"));
 		}
 		else if (byData == CMD_WORD_WT_WL)
 		{
@@ -1231,6 +1249,7 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 			m_bTwinkleHeatFast = true;
 			SaveParamToReg();
 			m_uiErrorCode = 13;
+			AddMsgToLog(_T("水量不足"));
 		}
 		break;
 	case CMD_DOWN_QT:
@@ -1241,6 +1260,7 @@ void CAucma_HeaterDlg::PhraseUartFrame()
 			uiDayOfWeek = 7;
 		}
 		OnWriteUartData(CMD_UP_WEEK, uiDayOfWeek);
+		AddMsgToLog(_T("串口查询时间"));
 		break;
 	default:
 		break;
@@ -1340,7 +1360,7 @@ void CAucma_HeaterDlg::InitBuzzer(void)
 		NULL);
 	if (m_hPWM == INVALID_HANDLE_VALUE)
 	{
-		OutputDebugString(_T("Open PWM Failed!\n"));
+		AddMsgToLog(_T("打开PWM失败!"));
 	}
 }
 
@@ -1617,11 +1637,13 @@ void CAucma_HeaterDlg::UpdataCurrTime(void)
 		{
 			// 夜电运行方式开启
 			OnWriteUartData(CMD_UP_NO, CMD_WORD_NO);
+			AddMsgToLog(_T("夜电运行方式开启"));
 		}
 		else if (m_CurrTime.GetHour() == 6)
 		{
 			// 夜电运行方式关闭
 			OnWriteUartData(CMD_UP_NO, CMD_WORD_NC);
+			AddMsgToLog(_T("夜电运行方式关闭"));
 		}
 	}
 }
@@ -1696,11 +1718,13 @@ void CAucma_HeaterDlg::SendWashHandCmd(void)
 	{
 		// 洗手加热开启
 		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHO);
+		AddMsgToLog(_T("洗手加热开启"));
 	}
 	else
 	{
 		// 洗手加热关闭
 		OnWriteUartData(CMD_UP_WH, CMD_WORD_WHC);
+		AddMsgToLog(_T("洗手加热关闭"));
 	}
 }
 
@@ -2002,10 +2026,12 @@ LRESULT CAucma_HeaterDlg::OnHttpResponseCmd(WPARAM wParam, LPARAM lParam)
 	case 0:
 		break;
 	case 1:
+		AddMsgToLog(_T("HTTP设置温度"));
 		m_dwInTempSet[m_dwFastHeatState] = _ttoi(strParam);
 		OnClickedSetTemp();
 		break;
 	case 2:
+		AddMsgToLog(_T("HTTP设置时间"));
 		uiData = _ttoi(strParam.Mid(0, 8));
 		uiTime = _ttoi(strParam.Mid(8, 6));
 		memset(&sysTime, 0 ,sizeof(SYSTEMTIME));
@@ -2022,74 +2048,84 @@ LRESULT CAucma_HeaterDlg::OnHttpResponseCmd(WPARAM wParam, LPARAM lParam)
 	case 3:
 		if (m_dwFastHeatState != WinterHeat)
 		{
+			AddMsgToLog(_T("HTTP速热引擎"));
 			OnHeatfastWinter();
 		}
 		break;
 	case 4:
 		if (m_dwFastHeatState != SummerHeat)
 		{
+			AddMsgToLog(_T("HTTP速热引擎"));
 			OnHeatfastSummer();
 		}
 		break;
 	case 5:
 		if (m_dwFastHeatState != NormalHeat)
 		{
+			AddMsgToLog(_T("HTTP速热引擎"));
 			OnHeatfastNormal();
 		}
 		break;
 	case 6:
 		if (m_bHelper == true)
 		{
+			AddMsgToLog(_T("HTTP智能助手"));
 			OnClickedHelper();
 		}
 		break;
 	case 7:
 		if (m_bHelper == false)
 		{
+			AddMsgToLog(_T("HTTP智能助手"));
 			OnClickedHelper();
 		}
 		break;
 	case 8:
 		if (m_bWashHand == true)
 		{
+			AddMsgToLog(_T("HTTP洗手加热"));
 			OnClickedWashhand();
-			OutputDebugString(_T("关闭洗手加热\n"));
 		}
 		break;
 	case 9:
 		if (m_bWashHand == false)
 		{
+			AddMsgToLog(_T("HTTP洗手加热"));
 			OnClickedWashhand();
-			OutputDebugString(_T("开启洗手加热\n"));
 		}
 		break;
 	case 10:
 		if (m_bNight == true)
 		{
+			AddMsgToLog(_T("HTTP夜间模式"));
 			OnClickedNight();
 		}
 		break;
 	case 11:
 		if (m_bNight == false)
 		{
+			AddMsgToLog(_T("HTTP夜间模式"));
 			OnClickedNight();
 		}
 		break;
 	case 12:
 		if (m_bPower == true)
 		{
+			AddMsgToLog(_T("HTTP电源开关"));
 			OnClickedPower();
 		}
 		break;
 	case 13:
 		if (m_bPower == false)
 		{
+			AddMsgToLog(_T("HTTP电源开关"));
 			OnClickedPower();
 		}
 		break;
 	case 14:
 		if ((strParam == ClearLimitPwd) && (m_bLock == true))
 		{
+			AddMsgToLog(_T("HTTP解锁"));
 			m_bLock = false;
 			UnLockFunc();
 		}
@@ -2136,6 +2172,7 @@ void CAucma_HeaterDlg::OnHeatfastNormal(void)
 	m_bSetTemp = false;
 	// 设置温度
 	OnSetTemp();
+	AddMsgToLog(_T("速热引擎_正常"));
 }
 
 // 夏季加热
@@ -2157,6 +2194,7 @@ void CAucma_HeaterDlg::OnHeatfastSummer(void)
 	m_bSetTemp = false;
 	// 设置温度
 	OnSetTemp();
+	AddMsgToLog(_T("速热引擎_夏季"));
 }
 
 // 冬季加热
@@ -2178,6 +2216,7 @@ void CAucma_HeaterDlg::OnHeatfastWinter(void)
 	m_bSetTemp = false;
 	// 设置温度
 	OnSetTemp();
+	AddMsgToLog(_T("速热引擎_冬季"));
 }
 
 // 创建日志文件
