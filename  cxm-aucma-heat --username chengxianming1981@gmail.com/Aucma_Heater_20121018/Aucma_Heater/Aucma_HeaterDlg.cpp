@@ -50,6 +50,7 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	SetWindowFullScreen();
+	OnInitLog();
 	LoadParamFromReg();
 	OnInit();
 	LoadFont();
@@ -61,6 +62,8 @@ BOOL CAucma_HeaterDlg::OnInitDialog()
 	m_oCEHttp.m_oHttpRequest = OnHttpRequest;
 	m_oCEHttp.m_oHttpResponse = OnHttpResponse;
 	m_oCEHttp.OnInit(this);
+	// 初始化日志输出线程
+	m_oLogThread.OnInitLogOutPutThread(&m_oLog);
 // 	// BlendOp字段指明了源混合操作，但只支持AC_SRC_OVER，即根据源alpha值把源图像叠加到目标图像上  
 // 	m_blendfun.BlendOp = AC_SRC_OVER;
 // 	// BlendFlags必须是0，也是为以后的应用保留的
@@ -452,8 +455,12 @@ void CAucma_HeaterDlg::OnDestroy()
 	m_bmpBK.DeleteObject();
 	m_dcBK.DeleteDC();
 	m_oCEUart.ClosePort();
+	AddMsgToLog(_T("关闭串口！"));
 	m_oPngImage.ReleaseIImage();
 	m_oCEHttp.OnClose();
+	// 关闭日志输出线程
+	m_oLogThread.OnCloseLogOutPutThread();
+	m_oLog.OnCloseLogOutPut();
 }
 void CAucma_HeaterDlg::OnClickedHeatfast()
 {
@@ -952,7 +959,6 @@ void CAucma_HeaterDlg::OnTimer(UINT_PTR nIDEvent)
 				|| (true == OnPointInRect(m_rectHeatFastText, m_pointLBtn)))
 			{
 				OnClickedHeatfast();
-				TRACE(_T("1\n"));
 			}
 			else if ((true == OnPointInRect(m_rectHelperPic, m_pointLBtn))
 				|| (true == OnPointInRect(m_rectHelperText, m_pointLBtn)))
@@ -1299,12 +1305,12 @@ void CAucma_HeaterDlg::OpenComm(void)
 	// @@@调试时采用端口1，实际运行为端口2对应开发板COM1
 	if (m_oCEUart.OpenPort(this, 2, 4800, NOPARITY, 8, ONESTOPBIT))
 	{
-		OutputDebugString(_T("串口打开成功！"));
+		AddMsgToLog(_T("串口打开成功！"));
 	}
 	else
 	{
-		AfxMessageBox(_T("串口打开失败！"));
-		PostMessage(WM_DESTROY);
+		AddMsgToLog(_T("串口打开失败！"));
+//		PostMessage(WM_DESTROY);
 	}
 }
 
@@ -1946,22 +1952,39 @@ CString CALLBACK CAucma_HeaterDlg::OnHttpRequest(void* pFatherPtr)
 }
 void CALLBACK CAucma_HeaterDlg::OnHttpResponse(void* pFatherPtr, CString strResponse)
 {
+	CString strCmdState = _T("");
 	CString strCmd = _T("");
+	CString strParam = _T("");
 	int iPos = 0;
 	int iPosOld = 0;
+	int iPosCmd = 0;
+	int iCmd = 0;
 	wchar_t* pBuf = NULL;
 	DWORD dwbufLen = 0;
 	CAucma_HeaterDlg* pThis = (CAucma_HeaterDlg*)pFatherPtr;
 	iPos = strResponse.Find(_T(";"), iPosOld);
 	while(iPos != -1)
 	{
-		strCmd = strResponse.Mid(iPosOld, iPos - iPosOld);
-		dwbufLen = strCmd.GetLength() + 1;
-		pBuf = new wchar_t[dwbufLen];
-		pBuf = (LPWSTR)(LPCWSTR)strCmd;
-		pThis->PostMessage(WM_RECV_HTTP_DATA, WPARAM(pBuf), dwbufLen);
-
-//		pThis->OnHttpResponseCmd(strCmd);
+		strCmdState = strResponse.Mid(iPosOld, iPos - iPosOld);
+		iPosCmd = strCmdState.Find(_T(","));
+		if (iPosCmd == -1)
+		{
+			strCmd = strCmdState;
+			strParam = _T("");
+		}
+		else
+		{
+			strCmd = strCmdState.Mid(0, iPosCmd);
+			strParam = strCmdState.Mid(iPosCmd + 1, strCmdState.GetLength() - iPosCmd - 1);
+		}
+		iCmd = _ttoi(strCmd);
+		if (iCmd != 0)
+		{
+			dwbufLen = strParam.GetLength() + 1;
+			pBuf = new wchar_t[dwbufLen];
+			pBuf = (LPWSTR)(LPCWSTR)strParam;
+			pThis->PostMessage(WM_RECV_HTTP_DATA, WPARAM(pBuf), iCmd);
+		}
 		iPosOld = iPos + 1;
 		iPos = strResponse.Find(_T(";"), iPosOld);
 	}
@@ -1969,26 +1992,11 @@ void CALLBACK CAucma_HeaterDlg::OnHttpResponse(void* pFatherPtr, CString strResp
 LRESULT CAucma_HeaterDlg::OnHttpResponseCmd(WPARAM wParam, LPARAM lParam)
 {
 	wchar_t* pBuf = (wchar_t*)wParam;
-	CString str = pBuf;
-	CString strCmd = _T("");
-	CString strParam = _T("");
-	CString strOut = _T("");
+	CString strParam = pBuf;
 	unsigned int uiData = 0;
 	unsigned int uiTime = 0;
-	int iCmd = 0;
-	int iPos = 0;
+	int iCmd = (int)lParam;
 	SYSTEMTIME sysTime;
-	iPos = str.Find(_T(","));
-	if (iPos == -1)
-	{
-		strCmd = str;
-	}
-	else
-	{
-		strCmd = str.Mid(0, iPos);
-		strParam = str.Mid(iPos + 1, str.GetLength() - iPos - 1);
-	}
-	iCmd = _ttoi(strCmd);
 	switch(iCmd)
 	{
 	case 0:
@@ -2047,22 +2055,12 @@ LRESULT CAucma_HeaterDlg::OnHttpResponseCmd(WPARAM wParam, LPARAM lParam)
 			OnClickedWashhand();
 			OutputDebugString(_T("关闭洗手加热\n"));
 		}
-		else
-		{
-			strOut.Format(_T("关闭洗手加热ERROR%d\n"), iCmd);
-			OutputDebugString(strOut);
-		}
 		break;
 	case 9:
 		if (m_bWashHand == false)
 		{
 			OnClickedWashhand();
 			OutputDebugString(_T("开启洗手加热\n"));
-		}
-		else
-		{
-			strOut.Format(_T("开启洗手加热ERROR%d\n"), iCmd);
-			OutputDebugString(strOut);
 		}
 		break;
 	case 10:
@@ -2180,4 +2178,33 @@ void CAucma_HeaterDlg::OnHeatfastWinter(void)
 	m_bSetTemp = false;
 	// 设置温度
 	OnSetTemp();
+}
+
+// 创建日志文件
+void CAucma_HeaterDlg::OnInitLog(void)
+{
+	CString str = _T("");
+	CString strPath = _T("");
+	SYSTEMTIME  sysTime;
+	// 创建程序运行日志文件夹
+	CreateDirectory(LogFolderPath, NULL);
+	GetLocalTime(&sysTime);
+	str.Format(_T("\\%04d年%02d月%02d日_Log"),sysTime.wYear, sysTime.wMonth, sysTime.wDay);
+	strPath = LogFolderPath + str;
+	CreateDirectory(strPath, NULL);
+	str.Format(_T("\\%02d时%02d分%02d秒_log"), sysTime.wHour, sysTime.wMinute, sysTime.wSecond);
+	strPath += str;
+	CreateDirectory(strPath, NULL);
+	
+	// 初始化日志输出
+	EnterCriticalSection(&m_oLog.m_oSecLogFile);
+	m_oLog.m_SaveLogFilePath = strPath;
+	LeaveCriticalSection(&m_oLog.m_oSecLogFile);
+	m_oLog.OnInitLogOutPut();
+}
+
+// 添加信息到日志文件
+void CAucma_HeaterDlg::AddMsgToLog(CString strLog)
+{
+	m_oLog.AddMsgToLogOutPutList(strLog);
 }

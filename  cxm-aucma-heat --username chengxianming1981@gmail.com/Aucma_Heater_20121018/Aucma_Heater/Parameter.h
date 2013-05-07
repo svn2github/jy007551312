@@ -225,4 +225,14 @@ enum {NoTempShow, InsulationState, HeatTempState};
 #define HttpThreadSleepTime				3000
 /** HTTP*/
 #define HttpContentType	_T("Content-Type: application/x-www-form-urlencoded")
+
+/************************************************************************/
+/*					日志                                                */
+/************************************************************************/
+/** 日志文件夹*/
+#define LogFolderPath				_T("\\Program Files\\Log")
+/** 输出选择:Debug输出则为0，Release输出则为1*/
+#define OutPutSelect				0
+/** 日志文件单个文件输出信息条数*/
+#define OutPutLogFileInfoNumLimit	5000
 #endif

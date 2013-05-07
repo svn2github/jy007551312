@@ -581,6 +581,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Log.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LogThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\PngImage.cpp"
 				>
 			</File>
@@ -656,6 +664,14 @@
 			</File>
 			<File
 				RelativePath="..\UART_WINCE\CEUart.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Log.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LogThread.h"
 				>
 			</File>
 			<File

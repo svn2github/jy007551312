@@ -5,6 +5,8 @@
 #include "Parameter.h"
 #include "PngImage.h"
 #include "CEHttp.h"
+#include "Log.h"
+#include "LogThread.h"
 // CAucma_HeaterDlg 对话框
 class CAucma_HeaterDlg : public CDialog
 {
@@ -318,11 +320,13 @@ private:
 	unsigned int m_uiErrorCode;
 	// 使用次数超过设定次数时锁定界面
 	bool m_bLock;
-public:
 	// 防止快速连续点击按键造成按键响应速度跟不上
 	bool m_bLBtnDownLimit;
 	// 鼠标左键点击区域坐标
 	CPoint m_pointLBtn;
+public:
+	CLog m_oLog;
+	CLogThread m_oLogThread;
 public:
 	// 鼠标左键单击坐标在所选区域内
 	bool OnPointInRect(CRect rect, CPoint point);
@@ -426,4 +430,8 @@ public:
 	void OnHeatfastSummer(void);
 	// 冬季加热
 	void OnHeatfastWinter(void);
+	// 创建日志文件
+	void OnInitLog(void);
+	// 添加信息到日志文件
+	void AddMsgToLog(CString strLog);
 };
