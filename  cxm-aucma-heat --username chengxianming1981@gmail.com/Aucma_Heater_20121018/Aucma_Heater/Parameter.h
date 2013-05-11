@@ -230,7 +230,7 @@ enum {NoTempShow, InsulationState, HeatTempState};
 /*					日志                                                */
 /************************************************************************/
 /** 日志文件夹*/
-#define LogFolderPath				_T("\\Program Files\\Log")
+#define LogFolderPath				_T("\\NandFlash\\Log")
 /** 输出选择:Debug输出则为0，Release输出则为1*/
 #define OutPutSelect				0
 /** 日志文件单个文件输出信息条数*/

@@ -6,41 +6,6 @@
 	>
 	<Configurations>
 		<Configuration
-			Name="Debug|CHSINT SDK For WinCE 6.0 (ARMV4I)"
-			>
-			<DebugSettings
-				Command="$(TargetPath)"
-				WorkingDirectory=""
-				CommandArguments=""
-				Attach="false"
-				DebuggerType="3"
-				Remote="1"
-				RemoteMachine="XMCHENG-PC"
-				RemoteCommand=""
-				HttpUrl=""
-				PDBPath=""
-				SQLDebugging=""
-				Environment=""
-				EnvironmentMerge="true"
-				DebuggerFlavor="5"
-				MPIRunCommand=""
-				MPIRunArguments=""
-				MPIRunWorkingDirectory=""
-				ApplicationCommand=""
-				ApplicationArguments=""
-				ShimCommand=""
-				MPIAcceptMode=""
-				MPIAcceptFilter=""
-			/>
-			<DeploymentTool
-				DeploymentDevice="93424214-f185-4af4-91fc-2b2f6980cca1"
-			/>
-			<DebuggerTool
-				RemoteExecutable=""
-				Arguments=""
-			/>
-		</Configuration>
-		<Configuration
 			Name="Debug|gzsd6410_SDK (ARMV4I)"
 			>
 			<DebugSettings
@@ -104,41 +69,6 @@
 			/>
 			<DeploymentTool
 				DeploymentDevice="7D123511-2496-4fd7-9673-7228D3333674"
-			/>
-			<DebuggerTool
-				RemoteExecutable=""
-				Arguments=""
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|CHSINT SDK For WinCE 6.0 (ARMV4I)"
-			>
-			<DebugSettings
-				Command="$(TargetPath)"
-				WorkingDirectory=""
-				CommandArguments=""
-				Attach="false"
-				DebuggerType="3"
-				Remote="1"
-				RemoteMachine="XMCHENG-PC"
-				RemoteCommand=""
-				HttpUrl=""
-				PDBPath=""
-				SQLDebugging=""
-				Environment=""
-				EnvironmentMerge="true"
-				DebuggerFlavor="5"
-				MPIRunCommand=""
-				MPIRunArguments=""
-				MPIRunWorkingDirectory=""
-				ApplicationCommand=""
-				ApplicationArguments=""
-				ShimCommand=""
-				MPIAcceptMode=""
-				MPIAcceptFilter=""
-			/>
-			<DeploymentTool
-				DeploymentDevice="93424214-f185-4af4-91fc-2b2f6980cca1"
 			/>
 			<DebuggerTool
 				RemoteExecutable=""

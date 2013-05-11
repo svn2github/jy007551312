@@ -115,7 +115,7 @@ LRESULT CUART_WINCEDlg::OnRecvUartData(WPARAM wParam, LPARAM lParam)
 	CHAR* pBuf = (CHAR*)wParam;
 	// 串口接收到的Buf长度
 	DWORD dwBufLen = lParam;
-	//@@@@ 数据处理
+	// @@@@ 数据处理
 	
 	delete[] pBuf;
 	pBuf = NULL;
